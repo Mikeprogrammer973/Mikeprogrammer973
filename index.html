@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="pt-br" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mike D. Pascal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            'ink-900': '#0b0d10',
+            'ink-800': '#0f1115',
+            'ink-700': '#161921',
+            'ink-600': '#1f2430',
+            'ink-500': '#2a3141',
+            'ink-400': '#394256',
+            'accent': '#00B2FF',
+            'accent-2': '#7C4DFF',
+            'ok': '#16c60c',
+            'warn': '#ffb020',
+            'danger': '#ff5c5c',
+          },
+          boxShadow: {
+            glass: '0 8px 30px rgba(0,0,0,.25)',
+            neon: '0 0 0 1px rgba(0,178,255,.25), 0 0 20px rgba(0,178,255,.35)'
+          },
+          keyframes: {
+            fadeUp: { '0%': { opacity: 0, transform: 'translateY(8px)' }, '100%': { opacity: 1, transform: 'translateY(0)' } },
+            blink: { '0%,100%': { opacity: 1 }, '50%': { opacity: .2 } },
+            pop: { '0%': { transform: 'scale(.95)', opacity: .8 }, '100%': { transform: 'scale(1)', opacity: 1 } },
+          },
+          animation: {
+            fadeUp: 'fadeUp .35s ease both',
+            blink: 'blink 1.1s steps(2, start) infinite',
+            pop: 'pop .18s ease-out both'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    * { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif }
+
+    .glass {
+      backdrop-filter: saturate(140%) blur(12px);
+      -webkit-backdrop-filter: saturate(140%) blur(12px);
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .btn { @apply px-3 py-1.5 rounded-lg text-sm border border-white/10 hover:border-white/20 transition; }
+    .menu-item { @apply px-3 py-2 rounded-md text-sm hover:bg-white/10 cursor-pointer; }
+    .tab-active-indicator { box-shadow: inset 0 -2px 0 0 var(--tab-indicator, #00B2FF); }
+    .like-anim { animation: likePulse .25s ease-out both; }
+    @keyframes likePulse { 0% { transform: scale(0.9) } 100% { transform: scale(1) } }
+
+    ::-webkit-scrollbar { width: 10px; height: 10px }
+    ::-webkit-scrollbar-track { background: transparent }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.12); border-radius: 8px }
+    .light ::-webkit-scrollbar-thumb { background: rgba(0,0,0,.2) }
+
+    #explorer-resizer { width: 4px; cursor: col-resize; position: absolute; top:0; right:0; height:100%; }
+    #explorer-resizer:hover { background: rgba(0,178,255,0.18); }
+
+    .text-ok { color: #16c60c; }
+    .text-warn { color: #ffb020; }
+    .text-danger { color: #ff5c5c; }
+    .text-accent { color: var(--tw-color-accent, #00B2FF); }
+
+    @media (max-width: 768px) {
+      #sidebar {
+        position: fixed;
+        top: 44px;
+        left: -100%;
+        height: calc(100vh - 44px);
+        z-index: 50;
+        width: 80%;
+        max-width: 320px;
+        transition: left .28s ease;
+      }
+      #sidebar.active { left: 0; }
+      #explorer-resizer { display: none; }
+      #tabs { display: none; }
+      #btn-global-search { display: none; }
+      header .h-11 { height: 44px; }
+    }
+  </style>
+</head>
+<body class="h-full bg-ink-900 text-white flex flex-col overflow-hidden">
+  <header class="relative z-30 bg-ink-800/95 border-b border-white/10 backdrop-blur">
+    <div class="h-11 flex items-center justify-between px-3">
+      <div class="flex items-center gap-2">
+        <div class="flex items-center gap-1 mr-2">
+          <button class="w-3.5 h-3.5 rounded-full bg-[#ff5f57]" title="Fechar" id="btn-close"></button>
+          <button class="w-3.5 h-3.5 rounded-full bg-[#febc2e]" title="Minimizar"></button>
+          <button class="w-3.5 h-3.5 rounded-full bg-[#28c840]" title="Maximizar"></button>
+        </div>
+
+        <button id="mobile-toggle" class="sm:hidden p-2 rounded hover:bg-white/8 text-sm" title="Menu">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <nav class="relative flex items-center gap-1 text-sm select-none">
+          <div class="group relative">
+            <button class="px-2 py-1 rounded hover:bg-white/10" data-menu="file">File</button>
+            <div class="hidden absolute left-0 mt-1 w-56 bg-ink-700/95 border border-white/10 rounded-lg p-1 shadow-glass backdrop-blur menu" id="menu-file">
+              <div class="menu-item" data-action="new-file">New File</div>
+              <div class="menu-item" data-action="save-all">Save All</div>
+              <div class="menu-item" data-action="close-all">Close All</div>
+            </div>
+          </div>
+          <div class="group relative">
+            <button class="px-2 py-1 rounded hover:bg-white/10" data-menu="edit">Edit</button>
+            <div class="hidden absolute left-0 mt-1 w-56 bg-ink-700/95 border border-white/10 rounded-lg p-1 shadow-glass backdrop-blur menu" id="menu-edit">
+              <div class="menu-item" data-action="copy">Copy</div>
+              <div class="menu-item" data-action="paste">Paste</div>
+              <div class="menu-item" data-action="undo">Undo</div>
+              <div class="menu-item" data-action="redo">Redo</div>
+            </div>
+          </div>
+          <div class="group relative">
+            <button class="px-2 py-1 rounded hover:bg-white/10" data-menu="view">View</button>
+            <div class="hidden absolute left-0 mt-1 w-64 bg-ink-700/95 border border-white/10 rounded-lg p-1 shadow-glass backdrop-blur menu" id="menu-view">
+              <div class="menu-item" data-action="toggle-theme">Toggle Theme</div>
+              <div class="menu-item" data-action="toggle-terminal">Toggle Terminal</div>
+              <div class="menu-item" data-action="fullscreen">Fullscreen</div>
+            </div>
+          </div>
+          <div class="group relative">
+            <button class="px-2 py-1 rounded hover:bg-white/10" data-menu="help">Help</button>
+            <div class="hidden absolute left-0 mt-1 w-72 bg-ink-700/95 border border-white/10 rounded-lg p-1 shadow-glass backdrop-blur menu" id="menu-help">
+              <div class="menu-item" data-action="show-shortcuts">Keyboard Shortcuts</div>
+              <div class="menu-item" data-action="about">About Portfolio</div>
+            </div>
+          </div>
+        </nav>
+      </div>
+      <div class="text-xs opacity-80">Portfólio</div>
+      <div class="flex items-center gap-2">
+        <button id="btn-global-search" class="btn hidden sm:inline-flex items-center gap-2"><i class="fa-solid fa-magnifying-glass"></i></button>
+        <!-- <button id="btn-theme" class="btn" title="Toggle theme"><i class="fa-solid fa-circle-half-stroke"></i></button> -->
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 flex overflow-hidden">
+    <aside class="w-14 bg-ink-800/80 border-r border-white/10 backdrop-blur flex flex-col items-center py-3 gap-3">
+      <button class="p-2.5 rounded-xl hover:bg-white/10" title="Explorer" data-side="explorer"><i class="fa-solid fa-folder-open"></i></button>
+      <button class="p-2.5 rounded-xl hover:bg-white/10" title="Search" data-side="search"><i class="fa-solid fa-magnifying-glass"></i></button>
+      <button class="p-2.5 rounded-xl hover:bg-white/10" title="Source Control" data-side="scm"><i class="fa-solid fa-code-branch"></i></button>
+      <button class="p-2.5 rounded-xl hover:bg-white/10" title="Run & Debug" data-side="run"><i class="fa-solid fa-play"></i></button>
+      <button class="p-2.5 rounded-xl hover:bg-white/10" title="Extensions" data-side="ext"><i class="fa-solid fa-puzzle-piece"></i></button>
+      <button class="mt-auto p-2.5 rounded-xl hover:bg-white/10" title="Settings" data-side="settings"><i class="fa-solid fa-gear"></i></button>
+    </aside>
+
+    <section id="sidebar" class="relative w-72 max-w-xs bg-ink-800/60 border-r border-white/10 backdrop-blur overflow-auto">
+      <div id="panel-explorer" class="p-3 space-y-3">
+        <div class="text-xs tracking-wide opacity-70" id="explorer-title">EXPLORER</div>
+        <div>
+          <button class="w-full flex items-center gap-2 px-2 py-1.5 rounded hover:bg-white/10" data-open="about"><i class="fa-regular fa-circle-user text-accent"></i><span>sobre.html</span></button>
+          <button class="w-full flex items-center gap-2 px-2 py-1.5 rounded hover:bg-white/10" data-open="projects"><i class="fa-solid fa-code text-warn"></i><span>projetos.js</span></button>
+          <button class="w-full flex items-center gap-2 px-2 py-1.5 rounded hover:bg-white/10" data-open="skills"><i class="fa-regular fa-star text-accent-2"></i><span>habilidades.css</span></button>
+          <button class="w-full flex items-center gap-2 px-2 py-1.5 rounded hover:bg-white/10" data-open="contact"><i class="fa-regular fa-envelope text-ok"></i><span>contato.json</span></button>
+        </div>
+      </div>
+
+      <div id="panel-search" class="hidden p-3 space-y-3">
+        <div class="text-xs tracking-wide opacity-70">GLOBAL SEARCH</div>
+        <input id="search-input" class="w-full bg-ink-700/60 border border-white/10 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-accent" placeholder="Buscar em todo o portfólio (ex.: React)" />
+        <div id="search-results" class="text-sm space-y-2"></div>
+      </div>
+
+      <div id="panel-scm" class="hidden p-3 space-y-3">
+        <div class="text-xs tracking-wide opacity-70">SOURCE CONTROL</div>
+        <div class="text-sm opacity-80">Ramificação: <span class="font-semibold">main</span></div>
+        <div class="text-sm opacity-80">Commits locais: <span id="scm-commits" class="font-semibold">3</span></div>
+        <button class="btn" id="btn-commit">Commit fictício</button>
+      </div>
+
+      <div id="panel-run" class="hidden p-3 space-y-3">
+        <div class="text-xs tracking-wide opacity-70">PLAYGROUND</div>
+        <textarea id="run-editor" class="w-full h-48 bg-ink-700/60 border border-white/10 rounded-md p-3 text-sm font-mono" placeholder="Digite JS e execute..."></textarea>
+        <div class="flex gap-2">
+          <button class="btn" id="btn-run">Run</button>
+          <button class="btn" id="btn-run-clear">Clear</button>
+        </div>
+        <pre id="run-output" class="mt-2 text-xs bg-ink-700/60 border border-white/10 rounded-md p-3 overflow-auto"></pre>
+      </div>
+
+      <div id="panel-ext" class="hidden p-3 space-y-2">
+        <div class="text-xs tracking-wide opacity-70">EXTENSIONS</div>
+        <div class="text-sm opacity-90">Sugestões que uso neste portfólio:</div>
+        <ul class="text-sm space-y-2">
+          <li class="flex items-center gap-2"><i class="fa-brands fa-react text-accent"></i>React Patterns (docs)</li>
+          <li class="flex items-center gap-2"><i class="fa-solid fa-wand-magic-sparkles text-accent-2"></i>Tailwind IntelliSense</li>
+          <li class="flex items-center gap-2"><i class="fa-solid fa-database text-warn"></i>REST Client</li>
+        </ul>
+      </div>
+
+      <div id="panel-settings" class="hidden p-3 space-y-3">
+        <div class="text-xs tracking-wide opacity-70">SETTINGS</div>
+        <!-- <div class="flex items-center justify-between">
+          <span class="text-sm">Tema</span>
+          <button class="btn" id="settings-theme">Alternar</button>
+        </div> -->
+        <div class="flex items-center justify-between">
+          <span class="text-sm">Likes</span>
+          <button class="btn" id="settings-reset-likes">Reset</button>
+        </div>
+      </div>
+
+      <div id="explorer-resizer" aria-hidden="true"></div>
+    </section>
+
+    <section class="flex-1 flex flex-col overflow-hidden">
+      <!-- Tabs -->
+      <div id="tabs" class="bg-ink-800/60 border-b border-white/10 flex items-center overflow-x-auto"></div>
+
+      <!-- Content -->
+      <div id="content" class="flex-1 overflow-auto bg-[radial-gradient(1200px_600px_at_20%_-10%,rgba(0,178,255,.06),transparent_40%),radial-gradient(800px_400px_at_100%_10%,rgba(124,77,255,.06),transparent_40%)]">
+        <!-- Welcome -->
+        <section id="welcome" class="p-8 max-w-6xl mx-auto animate-fadeUp">
+          <div class="flex items-center mb-8">
+            <div class="w-24 h-24 rounded-2xl glass shadow-glass flex items-center justify-center mr-6">
+              <i class="fa-regular fa-user text-4xl text-accent"></i>
+            </div>
+            <div>
+              <h1 class="text-3xl font-bold mb-1">Olá, eu sou <span class="text-accent">Seu Nome</span></h1>
+              <p class="text-base opacity-80">Desenvolvedor Full Stack & UI/UX</p>
+            </div>
+          </div>
+
+          <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <button class="glass rounded-xl p-4 hover:shadow-neon transition" data-open="about">
+              <div class="flex items-center gap-2 mb-2 text-accent"><i class="fa-regular fa-circle-user"></i><h3 class="font-semibold">Sobre mim</h3></div>
+              <p class="text-sm opacity-80">Trajetória, experiências e paixões.</p>
+            </button>
+            <button class="glass rounded-xl p-4 hover:shadow-neon transition" data-open="projects">
+              <div class="flex items-center gap-2 mb-2 text-warn"><i class="fa-solid fa-code"></i><h3 class="font-semibold">Projetos</h3></div>
+              <p class="text-sm opacity-80">Trabalhos recentes e destaque.</p>
+            </button>
+            <button class="glass rounded-xl p-4 hover:shadow-neon transition" data-open="skills">
+              <div class="flex items-center gap-2 mb-2 text-accent-2"><i class="fa-regular fa-star"></i><h3 class="font-semibold">Habilidades</h3></div>
+              <p class="text-sm opacity-80">Competências e ferramentas.</p>
+            </button>
+            <button class="glass rounded-xl p-4 hover:shadow-neon transition" data-open="contact">
+              <div class="glass rounded-xl p-4 hover:shadow-neon transition text-ok"><i class="fa-regular fa-envelope"></i><h3 class="font-semibold">Contato</h3></div>
+              <p class="text-sm opacity-80">Vamos conversar.</p>
+            </button>
+          </div>
+
+          <div class="glass rounded-xl p-4">
+            <h3 class="font-semibold mb-2">Atividades Recentes</h3>
+            <ul class="text-sm space-y-2 opacity-90">
+              <li class="flex items-center gap-2"><i class="fa-solid fa-code-branch text-ok"></i>Atualizado <span class="text-accent">projetos.js</span> — 2h atrás</li>
+              <li class="flex items-center gap-2"><i class="fa-solid fa-plus-circle text-ok"></i>Novo projeto <span class="text-accent">E-commerce App</span> — Ontem</li>
+              <li class="flex items-center gap-2"><i class="fa-regular fa-star text-warn"></i>Nova skill <span class="text-accent">React Native</span> — 2 dias</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="file-mount" class="hidden p-8 max-w-5xl mx-auto"></section>
+      </div>
+
+      <div id="terminal" class="hidden glass border-t border-white/10 h-64 flex flex-col">
+        <div class="px-4 py-2 flex items-center justify-between bg-ink-800/70 border-b border-white/10">
+          <div class="flex items-center gap-4 text-sm">
+            <button class="tab-active-indicator text-white" disabled id="terminal-main-label">Terminal</button>
+            <button class="opacity-70 terminal-session-switch" id="term-sessions-btn" title="Sessões" style="display:none">Sessões</button>
+          </div>
+          <button id="terminal-close" class="opacity-70 hover:opacity-100"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="terminal-body" class="flex-1 overflow-auto font-mono text-sm px-4 py-3">
+          <div class="text-ok">➜ Bem-vindo ao terminal do portfólio v2</div>
+          <div class="text-ok">➜ Digite <span class="text-accent">help</span> para ver os comandos</div>
+          <div class="mt-2 flex items-center gap-2">
+            <span class="text-ok">➜</span>
+            <input id="terminal-input" class="flex-1 bg-transparent outline-none" autocomplete="off" />
+            <span class="animate-blink">▍</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="h-7 bg-ink-800/80 border-t border-white/10 px-3 flex items-center justify-between text-xs backdrop-blur">
+    <div class="flex items-center gap-4">
+      <span><i class="fa-solid fa-code-branch"></i> main</span>
+      <span id="status-likes"><i class="fa-regular fa-heart"></i> 0</span>
+      <span id="status-theme">dark</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <button id="status-terminal" class="hover:underline">Terminal <i class="fa-solid fa-terminal"></i></button>
+      <span>UTF-8</span>
+      <span id="status-lang">Português</span>
+      <span><i class="fa-regular fa-user"></i> Desenvolvedor</span>
+    </div>
+  </footer>
+
+  <div id="overlay-shortcuts" class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-6">
+    <div class="glass rounded-xl border border-white/10 w-full max-w-2xl p-6 shadow-glass animate-pop">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-semibold text-lg">Atalhos de Teclado</h3>
+        <button class="opacity-70 hover:opacity-100" data-close="overlay-shortcuts"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+        <div class="flex items-center justify-between bg-white/5 rounded-lg p-3"><span>Toggle Terminal</span><kbd>Ctrl</kbd>+<kbd>`</kbd></div>
+        <div class="flex items-center justify-between bg-white/5 rounded-lg p-3"><span>Global Search</span><kbd>Ctrl</kbd>+<kbd>K</kbd></div>
+        <div class="flex items-center justify-between bg-white/5 rounded-lg p-3"><span>Toggle Theme</span><kbd>Ctrl</kbd>+<kbd>B</kbd></div>
+        <div class="flex items-center justify-between bg-white/5 rounded-lg p-3"><span>Close All Tabs</span><kbd>Ctrl</kbd>+<kbd>W</kbd></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-50">
+    <div class="glass rounded-lg border border-white/10 px-4 py-2 text-sm shadow-glass" id="toast-content">Saved!</div>
+  </div>
+
+  <script>
+    const state = {
+      openTabs: [],
+      activeTab: null,
+      likes: JSON.parse(localStorage.getItem('likes')||'{}'),
+      theme: localStorage.getItem('theme') || 'dark',
+      history: [],
+      historyIndex: -1,
+      lang: localStorage.getItem('lang') || 'pt',
+      terminals: [{ id: 1, name: 'term-1', history: [] }],
+      activeTerminalId: 1
+    };
+
+    const files = {
+      about: {
+        name: 'sobre.html',
+        likeId: 'like_about',
+        html: `
+          <div class="animate-fadeUp space-y-6">
+            <div class="flex items-start gap-6">
+              <div class="w-32 h-32 rounded-xl glass shadow-glass flex items-center justify-center">
+                <i class="fa-regular fa-user text-3xl text-accent"></i>
+              </div>
+              <div class="flex-1">
+                <h1 class="text-2xl font-semibold mb-2">Sobre Mim</h1>
+                <p class="opacity-90">Sou um desenvolvedor full stack com foco em criação de experiências digitais elegantes e performáticas.</p>
+              </div>
+            </div>
+            <div class="grid md:grid-cols-2 gap-4">
+              <div class="glass rounded-lg p-4">
+                <h3 class="font-semibold text-accent mb-2"><i class="fa-solid fa-graduation-cap mr-2"></i>Formação</h3>
+                <ul class="text-sm space-y-1 opacity-90">
+                  <li>Ciência da Computação — 2018</li>
+                  <li>Pós UX/UI — 2020</li>
+                  <li>AWS Developer — 2022</li>
+                </ul>
+              </div>
+              <div class="glass rounded-lg p-4">
+                <h3 class="font-semibold text-warn mb-2"><i class="fa-solid fa-briefcase mr-2"></i>Experiência</h3>
+                <ul class="text-sm space-y-1 opacity-90">
+                  <li>Senior Dev — 2020 • atual</li>
+                  <li>Full Stack — 2018 • 2020</li>
+                  <li>Front-end — 2016 • 2018</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        `
+      },
+      projects: {
+        name: 'projetos.js',
+        likeId: 'like_projects',
+        html: `
+          <section class="space-y-6">
+            <h1 class="text-2xl font-semibold">Meus Projetos</h1>
+            <div class="grid sm:grid-cols-2 gap-4">
+              ${[1,2,3,4].map(i=>`
+              <article class="glass rounded-xl p-4 hover:shadow-neon transition" data-project="proj${i}">
+                <div class="flex items-start justify-between">
+                  <h3 class="font-semibold ${['text-accent','text-warn','text-accent-2','text-ok'][i-1]}">Projeto ${i}</h3>
+                  <button class="like btn !px-2 !py-1" data-like="proj${i}"><i class="fa-regular fa-heart"></i> <span class="count">0</span></button>
+                </div>
+                <p class="text-sm opacity-85 mt-2">Descrição breve do projeto ${i}. Stack moderna, performance e UX.</p>
+                <div class="flex items-center gap-3 mt-3 text-xs opacity-80">
+                  <span class="px-2 py-1 rounded bg-white/10">React</span>
+                  <span class="px-2 py-1 rounded bg-white/10">Node</span>
+                  <a href="#" class="underline">Demo</a>
+                </div>
+              </article>`).join('')}
+            </div>
+          </section>
+        `
+      },
+      skills: {
+        name: 'habilidades.css',
+        likeId: 'like_skills',
+        html: `
+          <section class="space-y-6">
+            <h1 class="text-2xl font-semibold">Habilidades</h1>
+            <div class="grid md:grid-cols-2 gap-6">
+              ${[
+                {k:'React',p:95,c:'text-accent'},
+                {k:'Vue',p:85,c:'text-accent'},
+                {k:'HTML/CSS',p:98,c:'text-accent'},
+                {k:'JavaScript/TypeScript',p:93,c:'text-accent'}
+              ].map(({k,p,c})=>`
+                <div class="glass rounded-lg p-4">
+                  <div class="flex justify-between mb-2"><span>${k}</span><span>${p}%</span></div>
+                  <div class="h-2 rounded bg-white/10 overflow-hidden">
+                    <div class="h-full ${c} bg-current" style="width:${p}%; background:currentColor"></div>
+                  </div>
+                </div>`).join('')}
+            </div>
+          </section>
+        `
+      },
+      contact: {
+        name: 'contato.json',
+        likeId: 'like_contact',
+        html: `
+          <section class="space-y-6">
+            <h1 class="text-2xl font-semibold">Contato</h1>
+            <div class="grid md:grid-cols-2 gap-6">
+              <div class="glass rounded-lg p-4">
+                <h3 class="font-semibold text-accent mb-2"><i class="fa-regular fa-paper-plane mr-2"></i>Informações</h3>
+                <ul class="space-y-2 text-sm opacity-90">
+                  <li><i class="fa-regular fa-envelope mr-2"></i>seu.email@portfolio.com</li>
+                  <li><i class="fa-solid fa-phone mr-2"></i>+55 (11) 99999-9999</li>
+                  <li><i class="fa-solid fa-location-dot mr-2"></i>São Paulo, Brasil</li>
+                </ul>
+              </div>
+              <form class="glass rounded-lg p-4 space-y-3" id="contact-form">
+                <input class="w-full bg-ink-700/60 border border-white/10 rounded-md px-3 py-2 text-sm" placeholder="Seu nome" required />
+                <input type="email" class="w-full bg-ink-700/60 border border-white/10 rounded-md px-3 py-2 text-sm" placeholder="Seu e-mail" required />
+                <input class="w-full bg-ink-700/60 border border-white/10 rounded-md px-3 py-2 text-sm" placeholder="Assunto" />
+                <textarea class="w-full h-28 bg-ink-700/60 border border-white/10 rounded-md px-3 py-2 text-sm" placeholder="Mensagem"></textarea>
+                <button class="btn" type="submit">Enviar</button>
+              </form>
+            </div>
+          </section>
+        `
+      }
+    };
+
+    // ------------------------------
+    // Helpers
+    // ------------------------------
+    const el = sel => document.querySelector(sel);
+    const els = sel => Array.from(document.querySelectorAll(sel));
+    const show = (node, flag=true) => node.classList.toggle('hidden', !flag);
+    const toast = (msg) => {
+      const t = el('#toast');
+      el('#toast-content').textContent = msg;
+      t.classList.remove('hidden');
+      setTimeout(()=> t.classList.add('hidden'), 1500);
+    };
+
+    const updateStatus = () => {
+      const totalLikes = Object.values(state.likes).reduce((a,b)=>a+b,0);
+      el('#status-likes').innerHTML = `<i class="fa-regular fa-heart"></i> ${totalLikes}`;
+      el('#status-theme').textContent = state.theme;
+      el('#status-lang').textContent = state.lang === 'pt' ? 'Português' : (state.lang === 'en' ? 'English' : state.lang);
+    };
+
+    const saveLikes = () => localStorage.setItem('likes', JSON.stringify(state.likes));
+    const setTheme = (theme) => {
+      state.theme = theme;
+      localStorage.setItem('theme', theme);
+      document.documentElement.classList.toggle('dark', theme==='dark');
+      document.body.classList.toggle('light', theme==='light');
+      updateStatus();
+    };
+
+    // Tabs rendering
+    function renderTabs() {
+      const wrap = el('#tabs');
+      wrap.innerHTML = '';
+      state.openTabs.forEach(tab => {
+        const isActive = tab.id === state.activeTab;
+        const item = document.createElement('div');
+        item.className = `group flex items-center gap-2 px-3 py-2 border-r border-white/10 cursor-pointer ${isActive? 'tab-active-indicator' : ''}`;
+        item.style.setProperty('--tab-indicator', isActive ? '#00B2FF' : 'transparent');
+        item.innerHTML = `
+          <i class="fa-regular fa-file"></i>
+          <span class="text-sm">${files[tab.id]?.name || tab.id}</span>
+          <button class="opacity-70 hover:opacity-100" data-pin="${tab.id}" title="Fixar"><i class="fa-solid ${tab.pinned? 'fa-thumbtack' : 'fa-thumbtack'} rotate-45 ${tab.pinned? 'text-accent' : ''}"></i></button>
+          <button class="opacity-70 hover:opacity-100" data-like-tab="${tab.id}" title="Like"><i class="fa-regular fa-heart"></i></button>
+          <button class="opacity-70 group-hover:opacity-100" data-close="${tab.id}" title="Fechar"><i class="fa-solid fa-xmark"></i></button>`;
+        item.addEventListener('click', (e)=>{
+          if (e.target.closest('[data-close],[data-like-tab],[data-pin]')) return;
+          setActiveTab(tab.id);
+        });
+        wrap.appendChild(item);
+      });
+    }
+
+    function setActiveTab(id){
+      state.activeTab = id;
+      renderTabs();
+      mountFile(id);
+    }
+
+    function openFile(id){
+      el('#welcome').classList.add('hidden');
+      el('#file-mount').classList.remove('hidden');
+      if (!state.openTabs.some(t=>t.id===id)) state.openTabs.push({id, pinned:false});
+      setActiveTab(id);
+    }
+
+    function closeTab(id){
+      const tab = state.openTabs.find(t=>t.id===id);
+      if (tab?.pinned) { toast('Aba fixada. Desfixe para fechar.'); return; }
+      state.openTabs = state.openTabs.filter(t=>t.id!==id);
+      if (state.activeTab===id){
+        state.activeTab = state.openTabs.at(-1)?.id || null;
+        if (!state.activeTab){ el('#file-mount').classList.add('hidden'); el('#welcome').classList.remove('hidden'); }
+      }
+      renderTabs();
+      if (state.activeTab) mountFile(state.activeTab);
+    }
+
+    function mountFile(id){
+      const mount = el('#file-mount');
+      mount.innerHTML = files[id]?.html || '<p>Arquivo vazio.</p>';
+      bindLikesInside(mount);
+      // contact form
+      const cf = el('#contact-form');
+      if (cf){ cf.addEventListener('submit', (e)=>{ e.preventDefault(); toast('Mensagem enviada ✉️'); cf.reset(); }); }
+    }
+
+    // Like system
+    function bindLikesInside(root=document){
+      els('[data-like]', root).forEach(btn=>{
+        const id = btn.getAttribute('data-like');
+        const count = btn.querySelector('.count');
+        if(count) count.textContent = state.likes[id]||0;
+        btn.addEventListener('click', ()=>{
+          state.likes[id] = (state.likes[id]||0)+1; saveLikes();
+          if(count) count.textContent = state.likes[id];
+          btn.classList.add('like-anim'); setTimeout(()=>btn.classList.remove('like-anim'), 250);
+          updateStatus();
+        });
+      });
+    }
+
+    // Global search
+    function globalSearch(q){
+      const results = [];
+      const ql = q.toLowerCase();
+      Object.entries(files).forEach(([id,obj])=>{
+        const txt = obj.html.replace(/<[^>]+>/g,' ').toLowerCase();
+        if (txt.includes(ql)) results.push({id,name:obj.name});
+      });
+      return results;
+    }
+
+    // Terminal helpers
+    function appendTerminalLine(text, cls=''){
+      const body = el('#terminal-body');
+      const line = document.createElement('div');
+      if (cls) line.className = cls;
+      line.textContent = text;
+      body.insertBefore(line, body.lastElementChild);
+      body.scrollTop = body.scrollHeight;
+    }
+
+    function processCommand(raw){
+      const cmd = raw.trim();
+      appendTerminalLine(`➜ ${cmd}`, 'opacity-90');
+      if (!cmd) return;
+      const parts = cmd.split(/\s+/);
+      const base = parts[0].toLowerCase();
+      const arg = parts[1];
+
+      switch (base) {
+        case 'help':
+          appendTerminalLine("Comandos disponíveis:", "text-accent");
+          appendTerminalLine(" - help                → lista os comandos disponíveis", "opacity-70");
+          appendTerminalLine(" - open [arquivo]      → abre um arquivo do explorer (ex: open about)", "opacity-70");
+          appendTerminalLine(" - likes               → mostra total de likes", "opacity-70");
+          appendTerminalLine(" - stats               → informações gerais do sistema", "opacity-70");
+          appendTerminalLine(" - theme toggle        → alterna o tema atual", "opacity-70");
+          appendTerminalLine(" - clear               → limpa o terminal", "opacity-70");
+          appendTerminalLine(" - newterm             → cria nova sessão de terminal", "opacity-70");
+          appendTerminalLine(" - terms               → lista sessões", "opacity-70");
+          appendTerminalLine(" - switch [id]         → troca para sessão de terminal (ex: switch 2)", "opacity-70");
+          break;
+
+        case 'open':
+          if (arg && files[arg]) {
+            openFile(arg);
+            appendTerminalLine(`Abrindo ${files[arg].name}...`, "text-accent");
+          } else {
+            appendTerminalLine(`Uso: open [arquivo]. Arquivos: ${Object.keys(files).join(', ')}`, "text-warn");
+          }
+          break;
+
+        case 'likes':
+          appendTerminalLine(`Likes totais: ${Object.values(state.likes).reduce((a,b)=>a+b,0)}`, "text-ok");
+          break;
+
+        case 'stats':
+          appendTerminalLine(`Abas abertas: ${state.openTabs.length}`, "text-accent");
+          appendTerminalLine(`Tema: ${state.theme}`, "text-accent");
+          appendTerminalLine(`Arquivos: ${Object.keys(files).length}`, "text-accent");
+          appendTerminalLine(`Terminal ativo: ${state.activeTerminalId}`, "text-accent");
+          break;
+
+        case 'theme':
+          if (arg === 'toggle') {
+            setTheme(state.theme === 'dark' ? 'light' : 'dark');
+            appendTerminalLine(`Tema alterado para: ${state.theme}`, "text-ok");
+          } else {
+            appendTerminalLine(`Uso: theme toggle`, "text-warn");
+          }
+          break;
+
+        case 'clear':
+          const body = el('#terminal-body');
+          body.innerHTML = '<div class="text-ok">➜ Terminal limpo</div><div class="mt-2 flex items-center gap-2"><span class="text-ok">➜</span><input id="terminal-input" class="flex-1 bg-transparent outline-none" autocomplete="off" /><span class="animate-blink">▍</span></div>';
+          el('#terminal-input').addEventListener('keydown', terminalKeydown);
+          break;
+
+        case 'newterm':
+          const newId = state.terminals.length + 1;
+          state.terminals.push({ id: newId, name: `term-${newId}`, history: [] });
+          state.activeTerminalId = newId;
+          appendTerminalLine(`Nova sessão criada: ${newId}`, "text-ok");
+          break;
+
+        case 'terms':
+          appendTerminalLine(`Sessões: ${state.terminals.map(t=>t.id+'('+t.name+')').join(', ')}`, "text-accent");
+          break;
+
+        case 'switch':
+          const idNum = Number(arg);
+          if (!isNaN(idNum) && state.terminals.some(t=>t.id===idNum)){
+            state.activeTerminalId = idNum;
+            appendTerminalLine(`Trocou para sessão ${idNum}`, "text-ok");
+          } else {
+            appendTerminalLine(`Sessão inválida. Use 'terms' para listar.`, "text-warn");
+          }
+          break;
+
+        default:
+          appendTerminalLine("Comando não reconhecido. Use 'help' para ver a lista.", "text-danger");
+      }
+    }
+
+    function terminalKeydown(e){
+      if (e.key==='Enter'){ 
+        processCommand(e.target.value); 
+        state.history.push(e.target.value); 
+        state.historyIndex = state.history.length; 
+        const t = state.terminals.find(t=>t.id===state.activeTerminalId);
+        if (t) t.history.push(e.target.value);
+        e.target.value=''; 
+      }
+      if (e.key==='ArrowUp'){ if (state.historyIndex>0){ state.historyIndex--; e.target.value = state.history[state.historyIndex]||''; } e.preventDefault(); }
+      if (e.key==='ArrowDown'){ if (state.historyIndex < state.history.length){ state.historyIndex++; e.target.value = state.history[state.historyIndex]||''; } e.preventDefault(); }
+      if (e.ctrlKey && e.key.toLowerCase()==='l'){ 
+        e.preventDefault();
+        processCommand('clear');
+      }
+    }
+
+    // ------------------------------
+    // ligar eventos
+    // ------------------------------
+    window.addEventListener('DOMContentLoaded', ()=>{
+      updateStatus();
+
+      els('[data-open]').forEach(b=> b.addEventListener('click', ()=> openFile(b.getAttribute('data-open'))));
+
+      el('#tabs').addEventListener('click', (e)=>{
+        const close = e.target.closest('[data-close]');
+        const like = e.target.closest('[data-like-tab]');
+        const pin = e.target.closest('[data-pin]');
+        if (close) return closeTab(close.getAttribute('data-close'));
+        if (like) {
+          const id = like.getAttribute('data-like-tab');
+          const likeId = files[id]?.likeId || id;
+          state.likes[likeId] = (state.likes[likeId]||0) + 1; saveLikes(); updateStatus(); toast('Obrigado pelo like ❤');
+        }
+        if (pin) {
+          const id = pin.getAttribute('data-pin');
+          const tab = state.openTabs.find(t=>t.id===id); if (tab){ tab.pinned = !tab.pinned; renderTabs(); toast(tab.pinned?'Aba fixada':'Aba desfixada'); }
+        }
+      });
+
+      // Menus top bar
+      els('[data-menu]').forEach(btn=>{
+        btn.addEventListener('click', (e)=>{
+          const id = 'menu-' + btn.getAttribute('data-menu');
+          els('.menu').forEach(m=> m.classList.add('hidden'));
+          el('#'+id).classList.toggle('hidden');
+          e.stopPropagation();
+        })
+      });
+      document.addEventListener('click', ()=> els('.menu').forEach(m=> m.classList.add('hidden')));
+
+      // Menu actions
+      els('.menu .menu-item').forEach(item=>{
+        item.addEventListener('click', ()=>{
+          const action = item.getAttribute('data-action');
+          if (action==='new-file'){ const id = 'untitled-'+(crypto.randomUUID?.().slice(0,6)||Date.now()); files[id]={name:id+'.txt', html:'<pre class="text-sm opacity-80">// novo arquivo</pre>'}; openFile(id); }
+          if (action==='save-all'){ toast('Arquivos salvos ✔'); }
+          if (action==='close-all'){ [...state.openTabs].forEach(t=> !t.pinned && closeTab(t.id)); }
+          if (action==='copy'){ toast('Copiado ✔ (demo)'); }
+          if (action==='paste'){ toast('Colado ✔ (demo)'); }
+          if (action==='undo'){ toast('Undo (demo)'); }
+          if (action==='redo'){ toast('Redo (demo)'); }
+          if (action==='toggle-theme'){ setTheme(state.theme==='dark'?'light':'dark'); }
+          if (action==='toggle-terminal'){ toggleTerminal(); }
+          if (action==='fullscreen'){ if (!document.fullscreenElement) document.documentElement.requestFullscreen?.(); else document.exitFullscreen?.(); }
+          if (action==='show-shortcuts'){ show(el('#overlay-shortcuts')); }
+          if (action==='about'){ toast('Portfólio VS Code v2 — by você'); }
+          els('.menu').forEach(m=> m.classList.add('hidden'));
+        });
+      });
+
+      // Sidebar panel switching
+      els('[data-side]').forEach(btn=> btn.addEventListener('click', ()=>{
+        const key = btn.getAttribute('data-side');
+        els('#sidebar > div').forEach(p=> p.classList.add('hidden'));
+        el('#panel-'+key)?.classList.remove('hidden');
+        if (window.innerWidth <= 768) el('#sidebar').classList.remove('active');
+      }));
+
+      // Search
+      el('#btn-global-search').addEventListener('click', ()=>{ els('[data-side]')[1].click(); el('#search-input').focus(); });
+      el('#search-input').addEventListener('input', (e)=>{
+        const q = e.target.value.trim();
+        const wrap = el('#search-results'); wrap.innerHTML='';
+        if (!q) return;
+        const res = globalSearch(q);
+        if (!res.length){ wrap.innerHTML = '<div class="opacity-70">Sem resultados</div>'; return; }
+        res.forEach(r=>{
+          const it = document.createElement('div'); it.className='menu-item'; it.textContent = `${r.name}`;
+          it.addEventListener('click', ()=> openFile(r.id));
+          wrap.appendChild(it);
+        });
+      });
+
+      // Run panel
+      el('#btn-run').addEventListener('click', ()=>{
+        const code = el('#run-editor').value;
+        try { const out = Function(code)(); el('#run-output').textContent = String(out ?? '✓ executado'); }
+        catch(err){ el('#run-output').textContent = 'Erro: '+ err.message; }
+      });
+      el('#btn-run-clear').addEventListener('click', ()=>{ el('#run-output').textContent=''; el('#run-editor').value=''; });
+
+      // Settings
+      el('#settings-theme').addEventListener('click', ()=> setTheme(state.theme==='dark'?'light':'dark'));
+      el('#settings-reset-likes').addEventListener('click', ()=>{ state.likes={}; saveLikes(); bindLikesInside(); updateStatus(); toast('Likes resetados'); });
+
+      // Terminal toggles
+      el('#status-terminal').addEventListener('click', toggleTerminal);
+      el('#terminal-close').addEventListener('click', toggleTerminal);
+      el('#terminal-input').addEventListener('keydown', terminalKeydown);
+
+      // Header buttons
+      el('#btn-theme').addEventListener('click', ()=> setTheme(state.theme==='dark'?'light':'dark'));
+      el('#btn-close').addEventListener('click', ()=>{ document.body.innerHTML = '<div class="h-screen flex items-center justify-center"><div class="text-center"><h1 class="text-xl mb-2">Portfólio fechado</h1><p class="opacity-70">Obrigado pela visita!</p></div></div>'; });
+
+      // Keyboard shortcuts
+      document.addEventListener('keydown', (e)=>{
+        if (e.ctrlKey && e.key==='`'){ e.preventDefault(); toggleTerminal(); }
+        if (e.ctrlKey && (e.key==='k'|| e.key==='K')){ e.preventDefault(); el('#btn-global-search').click(); }
+        if (e.ctrlKey && (e.key==='b'|| e.key==='B')){ e.preventDefault(); setTheme(state.theme==='dark'?'light':'dark'); }
+        if (e.ctrlKey && (e.key==='w'|| e.key==='W')){ e.preventDefault(); els('#tabs [data-close]')?.forEach(btn=> closeTab(btn.getAttribute('data-close'))); }
+      });
+
+      bindLikesInside(document);
+
+      initExplorerResizer();
+
+      el('#mobile-toggle').addEventListener('click', ()=> el('#sidebar').classList.toggle('active'));
+
+      setLang(state.lang);
+    });
+
+    function toggleTerminal(){
+      const term = el('#terminal');
+      const isHidden = term.classList.contains('hidden');
+      show(term, isHidden);
+      if (!isHidden) return;
+      setTimeout(()=> el('#terminal-input')?.focus(), 80);
+    }
+
+    els('[data-close]')?.forEach(b=> b.addEventListener('click', ()=> show(el('#'+b.getAttribute('data-close')), false)));
+
+    function initExplorerResizer(){
+      const sidebar = el('#sidebar');
+      const resizer = el('#explorer-resizer');
+      if (!sidebar || !resizer) return;
+
+      let isResizing = false;
+      resizer.addEventListener('mousedown', (e) => {
+        isResizing = true;
+        document.body.style.cursor = 'col-resize';
+        e.preventDefault();
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (!isResizing) return;
+        // calculate new width: clamp between min/max
+        const rect = document.documentElement.getBoundingClientRect();
+        const newWidth = Math.max(180, Math.min(450, e.clientX));
+        sidebar.style.width = newWidth + 'px';
+      });
+
+      document.addEventListener('mouseup', () => {
+        isResizing = false;
+        document.body.style.cursor = '';
+      });
+
+      let startX = 0, startWidth = 0;
+      resizer.addEventListener('touchstart', (e) => {
+        isResizing = true;
+        startX = e.touches[0].clientX;
+        startWidth = sidebar.getBoundingClientRect().width;
+      }, {passive:true});
+      document.addEventListener('touchmove', (e) => {
+        if (!isResizing) return;
+        const dx = e.touches[0].clientX - startX;
+        const newWidth = Math.max(180, Math.min(450, startWidth + dx));
+        sidebar.style.width = newWidth + 'px';
+      }, {passive:true});
+      document.addEventListener('touchend', ()=> isResizing = false);
+    }
+
+    // ------------------------------
+    // i18n
+    // ------------------------------
+    const translations = {
+      en: { explorer: "EXPLORER", terminal: "Terminal", help: "Help", search_placeholder: "Search the portfolio (ex.: React)" },
+      pt: { explorer: "EXPLORER", terminal: "Terminal", help: "Ajuda", search_placeholder: "Buscar em todo o portfólio (ex.: React)" },
+      es: { explorer: "EXPLORER", terminal: "Terminal", help: "Ayuda", search_placeholder: "Buscar en el portafolio (ej.: React)" }
+    };
+
+    function setLang(lang){
+      state.lang = lang;
+      localStorage.setItem('lang', lang);
+      // explorer title
+      const ex = el('#explorer-title'); if (ex) ex.textContent = translations[lang]?.explorer || translations['pt'].explorer;
+      // terminal main label
+      const tl = el('#terminal-main-label'); if (tl) tl.textContent = translations[lang]?.terminal || translations['pt'].terminal;
+      // search placeholder
+      const si = el('#search-input'); if (si) si.placeholder = translations[lang]?.search_placeholder || translations['pt'].search_placeholder;
+      updateStatus();
+    }
+
+    // small UI to change language via console
+    // usage: setLang('en') or setLang('pt') in console
+    window.setLang = setLang;
+
+  </script>
+</body>
+</html>
+
