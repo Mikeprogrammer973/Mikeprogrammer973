@@ -40,7 +40,7 @@ declare global {
     googleTranslateElementInit?: () => void;
     google?: {
       translate: {
-        TranslateElement: new (options: unknown, element: string) => unknown;
+        TranslateElement: new (options: {}, element: string) => unknown;
         TranslateElement: {
           InlineLayout: {
             SIMPLE: number;
