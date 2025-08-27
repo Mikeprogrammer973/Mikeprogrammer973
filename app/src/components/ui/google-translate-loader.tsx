@@ -38,7 +38,7 @@ export default function GoogleTranslateLoader() {
           try {
             if (window.google?.translate?.TranslateElement) {
               new window.google.translate.TranslateElement({
-                pageLanguage: 'en',
+                pageLanguage: 'pt',
                 includedLanguages: 'pt,en,es,fr,de,it,ja,ko,zh-CN,ru',
                 layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
                 autoDisplay: false
