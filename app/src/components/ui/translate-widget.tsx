@@ -11,15 +11,20 @@ const LANGUAGES = [
   { code: "pt", label: "Português", flag: "🇧🇷" },
 ];
 
+declare global {
+  interface Window {
+    google?: any;
+    googleTranslateElementInit?: () => void;
+  }
+}
+
 export default function TranslateWidget() {
   const [open, setOpen] = useState(false);
-  const [currentLang, setCurrentLang] = useState<string>("pt");
-  const [scriptLoaded, setScriptLoaded] = useState(false);
+  const [currentLang, setCurrentLang] = useState("pt");
 
-  // Função global obrigatória para o Google Translate
-  useEffect(() => {
-    if (scriptLoaded && typeof window !== "undefined" && window.google) {
-      // Inicializa o Google Translate
+  // Função que inicializa o Google Translate
+  const initGoogleTranslate = () => {
+    if (window.google && window.google.translate) {
       new window.google.translate.TranslateElement(
         {
           pageLanguage: "pt",
@@ -30,17 +35,18 @@ export default function TranslateWidget() {
         "google_translate_element"
       );
     }
-  }, [scriptLoaded]);
+  };
 
-  // Detecta o idioma do navegador automaticamente
+  // Detecta o idioma do navegador
   useEffect(() => {
     const browserLang = navigator.language.split("-")[0];
     if (LANGUAGES.some((l) => l.code === browserLang)) {
       setCurrentLang(browserLang);
       setTimeout(() => changeLanguage(browserLang), 1200);
     }
-  }, [scriptLoaded]);
+  }, []);
 
+  // Troca o idioma no seletor do Google
   const changeLanguage = (lang: string) => {
     const select = document.querySelector<HTMLSelectElement>(".goog-te-combo");
     if (select) {
@@ -57,16 +63,12 @@ export default function TranslateWidget() {
         src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
         strategy="afterInteractive"
         onLoad={() => {
-          // Define a função global de callback
-          window.googleTranslateElementInit = () => {
-            setScriptLoaded(true);
-          };
+          window.googleTranslateElementInit = initGoogleTranslate;
+          initGoogleTranslate();
         }}
       />
 
-      {/* Contêiner do widget */}
       <div className="fixed bottom-6 right-6 z-[9999]">
-        {/* Botão principal */}
         <button
           onClick={() => setOpen((prev) => !prev)}
           className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-full shadow-lg transition"
@@ -75,7 +77,6 @@ export default function TranslateWidget() {
           {LANGUAGES.find((l) => l.code === currentLang)?.label}
         </button>
 
-        {/* Dropdown */}
         {open && (
           <div className="absolute bottom-14 right-0 w-48 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden animate-dropdown">
             {LANGUAGES.map((lang) => (
