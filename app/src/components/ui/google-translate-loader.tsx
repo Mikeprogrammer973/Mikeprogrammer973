@@ -3,55 +3,76 @@
 
 import { useEffect } from 'react'
 
+// Tipos mínimos necessários
+type TranslateElementConstructor = {
+  new (options: TranslateOptions, element: string): unknown;
+  InlineLayout: {
+    SIMPLE: number;
+  };
+};
+
+interface TranslateOptions {
+  pageLanguage: string;
+  includedLanguages: string;
+  layout: number;
+  autoDisplay: boolean;
+}
+
+interface GoogleTranslate {
+  TranslateElement: TranslateElementConstructor;
+}
+
+interface GoogleAPI {
+  translate?: GoogleTranslate;
+}
+
+declare global {
+  interface Window {
+    google?: GoogleAPI;
+    googleTranslateElementInit?: () => void;
+  }
+}
+
 export default function GoogleTranslateLoader() {
   useEffect(() => {
-    // Função para inicializar o Google Translate
-    const initializeGoogleTranslate = () => {
-      if (typeof window !== 'undefined' && !window.googleTranslateLoaderInitialized) {
-        const addScript = document.createElement('script');
-        addScript.setAttribute('src', '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit');
-        document.head.appendChild(addScript);
+    if (typeof window === 'undefined') return;
+
+    // Evitar múltiplas inicializações
+    if (window.googleTranslateElementInit) return;
+
+    window.googleTranslateElementInit = () => {
+      try {
+        const google = window.google;
+        if (!google?.translate?.TranslateElement) {
+          console.warn('Google Translate API not available');
+          return;
+        }
+
+        const layout = google.translate.TranslateElement.InlineLayout?.SIMPLE || 0;
         
-        window.googleTranslateLoaderInitialized = true;
-        
-        window.googleTranslateElementInit = () => {
-          if (window.google && window.google.translate) {
-            new window.google.translate.TranslateElement({
-              pageLanguage: 'pt',
-              includedLanguages: 'pt,en,es,fr,de,it,ja,ko,zh-CN,ru',
-              layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
-              autoDisplay: false
-            }, 'google_translate_element');
-          }
-        };
+        new google.translate.TranslateElement({
+          pageLanguage: 'pt',
+          includedLanguages: 'pt,en,es,fr,de,it,ja,ko,zh-CN,ru',
+          layout: layout,
+          autoDisplay: false
+        }, 'google_translate_element');
+      } catch (error) {
+        console.error('Failed to initialize Google Translate:', error);
       }
     };
 
-    initializeGoogleTranslate();
+    // Carregar o script do Google Translate
+    if (!document.querySelector('script[src*="translate.google.com"]')) {
+      const script = document.createElement('script');
+      script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+      script.async = true;
+      document.head.appendChild(script);
+    }
+
+    return () => {
+      window.googleTranslateElementInit = undefined;
+    };
   }, []);
 
   return null;
-}
-
-// Extend the Window interface to include Google Translate properties
-declare global {
-  interface Window {
-    googleTranslateLoaderInitialized?: boolean;
-    googleTranslateElementInit?: () => void;
-    google?: {
-      translate: {
-        TranslateElement: new (options: {
-            pageLanguage: string;
-            includedLanguages?: string;
-            autoDisplay?: boolean;
-          },
-          container: string | Element) => any;
-        TranslateElement: {
-          InlineLayout: {
-            SIMPLE: number;
-          };
-        };
-      };
-    };
-  }
 }
