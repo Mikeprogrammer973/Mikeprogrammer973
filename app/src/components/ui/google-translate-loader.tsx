@@ -3,33 +3,26 @@
 
 import { useEffect } from 'react'
 
-// Tipos mínimos necessários
-type TranslateElementConstructor = {
-  new (options: TranslateOptions, element: string): unknown;
-  InlineLayout: {
-    SIMPLE: number;
-  };
-};
-
-interface TranslateOptions {
-  pageLanguage: string;
-  includedLanguages: string;
-  layout: number;
-  autoDisplay: boolean;
-}
-
-interface GoogleTranslate {
-  TranslateElement: TranslateElementConstructor;
-}
-
-interface GoogleAPI {
-  translate?: GoogleTranslate;
-}
-
+// Primeiro, declare os tipos globalmente antes de qualquer código
 declare global {
   interface Window {
-    google?: GoogleAPI;
+    google?: {
+      translate?: {
+        TranslateElement: {
+          new (options: {
+            pageLanguage: string;
+            includedLanguages?: string;
+            layout?: number;
+            autoDisplay?: boolean;
+          }, element: string): unknown;
+          InlineLayout: {
+            SIMPLE: number;
+          };
+        };
+      };
+    };
     googleTranslateElementInit?: () => void;
+    googleTranslateLoaderInitialized?: boolean;
   }
 }
 
@@ -37,40 +30,36 @@ export default function GoogleTranslateLoader() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    // Evitar múltiplas inicializações
-    if (window.googleTranslateElementInit) return;
-
-    window.googleTranslateElementInit = () => {
-      try {
-        const google = window.google;
-        if (!google?.translate?.TranslateElement) {
-          console.warn('Google Translate API not available');
-          return;
-        }
-
-        const layout = google.translate.TranslateElement.InlineLayout?.SIMPLE || 0;
+    const initializeGoogleTranslate = () => {
+      if (!window.googleTranslateLoaderInitialized) {
+        window.googleTranslateLoaderInitialized = true;
         
-        new google.translate.TranslateElement({
-          pageLanguage: 'pt',
-          includedLanguages: 'pt,en,es,fr,de,it,ja,ko,zh-CN,ru',
-          layout: layout,
-          autoDisplay: false
-        }, 'google_translate_element');
-      } catch (error) {
-        console.error('Failed to initialize Google Translate:', error);
+        window.googleTranslateElementInit = () => {
+          try {
+            if (window.google?.translate?.TranslateElement) {
+              new window.google.translate.TranslateElement({
+                pageLanguage: 'pt',
+                includedLanguages: 'pt,en,es,fr,de,it,ja,ko,zh-CN,ru',
+                layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
+              }, 'google_translate_element');
+            }
+          } catch (error) {
+            console.error('Error initializing Google Translate:', error);
+          }
+        };
+
+        const script = document.createElement('script');
+        script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+        script.async = true;
+        document.head.appendChild(script);
       }
     };
 
-    // Carregar o script do Google Translate
-    if (!document.querySelector('script[src*="translate.google.com"]')) {
-      const script = document.createElement('script');
-      script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-      script.async = true;
-      document.head.appendChild(script);
-    }
+    initializeGoogleTranslate();
 
     return () => {
-      window.googleTranslateElementInit = undefined;
+      window.googleTranslateLoaderInitialized = false;
     };
   }, []);
 
