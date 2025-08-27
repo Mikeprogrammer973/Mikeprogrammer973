@@ -76,10 +76,10 @@ export default function LanguageSelector() {
         const event = new Event('change', { bubbles: true });
         Object.defineProperty(event, 'target', { value: googleSelect, enumerable: true });
         googleSelect.dispatchEvent(event);
-      } /*else {
+      } else {
         // Método 2: Usar a API do Google Translate diretamente
         const googleTranslate = (window as any).google?.translate;
-        if (googleTranslate && googleTranslate.translate) {
+        /*if (googleTranslate && googleTranslate.translate) {
           googleTranslate.translate(langCode);
         }*/
         
@@ -152,3 +152,4 @@ export default function LanguageSelector() {
     </div>
   );
 }
+
