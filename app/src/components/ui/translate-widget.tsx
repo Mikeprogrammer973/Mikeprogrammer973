@@ -19,36 +19,39 @@ declare global {
 }
 
 export default function TranslateWidget() {
-  const [open, setOpen] = useState(false);
+  const [isReady, setIsReady] = useState(false);
   const [currentLang, setCurrentLang] = useState("pt");
+  const [open, setOpen] = useState(false);
 
+  // Função chamada quando o script do Google terminar de carregar
   const initGoogleTranslate = () => {
-    // Só inicializa se o objeto realmente existir
-    if (window.google && window.google.translate && window.google.translate.TranslateElement) {
-      new window.google.translate.TranslateElement(
-        {
-          pageLanguage: "pt",
-          includedLanguages: LANGUAGES.map((l) => l.code).join(","),
-          autoDisplay: false,
-        },
-        "google_translate_element"
-      );
-    } else {
-      // Se o script ainda não carregou, tenta de novo depois
-      setTimeout(initGoogleTranslate, 200);
+    try {
+      if (
+        window.google &&
+        window.google.translate &&
+        typeof window.google.translate.TranslateElement === "function"
+      ) {
+        new window.google.translate.TranslateElement(
+          {
+            pageLanguage: "pt",
+            includedLanguages: LANGUAGES.map((l) => l.code).join(","),
+            autoDisplay: false,
+          },
+          "google_translate_element"
+        );
+        setIsReady(true);
+      } else {
+        console.warn("Google Translate ainda não está disponível, tentando novamente...");
+        setTimeout(initGoogleTranslate, 300);
+      }
+    } catch (err) {
+      console.error("Erro ao inicializar o Google Translate:", err);
     }
   };
 
   useEffect(() => {
-    // Define a função global ANTES de carregar o script
+    // Define a função de callback global ANTES de carregar o script
     window.googleTranslateElementInit = initGoogleTranslate;
-
-    // Detecta idioma do navegador e aplica automaticamente
-    const browserLang = navigator.language.split("-")[0];
-    if (LANGUAGES.some((l) => l.code === browserLang)) {
-      setCurrentLang(browserLang);
-      setTimeout(() => changeLanguage(browserLang), 1500);
-    }
   }, []);
 
   const changeLanguage = (lang: string) => {
@@ -57,6 +60,8 @@ export default function TranslateWidget() {
       select.value = lang;
       select.dispatchEvent(new Event("change"));
       setCurrentLang(lang);
+    } else {
+      console.warn("Seletor do Google Translate não encontrado");
     }
   };
 
@@ -68,7 +73,7 @@ export default function TranslateWidget() {
         strategy="afterInteractive"
       />
 
-      {/* Botão principal */}
+      {/* Botão para abrir o menu */}
       <div className="fixed bottom-6 right-6 z-[9999]">
         <button
           onClick={() => setOpen((prev) => !prev)}
@@ -78,9 +83,9 @@ export default function TranslateWidget() {
           {LANGUAGES.find((l) => l.code === currentLang)?.label}
         </button>
 
-        {/* Dropdown de idiomas */}
+        {/* Dropdown */}
         {open && (
-          <div className="absolute bottom-14 right-0 w-48 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden animate-dropdown">
+          <div className="absolute bottom-14 right-0 w-48 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
             {LANGUAGES.map((lang) => (
               <button
                 key={lang.code}
@@ -99,7 +104,7 @@ export default function TranslateWidget() {
         )}
       </div>
 
-      {/* Elemento oculto necessário para o Google Translate funcionar */}
+      {/* Elemento oculto necessário para o Google Translate */}
       <div id="google_translate_element" className="hidden"></div>
     </>
   );
