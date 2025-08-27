@@ -25,16 +25,27 @@ export default function TranslateWidget() {
 
   // Função chamada quando o script do Google terminar de carregar
   const initGoogleTranslate = () => {
-    if (window.google && window.google.translate) {
-      new window.google.translate.TranslateElement(
-        {
-          pageLanguage: "pt",
-          includedLanguages: LANGUAGES.map((l) => l.code).join(","),
-          layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
-          autoDisplay: false,
-        },
-        "google_translate_element"
-      );
+    try {
+      if (
+        window.google &&
+        window.google.translate &&
+        typeof window.google.translate.TranslateElement === "function"
+      ) {
+        new window.google.translate.TranslateElement(
+          {
+            pageLanguage: "pt",
+            includedLanguages: LANGUAGES.map((l) => l.code).join(","),
+            autoDisplay: false,
+          },
+          "google_translate_element"
+        );
+        setIsReady(true);
+      } else {
+        console.warn("Google Translate ainda não está disponível, tentando novamente...");
+        setTimeout(initGoogleTranslate, 300);
+      }
+    } catch (err) {
+      console.error("Erro ao inicializar o Google Translate:", err);
     }
   };
 
@@ -68,7 +79,7 @@ export default function TranslateWidget() {
           onClick={() => setOpen((prev) => !prev)}
           className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-full shadow-lg transition"
         >
-          {LANGUAGES.find((l) => l.code === currentLang)?.flag}{" "}
+          🌎 {LANGUAGES.find((l) => l.code === currentLang)?.flag}{" "}
           {LANGUAGES.find((l) => l.code === currentLang)?.label}
         </button>
 
