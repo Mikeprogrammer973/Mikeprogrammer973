@@ -19,16 +19,18 @@ declare global {
 }
 
 export default function TranslateWidget() {
-  const [open, setOpen] = useState(false);
+  const [isReady, setIsReady] = useState(false);
   const [currentLang, setCurrentLang] = useState("pt");
+  const [open, setOpen] = useState(false);
 
-  // Função que inicializa o Google Translate
+  // Função chamada quando o script do Google terminar de carregar
   const initGoogleTranslate = () => {
     if (window.google && window.google.translate) {
       new window.google.translate.TranslateElement(
         {
           pageLanguage: "pt",
           includedLanguages: LANGUAGES.map((l) => l.code).join(","),
+          layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
           autoDisplay: false,
         },
         "google_translate_element"
@@ -36,37 +38,31 @@ export default function TranslateWidget() {
     }
   };
 
-  // Detecta o idioma do navegador
   useEffect(() => {
-    const browserLang = navigator.language.split("-")[0];
-    if (LANGUAGES.some((l) => l.code === browserLang)) {
-      setCurrentLang(browserLang);
-      setTimeout(() => changeLanguage(browserLang), 1200);
-    }
+    // Define a função de callback global ANTES de carregar o script
+    window.googleTranslateElementInit = initGoogleTranslate;
   }, []);
 
-  // Troca o idioma no seletor do Google
   const changeLanguage = (lang: string) => {
     const select = document.querySelector<HTMLSelectElement>(".goog-te-combo");
     if (select) {
       select.value = lang;
       select.dispatchEvent(new Event("change"));
       setCurrentLang(lang);
+    } else {
+      console.warn("Seletor do Google Translate não encontrado");
     }
   };
 
   return (
     <>
-      {/* Script do Google Translate */}
+      {/* Carrega o script do Google Translate */}
       <Script
         src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
         strategy="afterInteractive"
-        onLoad={() => {
-          window.googleTranslateElementInit = initGoogleTranslate;
-          initGoogleTranslate();
-        }}
       />
 
+      {/* Botão para abrir o menu */}
       <div className="fixed bottom-6 right-6 z-[9999]">
         <button
           onClick={() => setOpen((prev) => !prev)}
@@ -76,8 +72,9 @@ export default function TranslateWidget() {
           {LANGUAGES.find((l) => l.code === currentLang)?.label}
         </button>
 
+        {/* Dropdown */}
         {open && (
-          <div className="absolute bottom-14 right-0 w-48 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden animate-dropdown">
+          <div className="absolute bottom-14 right-0 w-48 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
             {LANGUAGES.map((lang) => (
               <button
                 key={lang.code}
@@ -95,6 +92,9 @@ export default function TranslateWidget() {
           </div>
         )}
       </div>
+
+      {/* Elemento oculto necessário para o Google Translate */}
+      <div id="google_translate_element" className="hidden"></div>
     </>
   );
 }
