@@ -1,4 +1,4 @@
-// app/layout.tsx
+
 import type { Metadata } from 'next'
 import { Inter, Poppins } from 'next/font/google'
 import './globals.css'
@@ -19,7 +19,7 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: 'Meu Portfólio',
-  description: 'Portfólio profissional com CMS integrado',
+  description: '',
 }
 
 export default function RootLayout({

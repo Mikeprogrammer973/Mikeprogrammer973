@@ -1,16 +1,15 @@
-// app/page.tsx
+
 import Link from 'next/link'
-import { ArrowRight, Github, Linkedin, Mail } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { Button } from '../components/ui/button'
 
 export default function Home() {
   return (
     <div className="container mx-auto px-4 py-12">
-      {/* Hero Section */}
       <section className="flex flex-col items-center text-center py-20">
         <div className="animate-fade-in-up mb-6">
-          <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold">
-            JD
+          <div className="w-32 h-32 p-1 mx-auto rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold">
+            <img className="w-full h-full rounded-full" src="https://pbs.twimg.com/profile_images/1474048692374196236/qCeE57B4_400x400.jpg" alt="profile" />
           </div>
         </div>
         
@@ -25,7 +24,7 @@ export default function Home() {
         <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
           <Button asChild size="lg" className="rounded-full">
             <Link href="/projects">
-              Ver Projetos <ArrowRight className="ml-2 h-4 w-4" />
+              Ver Projetos <ArrowRight className="ml-2 h-4 w-4 inline-block" />
             </Link>
           </Button>
           <Button asChild variant="outline" size="lg" className="rounded-full">
@@ -36,7 +35,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured Projects Preview */}
       <section className="py-20">
         <h2 className="text-3xl font-bold text-center mb-12">Projetos em Destaque</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -113,7 +111,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Skills Preview */}
       <section className="py-20">
         <h2 className="text-3xl font-bold text-center mb-12">Habilidades</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
