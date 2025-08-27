@@ -1,181 +1,116 @@
 "use client";
+import { useEffect, useState } from "react";
+import Script from "next/script";
 
-import { useEffect, useRef, useState } from "react";
+interface GoogleWindow extends Window {
+  google?: any;
+  googleTranslateElementInit?: () => void;
+}
+declare const window: GoogleWindow;
 
-/** Idiomas suportados */
 const LANGUAGES = [
   { code: "pt", label: "Português", flag: "🇧🇷" },
-  { code: "en", label: "English",  flag: "🇺🇸" },
-  { code: "es", label: "Español",  flag: "🇪🇸" },
+  { code: "en", label: "English", flag: "🇺🇸" },
+  { code: "es", label: "Español", flag: "🇪🇸" },
   { code: "fr", label: "Français", flag: "🇫🇷" },
-  { code: "de", label: "Deutsch",  flag: "🇩🇪" },
+  { code: "de", label: "Deutsch", flag: "🇩🇪" },
   { code: "it", label: "Italiano", flag: "🇮🇹" },
-] as const;
-
-const GOOGLE_SCRIPT_ID = "google-translate-script";
-const GOOGLE_SCRIPT_SRC = "https://translate.google.com/translate_a/element.js";
-
-/** Carrega o script do Google uma única vez (sem callback global) */
-function loadGoogleTranslateScript(): Promise<void> {
-  return new Promise((resolve, reject) => {
-    if (document.getElementById(GOOGLE_SCRIPT_ID)) {
-      resolve();
-      return;
-    }
-    const s = document.createElement("script");
-    s.id = GOOGLE_SCRIPT_ID;
-    s.src = GOOGLE_SCRIPT_SRC;
-    s.async = true;
-    s.defer = true;
-    s.onload = () => resolve();
-    s.onerror = () => reject(new Error("Falha ao carregar o Google Translate"));
-    document.head.appendChild(s);
-  });
-}
-
-/** Aguarda o constructor estar realmente disponível */
-async function waitForTranslateElement(maxMs = 7000, intervalMs = 150): Promise<void> {
-  const start = Date.now();
-  return new Promise((resolve, reject) => {
-    const tick = () => {
-      const ctor = window.google?.translate?.TranslateElement;
-      if (typeof ctor === "function") {
-        resolve();
-      } else if (Date.now() - start >= maxMs) {
-        reject(new Error("TranslateElement indisponível (timeout)."));
-      } else {
-        setTimeout(tick, intervalMs);
-      }
-    };
-    tick();
-  });
-}
-
-/** Define cookie usado pelo Google Translate (fallback para troca de idioma) */
-function setGoogTransCookie(from: string, to: string) {
-  const v = `/${from}/${to}`;
-  const expires = new Date(Date.now() + 365 * 24 * 3600 * 1000).toUTCString();
-  // cookie para o seu domínio
-  document.cookie = `googtrans=${v};expires=${expires};path=/`;
-  document.cookie = `googtrans=${v};expires=${expires};path=/;domain=.${location.hostname}`;
-}
-
-/** Tenta mudar idioma via combo; se não houver, usa cookie e recarrega */
-function changeLanguage(lang: string, from = "pt") {
-  const select = document.querySelector<HTMLSelectElement>(".goog-te-combo");
-  if (select) {
-    select.value = lang;
-    select.dispatchEvent(new Event("change"));
-  } else {
-    setGoogTransCookie(from, lang);
-    location.reload();
-  }
-}
+];
 
 export default function TranslateWidget() {
+  const [isReady, setIsReady] = useState(false);
+  const [currentLang, setCurrentLang] = useState("pt");
   const [open, setOpen] = useState(false);
-  const [currentLang, setCurrentLang] = useState<string>("pt");
-  const [ready, setReady] = useState(false);
-  const hasInit = useRef(false);
 
-  // Inicializa o widget com retries e tipos
-  useEffect(() => {
-    let canceled = false;
+  // Inicializa o Google Translate
+  const initGoogleTranslate = () => {
+    if (
+      window.google &&
+      window.google.translate &&
+      typeof window.google.translate.TranslateElement === "function"
+    ) {
+      new window.google.translate.TranslateElement(
+        {
+          pageLanguage: "pt",
+          includedLanguages: LANGUAGES.map((l) => l.code).join(","),
+          autoDisplay: false,
+        },
+        "google_translate_element"
+      );
 
-    (async () => {
-      try {
-        await loadGoogleTranslateScript();
-        await waitForTranslateElement();
-
-        if (canceled || hasInit.current) return;
-
-        const ctor = window.google!.translate!.TranslateElement!;
-        // Cria o widget (container pode ficar oculto)
-        new ctor(
-          {
-            pageLanguage: "pt",
-            includedLanguages: LANGUAGES.map((l) => l.code).join(","),
-            autoDisplay: false,
-          },
-          "google_translate_element"
+      // Espera o Google criar o <select> e então esconde
+      setTimeout(() => {
+        const select = document.querySelector<HTMLSelectElement>(
+          ".goog-te-combo"
         );
+        if (select) {
+          select.style.display = "none"; // 🔹 Esconde o dropdown feio
+          setIsReady(true);
+        }
+      }, 800);
+    } else {
+      // Se a API ainda não carregou, tenta novamente
+      setTimeout(initGoogleTranslate, 400);
+    }
+  };
 
-        hasInit.current = true;
-        setReady(true);
-
-        // aplica preferência salva (localStorage) ou idioma do navegador
-        const saved = localStorage.getItem("preferred_lang");
-        const browser = navigator.language.split("-")[0];
-        const preferred =
-          saved && LANGUAGES.some((l) => l.code === saved) ? saved :
-          LANGUAGES.some((l) => l.code === browser) ? browser : "pt";
-
-        setCurrentLang(preferred);
-        // Pequeno atraso para o select existir
-        setTimeout(() => changeLanguage(preferred), 400);
-      } catch (e) {
-        console.warn(e);
-        // Mesmo sem o widget, mantém o seletor custom para tentar via cookie
-        setReady(false);
-      }
-    })();
-
-    return () => {
-      canceled = true;
-    };
+  useEffect(() => {
+    window.googleTranslateElementInit = initGoogleTranslate;
   }, []);
 
-  const onPick = (code: string) => {
-    setCurrentLang(code);
-    localStorage.setItem("preferred_lang", code);
-    changeLanguage(code);
-    setOpen(false);
+  // Troca de idioma no Google Translate manualmente
+  const changeLanguage = (lang: string) => {
+    const select = document.querySelector<HTMLSelectElement>(".goog-te-combo");
+    if (select) {
+      select.value = lang;
+      select.dispatchEvent(new Event("change")); // 🔹 Força o Google Translate a mudar o idioma
+      setCurrentLang(lang);
+    }
   };
 
   return (
     <>
-      {/* Container requerido pelo Google (pode ficar invisível) */}
-      <div id="google_translate_element" style={{ display: "none" }} />
+      {/* Carrega o script do Google */}
+      <Script
+        src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+        strategy="afterInteractive"
+      />
 
       {/* Botão flutuante */}
       <div className="fixed bottom-6 right-6 z-[9999]">
         <button
-          onClick={() => setOpen((v) => !v)}
-          className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-full shadow-lg transition"
-          aria-haspopup="listbox"
-          aria-expanded={open}
-          title={ready ? "Selecionar idioma" : "Tradução pode demorar a iniciar"}
+          onClick={() => setOpen((prev) => !prev)}
+          disabled={!isReady}
+          className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-full shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <span>🌎</span>
-          <span>
-            {LANGUAGES.find((l) => l.code === currentLang)?.flag}{" "}
-            {LANGUAGES.find((l) => l.code === currentLang)?.label}
-          </span>
+          🌎 {LANGUAGES.find((l) => l.code === currentLang)?.flag}{" "}
+          {LANGUAGES.find((l) => l.code === currentLang)?.label}
         </button>
 
-        {/* Dropdown custom */}
+        {/* Dropdown customizado */}
         {open && (
-          <div
-            className="absolute bottom-14 right-0 w-56 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden animate-dropdown"
-            role="listbox"
-          >
+          <div className="absolute bottom-14 right-0 w-56 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden animate-fade-in">
             {LANGUAGES.map((lang) => (
               <button
                 key={lang.code}
-                onClick={() => onPick(lang.code)}
-                className={`flex items-center gap-2 px-4 py-2 w-full text-left hover:bg-gray-100 transition ${
-                  lang.code === currentLang ? "bg-gray-200 font-semibold" : ""
+                onClick={() => {
+                  changeLanguage(lang.code);
+                  setOpen(false);
+                }}
+                className={`flex items-center gap-3 px-4 py-2 w-full text-left hover:bg-gray-100 transition ${
+                  lang.code === currentLang ? "bg-gray-200 font-bold" : ""
                 }`}
-                role="option"
-                aria-selected={lang.code === currentLang}
               >
                 <span className="text-lg">{lang.flag}</span>
-                <span>{lang.label}</span>
+                {lang.label}
               </button>
             ))}
           </div>
         )}
       </div>
+
+      {/* Elemento que o Google Translate usa — mas escondemos o conteúdo */}
+      <div id="google_translate_element" style={{ display: "none" }}></div>
     </>
   );
 }
