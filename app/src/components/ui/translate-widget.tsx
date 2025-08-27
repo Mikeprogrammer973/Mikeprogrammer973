@@ -1,9 +1,9 @@
-
+// components/ui/translate-widget.tsx
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
 import { Languages, ChevronDown, Check, Loader2 } from 'lucide-react'
-import { Button } from './button'
+import { Button } from '@/components/ui/button'
 
 const languages = [
   { code: 'pt', name: 'Português', nativeName: 'Português' },
@@ -18,7 +18,22 @@ const languages = [
   { code: 'ru', name: 'Russian', nativeName: 'Русский' }
 ];
 
-export default function LanguageSelector() {
+// Interface para o objeto Google Translate
+interface GoogleTranslateAPI {
+  translate?: {
+    (targetLanguage: string): void;
+  };
+}
+
+// Extender a interface Window com tipos específicos
+declare global {
+  interface Window {
+    google?: GoogleTranslateAPI;
+    googleTranslateElementInit?: () => void;
+  }
+}
+
+export default function TranslateWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState('pt');
   const [isChanging, setIsChanging] = useState(false);
@@ -78,9 +93,9 @@ export default function LanguageSelector() {
         googleSelect.dispatchEvent(event);
       } else {
         // Método 2: Usar a API do Google Translate diretamente
-        const googleTranslate = (window as any).google?.translate;
-        if (googleTranslate && googleTranslate.translate) {
-          googleTranslate.translate(langCode);
+        const googleTranslate = window.google?.translate;
+        if (googleTranslate && typeof googleTranslate === 'function') {
+          googleTranslate(langCode);
         }
         
         // Método 3: Recarregar a página com o novo idioma (fallback)
@@ -152,8 +167,3 @@ export default function LanguageSelector() {
     </div>
   );
 }
-
-
-
-
-
