@@ -78,7 +78,7 @@ export default function LanguageSelector() {
         googleSelect.dispatchEvent(event);
       } else {
         // Método 2: Usar a API do Google Translate diretamente
-        const googleTranslate = window.google?.translate;
+        const googleTranslate = window.google;
         if (googleTranslate && googleTranslate.translate) {
           googleTranslate.translate(langCode);
         }
@@ -152,5 +152,6 @@ export default function LanguageSelector() {
     </div>
   );
 }
+
 
 
