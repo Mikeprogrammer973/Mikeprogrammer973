@@ -1,4 +1,4 @@
-// components/ui/translate-widget.tsx
+
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
@@ -18,22 +18,7 @@ const languages = [
   { code: 'ru', name: 'Russian', nativeName: 'Русский' }
 ];
 
-// Interface para o objeto Google Translate
-interface GoogleTranslateAPI {
-  translate?: {
-    (targetLanguage: string): void;
-  };
-}
-
-// Extender a interface Window com tipos específicos
-declare global {
-  interface Window {
-    google?: GoogleTranslateAPI;
-    googleTranslateElementInit?: () => void;
-  }
-}
-
-export default function TranslateWidget() {
+export default function LanguageSelector() {
   const [isOpen, setIsOpen] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState('pt');
   const [isChanging, setIsChanging] = useState(false);
@@ -91,12 +76,12 @@ export default function TranslateWidget() {
         const event = new Event('change', { bubbles: true });
         Object.defineProperty(event, 'target', { value: googleSelect, enumerable: true });
         googleSelect.dispatchEvent(event);
-      } else {
+      } /*else {
         // Método 2: Usar a API do Google Translate diretamente
-        const googleTranslate = window.google?.translate;
-        if (googleTranslate && typeof googleTranslate === 'function') {
-          googleTranslate(langCode);
-        }
+        const googleTranslate = (window as any).google?.translate;
+        if (googleTranslate && googleTranslate.translate) {
+          googleTranslate.translate(langCode);
+        }*/
         
         // Método 3: Recarregar a página com o novo idioma (fallback)
         setTimeout(() => {
@@ -167,4 +152,3 @@ export default function TranslateWidget() {
     </div>
   );
 }
-
