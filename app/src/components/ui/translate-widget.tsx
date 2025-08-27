@@ -1,116 +1,95 @@
-"use client";
-import { useEffect, useState } from "react";
-import Script from "next/script";
 
-interface GoogleWindow extends Window {
-  google?: any;
-  googleTranslateElementInit?: () => void;
-}
-declare const window: GoogleWindow;
+'use client'
 
-const LANGUAGES = [
-  { code: "pt", label: "Português", flag: "🇧🇷" },
-  { code: "en", label: "English", flag: "🇺🇸" },
-  { code: "es", label: "Español", flag: "🇪🇸" },
-  { code: "fr", label: "Français", flag: "🇫🇷" },
-  { code: "de", label: "Deutsch", flag: "🇩🇪" },
-  { code: "it", label: "Italiano", flag: "🇮🇹" },
+import { useState, useRef, useEffect } from 'react'
+import { Languages, ChevronDown, Check } from 'lucide-react'
+import { Button } from './button'
+
+const languages = [
+  { code: 'pt', name: 'Português', nativeName: 'Português' },
+  { code: 'en', name: 'English', nativeName: 'English' },
+  { code: 'es', name: 'Spanish', nativeName: 'Español' },
+  { code: 'fr', name: 'French', nativeName: 'Français' },
+  { code: 'de', name: 'German', nativeName: 'Deutsch' },
+  { code: 'it', name: 'Italian', nativeName: 'Italiano' },
+  { code: 'ja', name: 'Japanese', nativeName: '日本語' },
+  { code: 'ko', name: 'Korean', nativeName: '한국어' },
+  { code: 'zh-CN', name: 'Chinese', nativeName: '中文' },
+  { code: 'ru', name: 'Russian', nativeName: 'Русский' }
 ];
 
-export default function TranslateWidget() {
-  const [isReady, setIsReady] = useState(false);
-  const [currentLang, setCurrentLang] = useState("pt");
-  const [open, setOpen] = useState(false);
-
-  // Inicializa o Google Translate
-  const initGoogleTranslate = () => {
-    if (
-      window.google &&
-      window.google.translate &&
-      typeof window.google.translate.TranslateElement === "function"
-    ) {
-      new window.google.translate.TranslateElement(
-        {
-          pageLanguage: "pt",
-          includedLanguages: LANGUAGES.map((l) => l.code).join(","),
-          autoDisplay: false,
-        },
-        "google_translate_element"
-      );
-
-      // Espera o Google criar o <select> e então esconde
-      setTimeout(() => {
-        const select = document.querySelector<HTMLSelectElement>(
-          ".goog-te-combo"
-        );
-        if (select) {
-          select.style.display = "none"; // 🔹 Esconde o dropdown feio
-          setIsReady(true);
-        }
-      }, 800);
-    } else {
-      // Se a API ainda não carregou, tenta novamente
-      setTimeout(initGoogleTranslate, 400);
-    }
-  };
+export default function LanguageSelector() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [currentLanguage, setCurrentLanguage] = useState('pt');
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    window.googleTranslateElementInit = initGoogleTranslate;
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Troca de idioma no Google Translate manualmente
-  const changeLanguage = (lang: string) => {
-    const select = document.querySelector<HTMLSelectElement>(".goog-te-combo");
-    if (select) {
-      select.value = lang;
-      select.dispatchEvent(new Event("change")); // 🔹 Força o Google Translate a mudar o idioma
-      setCurrentLang(lang);
+  const changeLanguage = (langCode: string) => {
+    if (typeof window !== 'undefined' && window.google && window.google.translate) {
+      const select = document.querySelector<HTMLSelectElement>('.goog-te-combo');
+      if (select) {
+        select.value = langCode;
+        select.dispatchEvent(new Event('change'));
+      }
     }
+    setCurrentLanguage(langCode);
+    setIsOpen(false);
+  };
+
+  const getCurrentLanguageName = () => {
+    const lang = languages.find(l => l.code === currentLanguage);
+    return lang ? lang.nativeName : 'Português';
   };
 
   return (
-    <>
-      {/* Carrega o script do Google */}
-      <Script
-        src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
-        strategy="afterInteractive"
-      />
+    <div className="relative" ref={dropdownRef}>
+      <Button
+        variant="ghost"
+        size="sm"
+        className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <Languages className="w-4 h-4" />
+        <span className="hidden sm:block">{getCurrentLanguageName()}</span>
+        <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+      </Button>
 
-      {/* Botão flutuante */}
-      <div className="fixed bottom-6 right-6 z-[9999]">
-        <button
-          onClick={() => setOpen((prev) => !prev)}
-          disabled={!isReady}
-          className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-full shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          🌎 {LANGUAGES.find((l) => l.code === currentLang)?.flag}{" "}
-          {LANGUAGES.find((l) => l.code === currentLang)?.label}
-        </button>
-
-        {/* Dropdown customizado */}
-        {open && (
-          <div className="absolute bottom-14 right-0 w-56 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden animate-fade-in">
-            {LANGUAGES.map((lang) => (
+      {isOpen && (
+        <div className="absolute right-0 mt-2 w-48 bg-background border rounded-lg shadow-lg z-50 overflow-hidden animate-in fade-in-80">
+          <div className="py-1">
+            {languages.map((language) => (
               <button
-                key={lang.code}
-                onClick={() => {
-                  changeLanguage(lang.code);
-                  setOpen(false);
-                }}
-                className={`flex items-center gap-3 px-4 py-2 w-full text-left hover:bg-gray-100 transition ${
-                  lang.code === currentLang ? "bg-gray-200 font-bold" : ""
+                key={language.code}
+                className={`w-full px-4 py-2 text-left text-sm flex items-center justify-between hover:bg-accent transition-colors ${
+                  currentLanguage === language.code ? 'bg-accent font-medium' : ''
                 }`}
+                onClick={() => changeLanguage(language.code)}
               >
-                <span className="text-lg">{lang.flag}</span>
-                {lang.label}
+                <span>
+                  <span className="mr-2">{language.nativeName}</span>
+                  <span className="text-muted-foreground text-xs">({language.name})</span>
+                </span>
+                {currentLanguage === language.code && (
+                  <Check className="w-4 h-4 text-primary" />
+                )}
               </button>
             ))}
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
-      {/* Elemento que o Google Translate usa — mas escondemos o conteúdo */}
-      <div id="google_translate_element" style={{ display: "none" }}></div>
-    </>
+      {/* Elemento invisível do Google Translate */}
+      <div id="google_translate_element" className="hidden"></div>
+    </div>
   );
 }
