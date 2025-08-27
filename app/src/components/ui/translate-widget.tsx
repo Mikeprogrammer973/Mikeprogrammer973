@@ -3,7 +3,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { Languages, ChevronDown, Check, Loader2 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Button } from './button'
 
 const languages = [
   { code: 'pt', name: 'Português', nativeName: 'Português' },
@@ -152,3 +152,4 @@ export default function LanguageSelector() {
     </div>
   );
 }
+
