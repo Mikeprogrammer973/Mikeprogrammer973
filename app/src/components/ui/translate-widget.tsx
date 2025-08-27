@@ -148,9 +148,10 @@ export default function LanguageSelector() {
       )}
 
       {/* Elemento do Google Translate (deve estar invisível) */}
-      <div id="google_translate_element" className="hidden"></div>
+      <div id="google_translate_element"></div>
     </div>
   );
 }
+
 
 
