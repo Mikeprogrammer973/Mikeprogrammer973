@@ -29,7 +29,6 @@ export default function TranslateWidget() {
         {
           pageLanguage: "pt",
           includedLanguages: LANGUAGES.map((l) => l.code).join(","),
-          layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
           autoDisplay: false,
         },
         "google_translate_element"
@@ -73,7 +72,7 @@ export default function TranslateWidget() {
           onClick={() => setOpen((prev) => !prev)}
           className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-full shadow-lg transition"
         >
-          🌎 {LANGUAGES.find((l) => l.code === currentLang)?.flag}{" "}
+          {LANGUAGES.find((l) => l.code === currentLang)?.flag}{" "}
           {LANGUAGES.find((l) => l.code === currentLang)?.label}
         </button>
 

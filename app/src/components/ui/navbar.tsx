@@ -6,6 +6,7 @@ import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
 import { Moon, Sun, Menu, X } from 'lucide-react'
 import Logo from './logo'
+import TranslateWidget from './translate-widget'
 
 export default function Navbar() {
   const { theme, setTheme } = useTheme()
@@ -49,6 +50,7 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center space-x-4">
+          <TranslateWidget/>
           <button
             onClick={toggleTheme}
             className="p-2 rounded-md hover:bg-accent transition-colors duration-200"
