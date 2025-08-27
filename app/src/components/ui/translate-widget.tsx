@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import Script from "next/script";
 
-// Lista de idiomas suportados
 const LANGUAGES = [
   { code: "en", label: "English", flag: "🇺🇸" },
   { code: "es", label: "Español", flag: "🇪🇸" },
@@ -15,10 +14,12 @@ const LANGUAGES = [
 export default function TranslateWidget() {
   const [open, setOpen] = useState(false);
   const [currentLang, setCurrentLang] = useState<string>("pt");
+  const [scriptLoaded, setScriptLoaded] = useState(false);
 
-  // Inicializa o Google Translate
+  // Função global obrigatória para o Google Translate
   useEffect(() => {
-    window.googleTranslateElementInit = () => {
+    if (scriptLoaded && typeof window !== "undefined" && window.google) {
+      // Inicializa o Google Translate
       new window.google.translate.TranslateElement(
         {
           pageLanguage: "pt",
@@ -28,19 +29,18 @@ export default function TranslateWidget() {
         },
         "google_translate_element"
       );
-    };
-  }, []);
+    }
+  }, [scriptLoaded]);
 
   // Detecta o idioma do navegador automaticamente
   useEffect(() => {
     const browserLang = navigator.language.split("-")[0];
     if (LANGUAGES.some((l) => l.code === browserLang)) {
       setCurrentLang(browserLang);
-      setTimeout(() => changeLanguage(browserLang), 800);
+      setTimeout(() => changeLanguage(browserLang), 1200);
     }
-  }, []);
+  }, [scriptLoaded]);
 
-  // Altera o idioma no seletor do Google
   const changeLanguage = (lang: string) => {
     const select = document.querySelector<HTMLSelectElement>(".goog-te-combo");
     if (select) {
@@ -56,6 +56,12 @@ export default function TranslateWidget() {
       <Script
         src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
         strategy="afterInteractive"
+        onLoad={() => {
+          // Define a função global de callback
+          window.googleTranslateElementInit = () => {
+            setScriptLoaded(true);
+          };
+        }}
       />
 
       {/* Contêiner do widget */}
