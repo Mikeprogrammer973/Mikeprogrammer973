@@ -19,7 +19,7 @@ const poppins = Poppins({
 })
 
 export const metadata: Metadata = {
-  title: 'Meu Portfólio',
+  title: 'Mike D. Pascal',
   description: '',
 }
 
