@@ -5,6 +5,7 @@ import './globals.css'
 import { ThemeProvider } from '../components/theme/theme-provider'
 import Navbar from '../components/ui/navbar'
 import Footer from '../components/ui/footer'
+import GoogleTranslateLoader from '../components/ui/google-translate-loader'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -29,6 +30,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR" suppressHydrationWarning className={`${inter.variable} ${poppins.variable}`}>
+      <head>
+        <GoogleTranslateLoader/>
+      </head>
       <body className="font-sans">
         <ThemeProvider
           attribute="class"
