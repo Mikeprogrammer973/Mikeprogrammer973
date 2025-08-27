@@ -45,7 +45,7 @@ declare global {
             includedLanguages?: string;
             autoDisplay?: boolean;
           },
-          container: string | Element) => unknown;
+          container: string | Element) => any;
         TranslateElement: {
           InlineLayout: {
             SIMPLE: number;
