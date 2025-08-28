@@ -3,7 +3,6 @@
 
 import { useEffect } from 'react'
 
-// Primeiro, declare os tipos globalmente antes de qualquer código
 declare global {
   interface Window {
     google?: {
@@ -39,7 +38,7 @@ export default function GoogleTranslateLoader() {
             if (window.google?.translate?.TranslateElement) {
               new window.google.translate.TranslateElement({
                 pageLanguage: 'pt',
-                includedLanguages: 'pt,en,es,fr,de,it,ja,ko,zh-CN,ru',
+                includedLanguages: 'pt,en,es,fr,it,ru',
                 layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
                 autoDisplay: false
               }, 'google_translate_element');

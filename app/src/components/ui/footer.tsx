@@ -41,7 +41,7 @@ export default function Footer() {
     {
       name: 'Email',
       icon: Mail,
-      href: 'mailto:seu@mikepascal.delta.com',
+      href: 'mailto:mikepascal.delta@gmail.com',
       color: 'hover:text-red-600 dark:hover:text-red-400'
     }
   ]
@@ -51,7 +51,7 @@ export default function Footer() {
       title: 'Navegação',
       links: [
         { name: 'Início', href: '/' },
-        { name: 'Sobre', href: '/about' },
+        { name: 'Sobre mim', href: '/about' },
         { name: 'Habilidades', href: '/skills' },
         { name: 'Projetos', href: '/projects' },
         { name: 'Contato', href: '/contact' }
@@ -91,7 +91,9 @@ export default function Footer() {
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           <div className="lg:col-span-2">
-            <Logo />
+            <div className="py-2">
+              <Logo />
+            </div>
             <p className="text-muted-foreground mb-6 max-w-md">
               Desenvolvedor full-stack apaixonado por criar experiências digitais excepcionais 
               com React, Next.js e tecnologias modernas.

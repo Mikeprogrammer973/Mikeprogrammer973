@@ -1,0 +1,39 @@
+
+/* ===== ESCONDER COMPLETAMENTE O BANNER ===== */
+.VIpgJd-ZVi9od-ORHb-OEVmcd {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+  height: 0 !important;
+  width: 0 !important;
+  overflow: hidden !important;
+}
+
+body {
+  top: 0 !important;
+  position: static !important;
+}
+
+/* Container do select */
+.goog-te-gadget-simple {
+  background-color: transparent !important;
+  border-radius: 10px !important;
+  background-color: #4977ff !important;
+}
+.goog-te-gadget * {
+    color: white !important;
+    display: inline-block !important;
+    padding: 1.5px !important;
+}
+
+.goog-te-gadget img {
+    display: none !important;
+}
+.VIpgJd-ZVi9od-xl07Ob-lTBxed span {
+    border: none !important;
+}
+
+
+
