@@ -2,7 +2,7 @@ import { Link, ExternalLink, Github } from "lucide-react";
 import { Button } from "../button";
 import { Card, CardHeader, CardTitle, CardContent } from "../card";
 
-function ProjectCard({ project, index }: { project: any; index: number }) {
+function ProjectCard({ project, index }: { project: { title: string; description: string; category: string; technologies: string[]; projectUrl: string; githubUrl: string }; index: number }) {
   return (
     <div className="group relative animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
       <Card className="overflow-hidden border-1 transition-all duration-300 group-hover:shadow-xl group-hover:border-primary/20">
@@ -62,7 +62,7 @@ function ProjectCard({ project, index }: { project: any; index: number }) {
   )
 }
 
-function IncomingProjectCard({ project, index }: { project: any; index: number }) {
+function IncomingProjectCard({ project, index }: { project: {category: string, status: string, title: string, description: string, progress: number, technologies: string[], estimatedCompletion: string}; index: number }) {
   const statusConfig = {
     development: { color: "bg-blue-100 text-blue-600", label: "Em Desenvolvimento" },
     planning: { color: "bg-yellow-100 text-yellow-600", label: "Planejamento" },
