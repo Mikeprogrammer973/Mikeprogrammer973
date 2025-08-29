@@ -41,7 +41,7 @@ export default function Navbar() {
             <Link
               key={item.name}
               href={item.href}
-              className="text-[hsl(var(--foreground))]/70 hover:text-foreground transition-colors relative group"
+              className="text-[hsl(var(--foreground))]/70 hover:text-[hsl(var(--foreground))] transition-colors relative group"
             >
               {item.name}
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-600 transition-all duration-300 group-hover:w-full"></span>
@@ -72,13 +72,13 @@ export default function Navbar() {
 
       {/* Mobile */}
       {isOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-[hsl(var(--background))] border-b shadow-md animate-in slide-in-from-top duration-300">
+        <div className="md:hidden absolute top-full left-0 right-0 bg-[hsl(var(--background))]/95 border-b shadow-md animate-in slide-in-from-top duration-300">
           <div className="container mx-auto px-4 py-4 flex flex-col space-y-4">
             {navItems.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
-                className="text-foreground/70 hover:text-[hsl(var(--foreground))] transition-colors py-2 font-medium"
+                className="text-[hsl(var(--foreground))]/70 hover:text-[hsl(var(--foreground))] transition-colors py-2 font-medium"
                 onClick={() => setIsOpen(false)}
               >
                 {item.name}

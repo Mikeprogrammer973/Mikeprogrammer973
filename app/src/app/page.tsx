@@ -118,7 +118,7 @@ export default function Home() {
           Desenvolvedor <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">Full Stack</span>
         </h1>
         
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+        <p className="text-xl text-[hsl(var(--muted-foreground))] max-w-2xl mx-auto mb-10 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
           Transformando ideias em experiências digitais excepcionais com tecnologias modernas
         </p>
         
@@ -130,7 +130,7 @@ export default function Home() {
           </Button>
           <Button asChild variant="outline" size="lg" className="rounded-full border-2">
             <Link href="/contact">
-              Iniciar Projeto
+              Entrar em Contato
             </Link>
           </Button>
         </div>
@@ -138,12 +138,12 @@ export default function Home() {
 
       <section className="py-20">
         <div className="text-center mb-16">
-          <div className="inline-flex items-center justify-center px-4 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">
+          <div className="inline-flex items-center justify-center px-4 py-1 bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] rounded-full text-sm font-medium mb-4">
             <Star className="w-4 h-4 mr-2" />
             Projetos em Destaque
           </div>
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Trabalhos Recentes</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-[hsl(var(--muted-foreground))] max-w-2xl mx-auto">
             Confira alguns dos projetos que demonstram minha expertise em desenvolvimento full-stack
           </p>
         </div>
@@ -171,7 +171,7 @@ export default function Home() {
             Em Desenvolvimento
           </div>
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Próximos Projetos</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-[hsl(var(--muted-foreground))] max-w-2xl mx-auto">
             Confira o que estou construindo atualmente e os projetos que estão por vir
           </p>
         </div>
@@ -190,7 +190,7 @@ export default function Home() {
             Habilidades Técnicas
           </div>
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Tecnologias que Domino</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-[hsl(var(--muted-foreground))] max-w-2xl mx-auto">
             Conjunto de habilidades técnicas que utilizo para criar soluções robustas e escaláveis
           </p>
         </div>
@@ -198,13 +198,13 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           {Object.entries(skillsByCategory).map(([category, skills], categoryIndex) => (
             <div key={category} className="animate-fade-in-up" style={{ animationDelay: `${categoryIndex * 0.1}s` }}>
-              <h3 className="text-xl font-semibold mb-6 text-foreground flex items-center">
-                <span className="w-2 h-2 bg-primary rounded-full mr-3"></span>
+              <h3 className="text-xl font-semibold mb-6 text-[hsl(var(--foreground))] flex items-center">
+                <span className="w-2 h-2 bg-[hsl(var(--primary))] rounded-full mr-3"></span>
                 {category}
               </h3>
               <div className="space-y-4">
                 {skills.map((skill, skillIndex) => (
-                  <div key={skill.name} className="flex items-center justify-between p-4 bg-card rounded-xl border hover-lift transition-all duration-300">
+                  <div key={skill.name} className="flex items-center justify-between p-4 bg-[hsl(var(--card))] rounded-xl border hover-lift transition-all duration-300">
                     <div className="flex items-center space-x-3">
                       <span className="text-xl">{skill.icon}</span>
                       <span className="font-medium">{skill.name}</span>
@@ -216,7 +216,7 @@ export default function Home() {
                           style={{ width: `${skill.level}%` }}
                         ></div>
                       </div>
-                      <span className="text-sm font-medium text-muted-foreground w-8">
+                      <span className="text-sm font-medium text-[hsl(var(--muted-foreground))] w-8">
                         {skill.level}%
                       </span>
                     </div>

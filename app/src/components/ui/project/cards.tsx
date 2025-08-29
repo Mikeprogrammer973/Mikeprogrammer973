@@ -5,7 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "../card";
 function ProjectCard({ project, index }: { project: { title: string; description: string; category: string; technologies: string[]; projectUrl: string; githubUrl: string }; index: number }) {
   return (
     <div className="group relative animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
-      <Card className="overflow-hidden border-1 transition-all duration-300 group-hover:shadow-xl group-hover:border-primary/20">
+      <Card className="overflow-hidden border-1 transition-all duration-300 group-hover:shadow-xl group-hover:border-[hsl(var(--primary))]/20">
         <div className="relative h-48 bg-gradient-to-br from-blue-400 to-purple-500 overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           <div className="absolute top-4 left-4">
@@ -21,10 +21,10 @@ function ProjectCard({ project, index }: { project: { title: string; description
         </div>
         
         <CardHeader>
-          <CardTitle className="text-xl group-hover:text-primary transition-colors duration-300">
+          <CardTitle className="text-xl group-hover:text-[hsl(var(--primary))] transition-colors duration-300">
             {project.title}
           </CardTitle>
-          <p className="text-muted-foreground line-clamp-2">
+          <p className="text-[hsl(var(--muted-foreground))] line-clamp-2">
             {project.description}
           </p>
         </CardHeader>
@@ -32,12 +32,12 @@ function ProjectCard({ project, index }: { project: { title: string; description
         <CardContent>
           <div className="flex flex-wrap gap-2 mb-4">
             {project.technologies.slice(0, 3).map((tech: string) => (
-              <span key={tech} className="px-2 py-1 bg-secondary text-secondary-foreground text-xs rounded-full">
+              <span key={tech} className="px-2 py-1 bg-[hsl(var(--secondary))] text-[hsl(var(--secondary-foreground))] text-xs rounded-full">
                 {tech}
               </span>
             ))}
             {project.technologies.length > 3 && (
-              <span className="px-2 py-1 bg-secondary text-secondary-foreground text-xs rounded-full">
+              <span className="px-2 py-1 bg-[hsl(var(--secondary))] text-[hsl(var(--secondary-foreground))] text-xs rounded-full">
                 +{project.technologies.length - 3}
               </span>
             )}
@@ -84,7 +84,7 @@ function IncomingProjectCard({ project, index }: { project: {category: string, s
             </span>
           </div>
           <CardTitle className="text-xl">{project.title}</CardTitle>
-          <p className="text-muted-foreground">
+          <p className="text-[hsl(var(--muted-foreground))]">
             {project.description}
           </p>
         </CardHeader>
@@ -94,7 +94,7 @@ function IncomingProjectCard({ project, index }: { project: {category: string, s
             {/* Barrinha de progresso */}
             <div>
               <div className="flex items-center justify-between text-sm mb-2">
-                <span className="text-muted-foreground">Progresso</span>
+                <span className="text-[hsl(var(--muted-foreground))]">Progresso</span>
                 <span className="font-medium">{project.progress}%</span>
               </div>
               <div className="w-full bg-secondary rounded-full h-2">
@@ -108,14 +108,14 @@ function IncomingProjectCard({ project, index }: { project: {category: string, s
             {/* Techs usados */}
             <div className="flex flex-wrap gap-2">
               {project.technologies.slice(0, 3).map((tech: string) => (
-                <span key={tech} className="px-2 py-1 bg-secondary text-secondary-foreground text-xs rounded-full">
+                <span key={tech} className="px-2 py-1 bg-[hsl(var(--secondary))] text-[hsl(var(--secondary-foreground))] text-xs rounded-full">
                   {tech}
                 </span>
               ))}
             </div>
 
             {/* Previsão de conclusão */}
-            <div className="flex items-center justify-between text-sm text-muted-foreground">
+            <div className="flex items-center justify-between text-sm text-[hsl(var(--muted-foreground))]">
               <span>Previsão de conclusão</span>
               <span className="font-medium">{project.estimatedCompletion}</span>
             </div>
