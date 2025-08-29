@@ -138,7 +138,7 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div>
               <h3 className="font-semibold mb-2">Fique por dentro das novidades</h3>
-              <p className="text-[hsl(var(--muted-foreground))]text-sm">
+              <p className="text-[hsl(var(--muted-foreground))] text-sm">
                 Receba atualizações sobre novos projetos e artigos.
               </p>
             </div>
