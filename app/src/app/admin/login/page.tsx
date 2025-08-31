@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff } from 'lucide-react'
 import { supabase } from 'mdp/lib/supabase/client'
+import { AuthError } from '@supabase/supabase-js'
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('')
@@ -29,8 +30,12 @@ export default function AdminLogin() {
       
       router.push('/admin/dashboard')
       router.refresh()
-    } catch (error: any) {
-      setError(error.message)
+    } catch (error) {
+      if (error instanceof Error) {
+        setError(error.message)
+      } else {
+        setError(String(error))
+      }
     } finally {
       setLoading(false)
     }
