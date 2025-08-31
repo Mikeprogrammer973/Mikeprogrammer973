@@ -1,23 +1,32 @@
-
-'use server'
-
-import { createClient } from '@supabase/supabase-js'
+import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
-export async function createClient__() {
-  const cookieStore = cookies()
+export async function createClient() {
   
-  return createClient(
+  const cookieStore = await cookies()
+
+  return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
-      global: {
-        headers: {
-          'Cache-Control': 'no-store',
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value
         },
-      },
-      auth: {
-        persistSession: false,
+        set(name: string, value: string, options: CookieOptions) {
+          try {
+            cookieStore.set({ name, value, ...options })
+          } catch (error) {
+            console.error('Erro ao definir cookie', error)
+          }
+        },
+        remove(name: string, options: CookieOptions) {
+          try {
+            cookieStore.set({ name, value: '', ...options })
+          } catch (error) {
+            console.error('Erro ao remover cookie', error)
+          }
+        },
       },
     }
   )

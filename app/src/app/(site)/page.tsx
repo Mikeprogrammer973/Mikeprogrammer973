@@ -1,7 +1,7 @@
 
 import Link from 'next/link'
 import { ArrowRight, Clock, Star, TrendingUp } from 'lucide-react'
-import { Button } from '../components/ui/button'
+import { Button } from '../../components/ui/button'
 import { IncomingProjectCard, ProjectCard } from 'mdp/components/ui/project/cards'
 
 // dados de teste
