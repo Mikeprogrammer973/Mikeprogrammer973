@@ -22,7 +22,7 @@ import { supabase } from 'mdp/lib/supabase/client'
 interface MenuItem {
   name: string
   href: string
-  icon: React.ComponentType<any>
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>> 
   submenu?: { name: string; href: string }[]
 }
 
