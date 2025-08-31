@@ -1,7 +1,7 @@
 
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff } from 'lucide-react'
 import { supabase } from 'mdp/lib/supabase/client'
@@ -14,6 +14,17 @@ export default function AdminLogin() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const router = useRouter()
+
+  useEffect(() => {
+    checkAuth()
+  }, [])
+
+  const checkAuth = async () => {
+    const { data: { session } } = await supabase.auth.getSession()
+    if (session) {
+      router.push('/admin')
+    }
+  }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -28,7 +39,7 @@ export default function AdminLogin() {
 
       if (error) throw error
       
-      router.push('/admin/dashboard')
+      router.push('/admin')
       router.refresh()
     } catch (error) {
       if (error instanceof Error) {
@@ -52,7 +63,6 @@ export default function AdminLogin() {
           <p className="text-gray-400">Entre com suas credenciais</p>
         </div>
 
-        {/* Formulário */}
         <form onSubmit={handleLogin} className="space-y-6 bg-gray-900 p-8 rounded-2xl border border-gray-800">
           {error && (
             <div className="bg-red-900/50 text-red-200 p-3 rounded-lg text-sm">
@@ -110,7 +120,6 @@ export default function AdminLogin() {
           </button>
         </form>
 
-        {/* Footer */}
         <div className="text-center mt-6">
           <p className="text-gray-400 text-sm">
             Problemas de acesso? Entre em contato
