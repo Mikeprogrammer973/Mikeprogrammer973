@@ -140,7 +140,7 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-black text-white">
       
-      <header className="bg-gray-900 border-b border-gray-800 p-6">
+      <header className="border-b border-gray-800 p-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <h1 className="text-2xl font-bold">Dashboard</h1>
