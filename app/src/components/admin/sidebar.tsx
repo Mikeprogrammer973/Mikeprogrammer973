@@ -108,7 +108,7 @@ export default function AdminSidebar() {
       {/* Mobile fundo */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          className="fixed inset-0 bg-black/60 backdrop-blur-md z-40 lg:hidden"
           onClick={() => setIsOpen(false)}
         />
       )}
