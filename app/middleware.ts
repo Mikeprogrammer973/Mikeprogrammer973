@@ -4,7 +4,7 @@ import { createServerClient } from '@supabase/ssr'
 
 export async function middleware(request: NextRequest) {
  
-  if (request.nextUrl.pathname.startsWith('/admin')) {
+  if (!request.nextUrl.pathname.startsWith('/admin')) {
     return NextResponse.next()
   }
 
@@ -26,6 +26,10 @@ export async function middleware(request: NextRequest) {
 
   if (!session && request.nextUrl.pathname.startsWith('/admin')) {
     return NextResponse.redirect(new URL('/admin/login', request.url))
+  }
+
+  if (session && request.nextUrl.pathname.startsWith('/admin/login') {
+    return NextResponse.redirect(new URL('/admin/dashboard', request.url)
   }
 
   return NextResponse.next()
