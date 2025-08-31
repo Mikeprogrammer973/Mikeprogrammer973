@@ -30,7 +30,7 @@ interface RecentActivity {
   title: string
   description: string
   time: string
-  icon: React.ComponentType<any>
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>> 
   color: string
 }
 
