@@ -28,7 +28,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/admin/login', request.url))
   }
 
-  if (session && request.nextUrl.pathname.startsWith('/admin/login') {
+  if (session && request.nextUrl.pathname.startsWith('/admin/login')) {
     return NextResponse.redirect(new URL('/admin/dashboard', request.url))
   }
 
