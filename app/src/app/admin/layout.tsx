@@ -35,7 +35,7 @@ export default async function AdminLayout({
             <body className="font-sans">
                 <div className="min-h-screen flex flex-row bg-black text-white">
                   
-                 {session && <AdminSidebar />}
+                 <AdminSidebar />
 
                   <main className="flex-grow px-6 py-4 overflow-y-auto">
                       {children}
