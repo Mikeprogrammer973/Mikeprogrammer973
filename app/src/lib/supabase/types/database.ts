@@ -87,7 +87,7 @@ export interface Category {
 export interface Setting {
   id: string;
   key: string;
-  value: any;
+  value: string;
   description: string | null;
   category: string;
   created_at: string;
