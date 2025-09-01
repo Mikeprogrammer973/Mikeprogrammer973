@@ -3,7 +3,6 @@ import type { Metadata } from 'next'
 import { Inter, Poppins } from 'next/font/google'
 import 'mdp/styles/globals.css'
 import AdminSidebar from 'mdp/components/admin/sidebar'
-import { supabase } from 'mdp/lib/supabase/client'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -26,8 +25,6 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode
 }) {
-    const { data: { session } } = await supabase.auth.getSession()
-
     return (
         <html lang="pt-BR" suppressHydrationWarning className={`${inter.variable} ${poppins.variable}`}>
             <head>

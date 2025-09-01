@@ -125,7 +125,7 @@ export default function AdminSidebar() {
         <div className="flex items-center justify-between p-6 border-b border-gray-800">
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">ADM</span>
+              <span className="text-white font-bold text-sm">mdp</span>
             </div>
             <span className="text-white font-bold text-lg">Admin Panel</span>
           </div>
@@ -212,12 +212,12 @@ export default function AdminSidebar() {
         </div>
       </aside>
 
-      <button
+      {!isOpen && <button
         onClick={() => setIsOpen(true)}
-        className="fixed top-4 left-4 z-50 lg:hidden bg-gray-900 p-2 rounded-lg text-white"
+        className="fixed top-4 left-4 z-50 lg:hidden bg-gray-600/60 hover:text-indigo-200 p-2 rounded-lg text-indigo-500"
       >
         <Menu className="w-6 h-6" />
-      </button>
+      </button>}
     </>
   )
 }

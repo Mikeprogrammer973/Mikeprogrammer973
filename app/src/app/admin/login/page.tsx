@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff } from 'lucide-react'
 import { supabase } from 'mdp/lib/supabase/client'
-import { AuthError } from '@supabase/supabase-js'
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('')
@@ -119,12 +118,6 @@ export default function AdminLogin() {
             {loading ? 'Entrando...' : 'Entrar'}
           </button>
         </form>
-
-        <div className="text-center mt-6">
-          <p className="text-gray-400 text-sm">
-            Problemas de acesso? Entre em contato
-          </p>
-        </div>
       </div>
     </div>
   )
