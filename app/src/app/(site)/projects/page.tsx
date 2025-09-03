@@ -5,10 +5,8 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { 
   Search, 
-  Filter, 
   Grid, 
   List,
-  ArrowUpDown,
   ExternalLink,
   Github
 } from 'lucide-react'

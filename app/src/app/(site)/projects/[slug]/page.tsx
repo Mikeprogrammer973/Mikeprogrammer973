@@ -136,37 +136,46 @@ export default function ProjectPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      <header className="relative h-96 overflow-hidden">
+    <div className="min-h-screen bg-[hsl(var(--background))] text-[hsl(var(--foreground))]">
+      <header className="relative overflow-hidden">
         {project.image_url ? (
           <img
             src={project.image_url}
             alt={project.title}
-            className="w-full h-full object-cover"
+            className="w-48 h-48 rounded-full"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-            <div className="text-4xl font-bold text-white">
+          <div className="w-48 h-48 rounded-full bg-gradient-to-br from-[hsl(var(--primary))] to-[hsl(var(--secondary))] flex items-center justify-center">
+            <div className="text-xl font-bold text-[hsl(var(--primary-foreground))]">
               {project.title.charAt(0)}
             </div>
           </div>
         )}
         
-        <div className="absolute inset-0 bg-black bg-opacity-50" />
+        <div className="absolute inset-0 bg-[hsl(var(--background))] bg-opacity-50" />
         
         <div className="absolute bottom-0 left-0 right-0 p-6">
           <div className="container mx-auto">
             <Link
               href="/projects"
-              className="inline-flex items-center text-sm text-gray-300 hover:text-white mb-4 transition-colors"
+              className="inline-flex items-center text-sm text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] mb-4 transition-colors"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Voltar para projetos
             </Link>
             
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">{project.title}</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 flex gap-2 items-center">
+              {project.image_url && (
+                <img
+                  src={project.image_url || 'https://via.placeholder.com/150'}
+                  alt={project.title}
+                  className="hidden sm:flex w-12 h-12 md:w-14 md:h-14 rounded-full"
+                />
+              )}
+              {project.title}
+            </h1>
             
-            <p className="text-xl text-gray-300 max-w-3xl">
+            <p className="text-xl text-[hsl(var(--muted-foreground))] max-w-3xl">
               {project.description}
             </p>
           </div>
@@ -174,34 +183,34 @@ export default function ProjectPage() {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        {/* Meta Information */}
-        <div className="flex flex-wrap items-center gap-6 mb-8 text-sm text-gray-400">
+        {/* Meta Info */}
+        <div className="flex flex-wrap items-center gap-6 mb-8 text-sm text-[hsl(var(--muted-foreground))]">
           <div className="flex items-center">
             <Calendar className="w-4 h-4 mr-2" />
             {formatDate(project.created_at)}
           </div>
           
           {project.category && (
-            <span className="px-3 py-1 bg-blue-600/20 text-blue-400 rounded-full">
+            <span className="px-3 py-1 bg-[hsl(var(--primary)/0.2)] text-[hsl(var(--primary))] rounded-full">
               {project.category}
             </span>
           )}
 
           <button
             onClick={shareProject}
-            className="flex items-center text-gray-400 hover:text-white transition-colors"
+            className="flex items-center text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] transition-colors"
           >
             <Share2 className="w-4 h-4 mr-2" />
             Compartilhar
           </button>
         </div>
 
-        {/* Content */}
+        {/* conteudo */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
           <div className="lg:col-span-2">
             <article className="prose prose-invert prose-lg max-w-none">
               <div 
-                className="text-gray-300 leading-relaxed"
+                className="text-[hsl(var(--muted-foreground))] leading-relaxed"
                 dangerouslySetInnerHTML={{ 
                   __html: project.content || '<p>Conteúdo em breve...</p>' 
                 }}
@@ -211,15 +220,15 @@ export default function ProjectPage() {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Technologies */}
+            {/* techs */}
             {project.technologies && project.technologies.length > 0 && (
-              <div className="bg-gray-900 rounded-2xl p-6 border border-gray-800">
+              <div className="bg-[hsl(var(--card))] rounded-2xl p-6 border border-[hsl(var(--border))]">
                 <h3 className="text-lg font-semibold mb-4">Tecnologias</h3>
                 <div className="flex flex-wrap gap-2">
                   {project.technologies.map((tech, index) => (
                     <span
                       key={index}
-                      className="px-3 py-1 bg-blue-600/20 text-blue-400 rounded-full text-sm"
+                      className="px-3 py-1 bg-[hsl(var(--primary)/0.2)] text-[hsl(var(--primary))] rounded-full text-sm"
                     >
                       {tech}
                     </span>
@@ -229,7 +238,7 @@ export default function ProjectPage() {
             )}
 
             {/* Links */}
-            <div className="bg-gray-900 rounded-2xl p-6 border border-gray-800">
+            <div className="bg-[hsl(var(--card))] rounded-2xl p-6 border border-[hsl(var(--border))]">
               <h3 className="text-lg font-semibold mb-4">Links</h3>
               <div className="space-y-3">
                 {project.project_url && (
@@ -237,7 +246,7 @@ export default function ProjectPage() {
                     href={project.project_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between p-3 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors"
+                    className="flex items-center justify-between p-3 bg-[hsl(var(--secondary))] rounded-lg hover:bg-[hsl(var(--secondary)/0.8)] transition-colors"
                   >
                     <span>Ver projeto online</span>
                     <ExternalLink className="w-4 h-4" />
@@ -249,7 +258,7 @@ export default function ProjectPage() {
                     href={project.github_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between p-3 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors"
+                    className="flex items-center justify-between p-3 bg-[hsl(var(--secondary))] rounded-lg hover:bg-[hsl(var(--secondary)/0.8)] transition-colors"
                   >
                     <span>Ver código no GitHub</span>
                     <Github className="w-4 h-4" />
@@ -258,35 +267,35 @@ export default function ProjectPage() {
               </div>
             </div>
 
-            {/* Project Details */}
-            <div className="bg-gray-900 rounded-2xl p-6 border border-gray-800">
+            {/* detalhes */}
+            <div className="bg-[hsl(var(--card))] rounded-2xl p-6 border border-[hsl(var(--border))]">
               <h3 className="text-lg font-semibold mb-4">Detalhes</h3>
               <dl className="space-y-3">
                 <div>
-                  <dt className="text-sm text-gray-400">Categoria</dt>
-                  <dd className="text-white">{project.category || 'Não especificado'}</dd>
+                  <dt className="text-sm text-[hsl(var(--muted-foreground))]">Categoria</dt>
+                  <dd className="text-[hsl(var(--foreground))]">{project.category || 'Não especificado'}</dd>
                 </div>
                 <div>
-                  <dt className="text-sm text-gray-400">Publicado em</dt>
-                  <dd className="text-white">{formatDate(project.created_at)}</dd>
+                  <dt className="text-sm text-[hsl(var(--muted-foreground))]">Publicado em</dt>
+                  <dd className="text-[hsl(var(--foreground))]">{formatDate(project.created_at)}</dd>
                 </div>
                 <div>
-                  <dt className="text-sm text-gray-400">Última atualização</dt>
-                  <dd className="text-white">{formatDate(project.updated_at)}</dd>
+                  <dt className="text-sm text-[hsl(var(--muted-foreground))]">Última atualização</dt>
+                  <dd className="text-[hsl(var(--foreground))]">{formatDate(project.updated_at)}</dd>
                 </div>
               </dl>
             </div>
           </div>
         </div>
 
-        {/* Related Projects */}
+        {/* projetos relacionados */}
         {relatedProjects.length > 0 && (
           <section className="mb-12">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold">Projetos Relacionados</h2>
               <Link 
                 href="/projects"
-                className="text-blue-400 hover:text-blue-300 text-sm"
+                className="text-[hsl(var(--primary))] hover:text-[hsl(var(--primary)/0.8)] text-sm"
               >
                 Ver todos
               </Link>
@@ -297,7 +306,7 @@ export default function ProjectPage() {
                 <Link
                   key={relatedProject.id}
                   href={`/projects/${relatedProject.slug}`}
-                  className="bg-gray-900 rounded-2xl border border-gray-800 overflow-hidden hover:border-blue-500 transition-colors group"
+                  className="bg-[hsl(var(--card))] rounded-2xl border border-[hsl(var(--border))] overflow-hidden hover:border-[hsl(var(--primary))] transition-colors group"
                 >
                   {relatedProject.image_url && (
                     <img
@@ -308,14 +317,14 @@ export default function ProjectPage() {
                   )}
                   <div className="p-6">
                     {relatedProject.category && (
-                      <span className="inline-block px-2 py-1 bg-blue-600/20 text-blue-400 rounded-full text-xs mb-3">
+                      <span className="inline-block px-2 py-1 bg-[hsl(var(--primary)/0.2)] text-[hsl(var(--primary))] rounded-full text-xs mb-3">
                         {relatedProject.category}
                       </span>
                     )}
-                    <h3 className="text-lg font-semibold mb-2 group-hover:text-blue-400 transition-colors">
+                    <h3 className="text-lg font-semibold mb-2 group-hover:text-[hsl(var(--primary))] transition-colors">
                       {relatedProject.title}
                     </h3>
-                    <p className="text-gray-400 text-sm line-clamp-2">
+                    <p className="text-[hsl(var(--muted-foreground))] text-sm line-clamp-2">
                       {relatedProject.description}
                     </p>
                   </div>
@@ -325,9 +334,8 @@ export default function ProjectPage() {
           </section>
         )}
 
-        {/* Call to Action */}
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-center">
-          <h2 className="text-2xl font-bold mb-4">Gostou deste projeto?</h2>
+          <h2 className="text-2xl font-bold mb-4 text-white">Gostou deste projeto?</h2>
           <p className="text-blue-100 mb-6">
             Vamos trabalhar juntos no seu próximo projeto!
           </p>
