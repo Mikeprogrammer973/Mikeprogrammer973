@@ -152,9 +152,9 @@ export default function ProjectPage() {
           </div>
         )}
         
-        <div className="absolute inset-0 bg-[hsl(var(--background))] bg-opacity-50" />
+        {/*<div className="absolute inset-0 bg-[hsl(var(--background))] bg-opacity-50" />*/}
         
-        <div className="absolute bottom-0 left-0 right-0 p-6">
+        <div className="p-6">
           <div className="container mx-auto">
             <Link
               href="/projects"
