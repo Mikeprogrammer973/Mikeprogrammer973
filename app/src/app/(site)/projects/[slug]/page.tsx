@@ -138,7 +138,7 @@ export default function ProjectPage() {
   return (
     <div className="min-h-screen bg-[hsl(var(--background))] text-[hsl(var(--foreground))]">
       <header className="relative overflow-hidden">
-        {project.image_url ? (
+        {/*project.image_url ? (
           <img
             src={project.image_url}
             alt={project.title}
@@ -150,7 +150,7 @@ export default function ProjectPage() {
               {project.title.charAt(0)}
             </div>
           </div>
-        )}
+        )*/}
         
         {/*<div className="absolute inset-0 bg-[hsl(var(--background))] bg-opacity-50" />*/}
         
