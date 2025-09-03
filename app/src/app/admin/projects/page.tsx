@@ -15,6 +15,7 @@ import {
   ArrowUpDown
 } from 'lucide-react'
 import { supabase } from 'mdp/lib/supabase/client'
+import { useAuth } from 'mdp/hooks/useAuth'
 
 interface Project {
   id: string
@@ -30,7 +31,8 @@ interface Project {
 
 export default function ProjectsList() {
   const [projects, setProjects] = useState<Project[]>([])
-  const [loading, setLoading] = useState(true)
+  const [_loading, setLoading] = useState(true)
+  const { session, loading } = useAuth(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
@@ -96,7 +98,7 @@ export default function ProjectsList() {
       }
     })
 
-  if (loading) {
+  if (loading || _loading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
@@ -122,7 +124,7 @@ export default function ProjectsList() {
         </Link>
       </div>
 
-      {/* Filters and Search */}
+      {/* filtros e busca */}
       <div className="bg-gray-900 rounded-2xl p-6 border border-gray-800 mb-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="md:col-span-2">
@@ -169,7 +171,7 @@ export default function ProjectsList() {
           </div>
         </div>
 
-        {/* Sort Options */}
+        {/* ordenar por */}
         <div className="flex items-center space-x-4 mt-4">
           <span className="text-gray-400">Ordenar por:</span>
           <select
@@ -189,7 +191,7 @@ export default function ProjectsList() {
         </div>
       </div>
 
-      {/* Projects Grid */}
+      {/* grid */}
       {viewMode === 'grid' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProjects.map((project) => (
@@ -257,7 +259,7 @@ export default function ProjectsList() {
           ))}
         </div>
       ) : (
-        /* List View */
+        /* list */
         <div className="bg-gray-900 rounded-2xl border border-gray-800 overflow-hidden">
           <table className="w-full">
             <thead>

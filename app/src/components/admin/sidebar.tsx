@@ -35,7 +35,7 @@ export default function AdminSidebar() {
   const menuItems: MenuItem[] = [
     {
       name: 'Dashboard',
-      href: '/admin/dashboard',
+      href: '/admin',
       icon: LayoutDashboard
     },
     {

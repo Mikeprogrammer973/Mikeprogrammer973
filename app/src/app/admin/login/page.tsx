@@ -1,7 +1,7 @@
 
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff } from 'lucide-react'
 import { supabase } from 'mdp/lib/supabase/client'
@@ -13,17 +13,6 @@ export default function AdminLogin() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const router = useRouter()
-
-  useEffect(() => {
-    checkAuth()
-  }, [])
-
-  const checkAuth = async () => {
-    const { data: { session } } = await supabase.auth.getSession()
-    if (session) {
-      router.push('/admin')
-    }
-  }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -37,6 +26,8 @@ export default function AdminLogin() {
       })
 
       if (error) throw error
+
+      await supabase.auth.getSession()
       
       router.push('/admin')
       router.refresh()

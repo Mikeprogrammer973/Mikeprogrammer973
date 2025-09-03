@@ -14,9 +14,11 @@ import {
 } from 'lucide-react'
 import { supabase } from 'mdp/lib/supabase/client'
 import { Status } from 'mdp/lib/supabase/types/database'
+import { useAuth } from 'mdp/hooks/useAuth'
 
 export default function EditProject() {
-  const [loading, setLoading] = useState(true)
+  const [_loading, setLoading] = useState(true)
+  const { session, loading } = useAuth(true)
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [formData, setFormData] = useState({
@@ -170,7 +172,7 @@ export default function EditProject() {
     }
   }
 
-  if (loading) {
+  if (loading || _loading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
@@ -180,7 +182,6 @@ export default function EditProject() {
 
   return (
     <div className="min-h-screen bg-black text-white p-6">
-      {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center space-x-4">
           <Link

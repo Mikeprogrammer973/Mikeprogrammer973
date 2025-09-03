@@ -13,9 +13,11 @@ import {
 } from 'lucide-react'
 import { supabase } from 'mdp/lib/supabase/client'
 import { Project, Status } from 'mdp/lib/supabase/types/database'
+import { useAuth } from 'mdp/hooks/useAuth'
 
 export default function NewProject() {
-  const [loading, setLoading] = useState(false)
+  const [_loading, setLoading] = useState(false)
+  const { session, loading } = useAuth(true)
   const [uploading, setUploading] = useState(false)
   const [formData, setFormData] = useState<Project>({
     title: '',
@@ -115,6 +117,14 @@ export default function NewProject() {
       ...formData,
       technologies: formData.technologies.filter(t => t !== tech)
     })
+  }
+
+  if (loading || _loading) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+      </div>
+    )
   }
 
   return (
