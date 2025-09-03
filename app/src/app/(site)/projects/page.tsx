@@ -205,7 +205,7 @@ export default function ProjectsPage() {
                       </span>
                     )}
                     {project.featured && (
-                      <span className="px-3 py-1.5 bg-amber-100 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400 rounded-full text-xs font-medium">
+                      <span className="px-3 py-1.5 bg-amber-100 text-white dark:bg-amber-900/20 dark:text-amber-400 rounded-full text-xs font-medium">
                         Destaque
                       </span>
                     )}
@@ -298,7 +298,7 @@ export default function ProjectsPage() {
                         </span>
                       )}
                       {project.featured && (
-                        <span className="px-3 py-1.5 bg-amber-100 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400 rounded-full text-xs font-medium">
+                        <span className="px-3 py-1.5 bg-amber-100 text-white dark:bg-amber-900/20 dark:text-amber-400 rounded-full text-xs font-medium">
                           Destaque
                         </span>
                       )}
