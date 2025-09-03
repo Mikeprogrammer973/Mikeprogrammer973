@@ -278,7 +278,7 @@ export default function ProjectsPage() {
           /* List View */
           <div className="space-y-4 mb-8">
             {filteredProjects.map((project) => (
-              <div key={project.id} className="bg-card rounded-2xl border border-border p-6 hover:shadow-md transition-all">
+              <div key={project.id} className="bg-[hsl(var(--card))] rounded-2xl border border-[hsl(var(--border))] p-6 hover:shadow-md transition-all">
                 <div className="flex flex-col md:flex-row md:items-center gap-6">
                   {project.image_url && (
                     <div className="w-full md:w-48 h-32 overflow-hidden rounded-lg">
@@ -293,7 +293,7 @@ export default function ProjectsPage() {
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
                       {project.category && (
-                        <span className="px-3 py-1.5 bg-primary/10 text-primary rounded-full text-xs font-medium">
+                        <span className="px-3 py-1.5 bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] rounded-full text-xs font-medium">
                           {project.category}
                         </span>
                       )}
@@ -304,18 +304,18 @@ export default function ProjectsPage() {
                       )}
                     </div>
 
-                    <h3 className="text-xl font-semibold mb-2 hover:text-primary transition-colors">
+                    <h3 className="text-xl font-semibold mb-2 hover:text-[hsl(var(--primary))] transition-colors">
                       {project.title}
                     </h3>
                     
-                    <p className="text-muted-foreground mb-3">{project.description}</p>
+                    <p className="text-[hsl(var(--muted-foreground))] mb-3">{project.description}</p>
 
                     {project.technologies && project.technologies.length > 0 && (
                       <div className="flex flex-wrap gap-2 mb-4">
                         {project.technologies.map((tech, index) => (
                           <span
                             key={index}
-                            className="px-2.5 py-1 bg-secondary text-secondary-foreground rounded-full text-xs"
+                            className="px-2.5 py-1 bg-[hsl(var(--secondary))] text-[hsl(var(--secondary-foreground))] rounded-full text-xs"
                           >
                             {tech}
                           </span>
@@ -326,7 +326,7 @@ export default function ProjectsPage() {
                     <div className="flex items-center justify-between">
                       <Link
                         href={`/projects/${project.slug}`}
-                        className="text-primary hover:text-primary/80 text-sm font-medium transition-colors"
+                        className="text-[hsl(var(--primary))] hover:text-[hsl(var(--primary))]/80 text-sm font-medium transition-colors"
                       >
                         Ver detalhes →
                       </Link>
@@ -337,7 +337,7 @@ export default function ProjectsPage() {
                             href={project.project_url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="p-2 text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-secondary"
+                            className="p-2 text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] transition-colors rounded-lg hover:bg-[hsl(var(--secondary))]"
                             title="Ver projeto online"
                           >
                             <ExternalLink className="w-4 h-4" />
@@ -348,7 +348,7 @@ export default function ProjectsPage() {
                             href={project.github_url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="p-2 text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-secondary"
+                            className="p-2 text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] transition-colors rounded-lg hover:bg-[hsl(var(--secondary))]"
                             title="Ver código no GitHub"
                           >
                             <Github className="w-4 h-4" />
@@ -365,14 +365,14 @@ export default function ProjectsPage() {
 
         {filteredProjects.length === 0 && (
           <div className="text-center py-12">
-            <div className="bg-muted/50 rounded-2xl p-8 max-w-md mx-auto">
-              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-[hsl(var(--muted))]/50 rounded-2xl p-8 max-w-md mx-auto">
+              <div className="w-16 h-16 bg-[hsl(var(--primary))]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-[hsl(var(--primary))]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
                 </svg>
               </div>
               <h3 className="text-lg font-semibold mb-2">Nenhum projeto encontrado</h3>
-              <p className="text-muted-foreground mb-4">
+              <p className="text-[hsl(var(--muted-foreground))] mb-4">
                 {categoryFilter === 'all' 
                   ? 'Ainda não há projetos publicados.' 
                   : `Nenhum projeto na categoria "${categoryFilter}".`}
@@ -382,7 +382,7 @@ export default function ProjectsPage() {
                   setSearchTerm('')
                   setCategoryFilter('all')
                 }}
-                className="text-primary hover:text-primary/80 font-medium"
+                className="text-[hsl(var(--primary))] hover:text-[hsl(var(--primary))]/80 font-medium"
               >
                 Limpar filtros
               </button>
