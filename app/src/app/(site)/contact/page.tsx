@@ -379,7 +379,7 @@ export default function ContactPage() {
                   disabled={isSubmitting}
                   className="w-full text-white rounded-full py-6 text-lg font-semibold"
                 >
-                    Enviar Mensagem
+                    Enviar
                     <Send className="w-5 h-5 ml-2 inline-block" />
                 </Button>
               </form>
