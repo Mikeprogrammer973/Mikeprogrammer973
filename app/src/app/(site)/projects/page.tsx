@@ -9,7 +9,6 @@ import {
   List,
   ExternalLink,
   Github,
-  StampIcon,
   Star
 } from 'lucide-react'
 import { supabase } from 'mdp/lib/supabase/client'
@@ -391,7 +390,7 @@ export default function ProjectsPage() {
           </div>
         )}
 
-         <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-center">
+        <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-center">
           <h2 className="text-2xl font-bold mb-4 text-white">Pronto para começar seu projeto?</h2>
           <p className="text-blue-100 mb-6">
             Vamos transformar suas ideias em realidade

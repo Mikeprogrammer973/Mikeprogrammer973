@@ -117,7 +117,7 @@ export default function ContactPage() {
             </div>
             <h1 className="text-4xl font-bold mb-4">Mensagem Enviada!</h1>
             <p className="text-xl text-[hsl(var(--muted-foreground))] mb-8 max-w-2xl mx-auto">
-              Obrigado pelo seu contato a mim. Retornarei sua mensagem o mais breve possível.
+              Obrigado por ter me contatado. Retornarei sua mensagem o mais breve possível.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
@@ -129,7 +129,7 @@ export default function ContactPage() {
               </Button>
               <Button asChild className="rounded-full text-white">
                 <Link href="/">
-                  Voltar para início
+                  Voltar ao início
                 </Link>
               </Button>
             </div>
@@ -141,16 +141,15 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[hsl(var(--background)] to-[hsl(var(--muted))]/30">
-      <div className="container mx-auto px-4 py-12 max-w-6xl">
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--primary))]/60 bg-clip-text text-transparent">
-            Vamos Trabalhar Juntos
-          </h1>
-          <p className="text-xl text-[hsl(var(--muted-foreground))] max-w-3xl mx-auto">
+      <section className="bg-gradient-to-br from-blue-600 to-purple-600 py-20">
+        <div className="container mx-auto px-4 text-center">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white">Vamos Trabalhar Juntos</h1>
+          <p className="text-xl text-blue-100 max-w-2xl mx-auto">
             Entre em contato comigo para discutir seu projeto, solicitar um orçamento ou simplesmente conversar sobre ideias.
           </p>
         </div>
-
+      </section>
+      <div className="container mx-auto px-4 py-12 max-w-6xl">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           {/* contatos */}
           <div className="lg:col-span-1">

@@ -7,15 +7,19 @@ import { useEffect, useState } from 'react'
 import { Moon, Sun, Menu, X } from 'lucide-react'
 import Logo from './logo'
 import TranslateWidget from './translate-widget'
+import { usePathname } from 'next/navigation'
 
 export default function Navbar() {
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
+  const pathname = usePathname()
 
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  const is_Selected = (href: string) => pathname === href
 
   if (!mounted) return null
 
@@ -41,7 +45,8 @@ export default function Navbar() {
             <Link
               key={item.name}
               href={item.href}
-              className="text-[hsl(var(--foreground))]/70 hover:text-[hsl(var(--foreground))] transition-colors relative group"
+              className={"transition-colors relative group" + (is_Selected(item.href) ? ' text-[hsl(var(--primary))]/70 hover:[hsl(var(--primary))]' : ' text-[hsl(var(--foreground))]/70 hover:text-[hsl(var(--foreground))] ')}
+              aria-current={is_Selected(item.href)}
             >
               {item.name}
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-600 transition-all duration-300 group-hover:w-full"></span>
@@ -78,7 +83,7 @@ export default function Navbar() {
               <Link
                 key={item.name}
                 href={item.href}
-                className="text-[hsl(var(--foreground))]/70 hover:text-[hsl(var(--foreground))] transition-colors py-2 font-medium"
+                className={"transition-colors py-2 font-medium" + (is_Selected(item.href) ? ' text-[hsl(var(--primary))]/70 hover:[hsl(var(--primary))]' : ' text-[hsl(var(--foreground))]/70 hover:text-[hsl(var(--foreground))]')}
                 onClick={() => setIsOpen(false)}
               >
                 {item.name}
