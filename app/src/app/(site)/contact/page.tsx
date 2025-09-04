@@ -12,7 +12,8 @@ import {
   HelpCircle,
   Quote,
   Send,
-  CheckCircle
+  CheckCircle,
+  Link
 } from 'lucide-react'
 import { Button } from 'mdp/components/ui/button'
 import { supabase } from 'mdp/lib/supabase/client'
@@ -127,9 +128,9 @@ export default function ContactPage() {
                 Enviar outra mensagem
               </Button>
               <Button asChild className="rounded-full text-white">
-                <a href="/">
+                <Link href="/">
                   Voltar para início
-                </a>
+                </Link>
               </Button>
             </div>
           </div>
