@@ -22,6 +22,9 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: 'Mike D. Pascal',
   description: '',
+  icons: {
+    icon: "/mdp-icon.png"
+  }
 }
 
 export default function RootLayout({
