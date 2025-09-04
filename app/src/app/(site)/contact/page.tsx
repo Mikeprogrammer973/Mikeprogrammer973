@@ -13,11 +13,11 @@ import {
   Quote,
   Send,
   CheckCircle,
-  Link
 } from 'lucide-react'
 import { Button } from 'mdp/components/ui/button'
 import { supabase } from 'mdp/lib/supabase/client'
 import { Spinner } from 'mdp/components/ui/spinner'
+import Link from 'next/link'
 
 type ContactType = 'general' | 'quote' | 'project' | 'collaboration' | 'question'
 
