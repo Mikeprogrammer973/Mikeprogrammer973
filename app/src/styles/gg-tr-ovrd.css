@@ -1,5 +1,5 @@
 
-/* ===== ESCONDER COMPLETAMENTE O BANNER ===== */
+/* ===== ESCONDER COMPLETAMENTE A BENÇÂO DO BANNER ===== */
 .VIpgJd-ZVi9od-ORHb-OEVmcd {
   display: none !important;
   visibility: hidden !important;
@@ -14,6 +14,10 @@
 body {
   top: 0 !important;
   position: static !important;
+}
+
+#goog-gt-tt {
+  display: none !important;
 }
 
 /* Container do select */

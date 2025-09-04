@@ -14,6 +14,7 @@ import {
 import { supabase } from 'mdp/lib/supabase/client'
 import { Project, Status } from 'mdp/lib/supabase/types/database'
 import { useAuth } from 'mdp/hooks/useAuth'
+import { Spinner } from 'mdp/components/ui/spinner'
 
 export default function NewProject() {
   const [_loading, setLoading] = useState(false)
@@ -120,11 +121,7 @@ export default function NewProject() {
   }
 
   if (loading || _loading) {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-      </div>
-    )
+    return <Spinner />
   }
 
   return (

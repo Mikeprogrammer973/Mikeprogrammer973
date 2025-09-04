@@ -8,9 +8,12 @@ import {
   Grid, 
   List,
   ExternalLink,
-  Github
+  Github,
+  StampIcon,
+  Star
 } from 'lucide-react'
 import { supabase } from 'mdp/lib/supabase/client'
+import { Spinner } from 'mdp/components/ui/spinner'
 
 interface Project {
   id: string
@@ -97,11 +100,7 @@ export default function ProjectsPage() {
   }
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    )
+    return <Spinner />
   }
 
   return (
@@ -139,7 +138,7 @@ export default function ProjectsPage() {
             >
               <option value="all">Todas as categorias</option>
               {categories.map(category => (
-                <option key={category} value={category}>{category}</option>
+                <option translate='no' key={category} value={category}>{category}</option>
               ))}
             </select>
 
@@ -185,7 +184,7 @@ export default function ProjectsPage() {
             {filteredProjects.map((project) => (
               <div key={project.id} className="bg-[hsl(var(--card))] rounded-2xl border border-[hsl(var(--border))] overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
                 {project.image_url && (
-                  <div className="relative h-48 overflow-hidden">
+                  <div translate='no' className="relative h-48 overflow-hidden">
                     <img
                       src={project.image_url}
                       alt={project.title}
@@ -198,18 +197,18 @@ export default function ProjectsPage() {
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-3">
                     {project.category && (
-                      <span className="px-3 py-1.5 bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] rounded-full text-xs font-medium">
+                      <span translate='no' className="px-3 py-1.5 bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] rounded-full text-xs font-medium">
                         {project.category}
                       </span>
                     )}
                     {project.featured && (
-                      <span className="px-3 py-1.5 bg-amber-100 text-white dark:bg-amber-900/20 dark:text-amber-400 rounded-full text-xs font-medium">
-                        Destaque
+                      <span translate='no' className="px-3 py-1.5 bg-amber-100 text-white dark:bg-amber-900/20 dark:text-amber-400 rounded-full text-xs font-medium">
+                        <Star className="w-4 h-4 mr-1" />
                       </span>
                     )}
                   </div>
 
-                  <h3 className="text-xl font-semibold mb-2 group-hover:text-[hsl(var(--primary))] transition-colors">
+                  <h3 translate='no' className="text-xl font-semibold mb-2 group-hover:text-[hsl(var(--primary))] transition-colors">
                     {project.title}
                   </h3>
                   
@@ -221,6 +220,7 @@ export default function ProjectsPage() {
                     <div className="flex flex-wrap gap-2 mb-4">
                       {project.technologies.slice(0, 3).map((tech, index) => (
                         <span
+                          translate='no'
                           key={index}
                           className="px-2.5 py-1 bg-[hsl(var(--secondary))] text-[hsl(var(--secondary-foreground))] rounded-full text-xs"
                         >
@@ -281,6 +281,7 @@ export default function ProjectsPage() {
                   {project.image_url && (
                     <div className="w-full md:w-48 h-32 overflow-hidden rounded-lg">
                       <img
+                        translate='no'
                         src={project.image_url}
                         alt={project.title}
                         className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
@@ -291,18 +292,18 @@ export default function ProjectsPage() {
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
                       {project.category && (
-                        <span className="px-3 py-1.5 bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] rounded-full text-xs font-medium">
+                        <span translate='no' className="px-3 py-1.5 bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] rounded-full text-xs font-medium">
                           {project.category}
                         </span>
                       )}
                       {project.featured && (
                         <span className="px-3 py-1.5 bg-amber-100 text-white dark:bg-amber-900/20 dark:text-amber-400 rounded-full text-xs font-medium">
-                          Destaque
+                          <Star className="w-4 h-4 mr-1" />
                         </span>
                       )}
                     </div>
 
-                    <h3 className="text-xl font-semibold mb-2 hover:text-[hsl(var(--primary))] transition-colors">
+                    <h3 translate='no' className="text-xl font-semibold mb-2 hover:text-[hsl(var(--primary))] transition-colors">
                       {project.title}
                     </h3>
                     
@@ -312,6 +313,7 @@ export default function ProjectsPage() {
                       <div className="flex flex-wrap gap-2 mb-4">
                         {project.technologies.map((tech, index) => (
                           <span
+                            translate='no'
                             key={index}
                             className="px-2.5 py-1 bg-[hsl(var(--secondary))] text-[hsl(var(--secondary-foreground))] rounded-full text-xs"
                           >
@@ -373,7 +375,8 @@ export default function ProjectsPage() {
               <p className="text-[hsl(var(--muted-foreground))] mb-4">
                 {categoryFilter === 'all' 
                   ? 'Ainda não há projetos publicados.' 
-                  : `Nenhum projeto na categoria "${categoryFilter}".`}
+                  : (<span>Nenhum projeto na categoria<span translate='no'> {categoryFilter}.</span></span>)
+                }
               </p>
               <button
                 onClick={() => {

@@ -12,6 +12,7 @@ import {
   Share2
 } from 'lucide-react'
 import { supabase } from 'mdp/lib/supabase/client'
+import { Spinner } from 'mdp/components/ui/spinner'
 
 interface Project {
   id: string
@@ -115,18 +116,14 @@ export default function ProjectPage() {
   }
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-      </div>
-    )
+    return <Spinner />
   }
 
   if (!project) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="min-h-screen bg-[hsl(var(--background))] text-[hsl(var(--foreground))] flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">Projeto não encontrado</h1>
+          <h1 className="text-2xl font-bold mb-4">Projeto não encontrado</h1>
           <Link href="/projects" className="text-blue-400 hover:text-blue-300">
             Voltar para projetos
           </Link>
@@ -138,22 +135,6 @@ export default function ProjectPage() {
   return (
     <div className="min-h-screen bg-[hsl(var(--background))] text-[hsl(var(--foreground))]">
       <header className="relative overflow-hidden">
-        {/*project.image_url ? (
-          <img
-            src={project.image_url}
-            alt={project.title}
-            className="w-48 h-48 rounded-full"
-          />
-        ) : (
-          <div className="w-48 h-48 rounded-full bg-gradient-to-br from-[hsl(var(--primary))] to-[hsl(var(--secondary))] flex items-center justify-center">
-            <div className="text-xl font-bold text-[hsl(var(--primary-foreground))]">
-              {project.title.charAt(0)}
-            </div>
-          </div>
-        )*/}
-        
-        {/*<div className="absolute inset-0 bg-[hsl(var(--background))] bg-opacity-50" />*/}
-        
         <div className="p-6">
           <div className="container mx-auto">
             <Link
@@ -164,10 +145,10 @@ export default function ProjectPage() {
               Voltar para projetos
             </Link>
             
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 flex gap-2 items-center">
+            <h1 translate='no' className="text-4xl md:text-5xl font-bold mb-4 flex gap-2 items-center">
               {project.image_url && (
                 <img
-                  src={project.image_url || 'https://via.placeholder.com/150'}
+                  src={project.image_url || ''}
                   alt={project.title}
                   className="hidden sm:flex w-12 h-12 md:w-14 md:h-14 rounded-full"
                 />
@@ -191,7 +172,7 @@ export default function ProjectPage() {
           </div>
           
           {project.category && (
-            <span className="px-3 py-1 bg-[hsl(var(--primary)/0.2)] text-[hsl(var(--primary))] rounded-full">
+            <span translate='no' className="px-3 py-1 bg-[hsl(var(--primary)/0.2)] text-[hsl(var(--primary))] rounded-full">
               {project.category}
             </span>
           )}
@@ -227,6 +208,7 @@ export default function ProjectPage() {
                 <div className="flex flex-wrap gap-2">
                   {project.technologies.map((tech, index) => (
                     <span
+                      translate='no'
                       key={index}
                       className="px-3 py-1 bg-[hsl(var(--primary)/0.2)] text-[hsl(var(--primary))] rounded-full text-sm"
                     >
@@ -239,7 +221,7 @@ export default function ProjectPage() {
 
             {/* Links */}
             <div className="bg-[hsl(var(--card))] rounded-2xl p-6 border border-[hsl(var(--border))]">
-              <h3 className="text-lg font-semibold mb-4">Links</h3>
+              <h3 translate='no' className="text-lg font-semibold mb-4">Links</h3>
               <div className="space-y-3">
                 {project.project_url && (
                   <a
@@ -273,7 +255,7 @@ export default function ProjectPage() {
               <dl className="space-y-3">
                 <div>
                   <dt className="text-sm text-[hsl(var(--muted-foreground))]">Categoria</dt>
-                  <dd className="text-[hsl(var(--foreground))]">{project.category || 'Não especificado'}</dd>
+                  <dd translate='no' className="text-[hsl(var(--foreground))]">{project.category || 'Não especificado'}</dd>
                 </div>
                 <div>
                   <dt className="text-sm text-[hsl(var(--muted-foreground))]">Publicado em</dt>
@@ -310,6 +292,7 @@ export default function ProjectPage() {
                 >
                   {relatedProject.image_url && (
                     <img
+                      translate='no'
                       src={relatedProject.image_url}
                       alt={relatedProject.title}
                       className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
@@ -317,11 +300,11 @@ export default function ProjectPage() {
                   )}
                   <div className="p-6">
                     {relatedProject.category && (
-                      <span className="inline-block px-2 py-1 bg-[hsl(var(--primary)/0.2)] text-[hsl(var(--primary))] rounded-full text-xs mb-3">
+                      <span translate='no' className="inline-block px-2 py-1 bg-[hsl(var(--primary)/0.2)] text-[hsl(var(--primary))] rounded-full text-xs mb-3">
                         {relatedProject.category}
                       </span>
                     )}
-                    <h3 className="text-lg font-semibold mb-2 group-hover:text-[hsl(var(--primary))] transition-colors">
+                    <h3 translate='no' className="text-lg font-semibold mb-2 group-hover:text-[hsl(var(--primary))] transition-colors">
                       {relatedProject.title}
                     </h3>
                     <p className="text-[hsl(var(--muted-foreground))] text-sm line-clamp-2">

@@ -27,6 +27,11 @@ export function useAuth(redirectIfNotAuth = true) {
       if (redirectIfNotAuth && !session) {
         router.push('/admin/login')
       }
+      
+      if(session && location.pathname === '/admin/login')
+      {
+        router.push('/admin')
+      }
     }
 
     checkSession()

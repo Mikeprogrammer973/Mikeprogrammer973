@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import { supabase } from 'mdp/lib/supabase/client'
 import { useAuth } from 'mdp/hooks/useAuth'
+import { Spinner } from 'mdp/components/ui/spinner'
 
 interface Project {
   id: string
@@ -99,11 +100,7 @@ export default function ProjectsList() {
     })
 
   if (loading || _loading) {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-      </div>
-    )
+    return <Spinner />
   }
 
   return (
