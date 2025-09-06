@@ -50,7 +50,7 @@ export default function SkillsPage() {
   })
 
   const categories = [
-    { id: 'all', label: 'Todas', icon: BarChart3, color: 'bg-gray-500' },
+    { id: 'all', label: '●●●', icon: BarChart3, color: 'bg-gray-500' },
     { id: 'frontend', label: 'Frontend', icon: Code, color: 'bg-blue-500' },
     { id: 'backend', label: 'Backend', icon: Server, color: 'bg-green-500' },
     { id: 'database', label: 'Database', icon: Database, color: 'bg-orange-500' },
