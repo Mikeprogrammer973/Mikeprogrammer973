@@ -159,6 +159,7 @@ export default function SkillsPage() {
                     return (
                     <button
                         key={category.id}
+                        translate="no"
                         onClick={() => setActiveCategory(category.id)}
                         className={`flex items-center px-4 py-2 rounded-lg transition-all ${
                         activeCategory === category.id
@@ -191,12 +192,12 @@ export default function SkillsPage() {
                     </div>
                     </div>
 
-                    <h3 className="text-xl font-semibold mb-2 group-hover:text-[hsl(var(--primary))] transition-colors">
-                    {skill.name}
+                    <h3 translate="no" className="text-xl font-semibold mb-2 group-hover:text-[hsl(var(--primary))] transition-colors">
+                        {skill.name}
                     </h3>
 
                     <p className="text-[hsl(var(--muted-foreground))] mb-4 text-sm">
-                    {skill.description}
+                        {skill.description}
                     </p>
 
                     {/* progreso */}
@@ -269,7 +270,7 @@ export default function SkillsPage() {
                         <div key={category} className="flex items-center justify-between">
                         <div className="flex items-center">
                             <Icon className="w-4 h-4 text-[hsl(var(--muted-foreground))] mr-2" />
-                            <span className="text-sm">{categoryInfo?.label}</span>
+                            <span translate="no" className="text-sm">{categoryInfo?.label}</span>
                         </div>
                         <span className="text-sm font-semibold text-[hsl(var(--primary))]">
                             {items.length} habilidades
