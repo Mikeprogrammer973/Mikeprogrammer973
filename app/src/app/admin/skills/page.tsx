@@ -144,8 +144,7 @@ export default function AdminSkills() {
           </div>
           <Button asChild className="bg-blue-600 hover:bg-blue-700 text-white">
             <Link href="/admin/skills/new">
-              <Plus className="w-4 h-4 mr-2 inline-block" />
-              Nova Habilidade
+              <Plus className="w-6 h-6" />
             </Link>
           </Button>
         </div>
