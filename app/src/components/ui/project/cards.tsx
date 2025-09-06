@@ -77,7 +77,7 @@ function IncomingProjectCard({ project, index }: { project: Project; index: numb
     development: { color: "bg-blue-100 text-blue-600", label: "Em Desenvolvimento" },
     planning_structure: { color: "bg-yellow-100 text-yellow-600", label: "Planejamento" },
     planning_design: { color: "bg-purple-100 text-purple-600", label: "Design" },
-    teste: { color: "bg-green-100 text-green-600", label: "Teste" },
+    testing: { color: "bg-green-100 text-green-600", label: "Teste" },
     production_setup: { color: "bg-indigo-100 text-indigo-600", label: "Configuração de Produção" },
   }
 
