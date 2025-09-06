@@ -85,7 +85,7 @@ export default function AboutPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[hsl(var(--background))] to-[hsl(var(--muted)/0.3)]">
+    <div className="min-h-screen">
         <section className="bg-gradient-to-br from-blue-600 to-purple-600 py-20">
             <div className="container mx-auto px-4 text-center">
                 <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white">Sobre Mim</h1>
