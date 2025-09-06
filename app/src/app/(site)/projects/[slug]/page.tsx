@@ -259,11 +259,11 @@ export default function ProjectPage() {
               <dl className="space-y-3">
                 <div>
                   <dt className="text-sm text-[hsl(var(--muted-foreground))]">Categoria</dt>
-                  <dd translate='no' className="text-[hsl(var(--foreground))]">{project.category || 'Não especificado'}</dd>
+                  <dd translate='no' className="text-[hsl(var(--foreground))]">{project.category || '...'}</dd>
                 </div>
                 <div>
                   <dt className="text-sm text-[hsl(var(--muted-foreground))]">
-                    {!(project.status === 'draft') ? 'Publicado o' : 'Criado o'}
+                    {!(project.status === 'draft') ? 'Data de publicação' : 'Data de criação'}
                   </dt>
                   <dd className="text-[hsl(var(--foreground))]">{formatDate(project.created_at)}</dd>
                 </div>
