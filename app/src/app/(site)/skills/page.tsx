@@ -25,6 +25,7 @@ import { Button } from 'mdp/components/ui/button'
 import Link from 'next/link'
 import { Skill } from 'mdp/lib/supabase/types/database'
 import { supabase } from 'mdp/lib/supabase/client'
+import { Spinner } from 'mdp/components/ui/spinner'
 
 interface Skills {
     frontend: Skill[]
@@ -38,6 +39,7 @@ interface Skills {
 export default function SkillsPage() {
   const [activeCategory, setActiveCategory] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
+  const [loading, setLoading] = useState(true)
   const [skills, setSkills] = useState<Skills>({
     frontend: [],
     backend: [],
@@ -62,6 +64,8 @@ export default function SkillsPage() {
   }, [])
 
   const fetchSkills = async () => {
+    setLoading(true)
+
     const { data, error } = await supabase
     .from('skills')
     .select('*')
@@ -81,6 +85,8 @@ export default function SkillsPage() {
     }
 
     setSkills(skillsByCategory)
+
+    setLoading(false)
 }
 
   const allSkills = Object.values(skills).flat()
@@ -100,6 +106,10 @@ export default function SkillsPage() {
     { icon: TrendingUp, value: '2+', label: 'Anos Exp' },
     { icon: Target, value: '90%', label: 'Satisfação' }
   ]
+
+  if(loading) {
+    return <Spinner />
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[hsl(var(--background))] to-[hsl(var(--muted)/0.3)]">
