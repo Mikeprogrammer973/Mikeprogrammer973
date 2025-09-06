@@ -35,6 +35,13 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning className={`${inter.variable} ${poppins.variable}`}>
       <head>
+        {/*<link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+          integrity="sha512-8lYjz6jVwU3ZpWyEtH3u7L3Ho9kKnNkn6u25oLzXdxzRDN0xsnXJYpP5OSdJ2D3FvAv7wOiJjZ1B2dP04+zG8A=="
+          crossOrigin="anonymous"
+          referrerPolicy="no-referrer"
+        />*/}
         <GoogleTranslateLoader/>
       </head>
       <body className="font-sans">

@@ -45,6 +45,7 @@ interface RelatedProject {
 export default function ProjectPage() {
   const [project, setProject] = useState<Project | null>(null)
   const [relatedProjects, setRelatedProjects] = useState<RelatedProject[]>([])
+  const [dev_stage, setDev_stage] = useState<number[]>([1, 0])
   const [loading, setLoading] = useState(true)
   const params = useParams()
   const router = useRouter()
@@ -69,6 +70,24 @@ export default function ProjectPage() {
       }
 
       setProject(projectData)
+
+      switch (projectData?.dev_stage) {
+        case 'planning_structure':
+          setDev_stage([1, (projectData?.stage_progress / 500) * 100])
+          break
+        case 'planning_design':
+          setDev_stage([2, ((100 + projectData?.stage_progress) / 500) * 100])
+          break
+        case 'development':
+          setDev_stage([3, ((200 + projectData?.stage_progress) / 500) * 100])
+          break
+        case 'testing':
+          setDev_stage([4, ((300 + projectData?.stage_progress) / 500) * 100])
+          break
+        case 'production_setup':
+          setDev_stage([5, ((400 + projectData?.stage_progress) / 500) * 100])
+          break
+      }
 
       const { data: relatedData, error: relatedError } = await supabase
         .from('projects')
@@ -163,6 +182,161 @@ export default function ProjectPage() {
             <p className="text-xl text-[hsl(var(--muted-foreground))] max-w-3xl">
               {project.description}
             </p>
+
+            <div className="mt-10 mb-6">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm font-medium text-[hsl(var(--foreground))]">Progresso Geral</span>
+                <span className="text-sm font-bold text-[hsl(var(--primary))]">{dev_stage[1].toFixed(1)}%</span>
+              </div>
+              <div className="w-full bg-[hsl(var(--secondary))] rounded-full h-2.5">
+                <div className="bg-gradient-to-r from-blue-500 to-purple-600 h-2.5 rounded-full transition-all duration-1000" style={{width: `${dev_stage[1]}%`}}></div>
+              </div>
+            </div>
+
+            {/* Timeline de fases */}
+            <div className="space-y-4">
+              {/*<!-- Fase 1: Planejamento -->*/}
+              <div className="flex items-center">
+                <div className="flex-shrink-0 relative">
+                  {dev_stage[0] === 1
+                    ? (<><div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    </div><div className="absolute -bottom-6 left-4 w-0.5 h-6 bg-[hsl(var(--border))]"></div></>)
+                    : (<><div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                      </svg>
+                    </div><div className="absolute -bottom-6 left-4 w-0.5 h-6 bg-green-500"></div></>)
+                  }
+                </div>
+                <div className="ml-4 flex-1">
+                  <h4 className="font-medium text-[hsl(var(--foreground))]">Planejamento</h4>
+                  <p className="text-sm text-[hsl(var(--muted-foreground))]">Definição de requisitos e escopo</p>
+                  {dev_stage[0] === 1 && <div className="w-full bg-[hsl(var(--secondary))] rounded-full h-1.5 mt-1">
+                    <div className="bg-blue-500 h-1.5 rounded-full transition-all duration-1000" style={{width: `${project.stage_progress}%`}}></div>
+                  </div>}
+                </div>
+                {dev_stage[0] === 1 ? <span className="text-sm text-blue-500 font-medium">{project.stage_progress}%</span> : <span className="text-sm text-green-500 font-medium">Concluído</span>}
+              </div>
+
+              {/*<!-- Fase 2: Design -->*/}
+              <div className="flex items-center">
+                <div className="flex-shrink-0 relative">
+                  {dev_stage[0] === 2
+                    ? (<><div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    </div><div className="absolute -bottom-6 left-4 w-0.5 h-6 bg-[hsl(var(--border))]"></div></>)
+                    : (dev_stage[0] > 2
+                      ? (<><div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                      </div><div className="absolute -bottom-6 left-4 w-0.5 h-6 bg-green-500"></div></>)
+                      : (<><div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+                        <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                      </div><div className="absolute -bottom-6 left-4 w-0.5 h-6 bg-[hsl(var(--border))]"></div></>)
+                    )
+                  }
+                </div>
+                <div className="ml-4 flex-1">
+                  <h4 className="font-medium text-[hsl(var(--foreground))]">Design</h4>
+                  <p className="text-sm text-[hsl(var(--muted-foreground))]">Criação de interfaces e UX</p>
+                  {dev_stage[0] === 2 && <div className="w-full bg-[hsl(var(--secondary))] rounded-full h-1.5 mt-1">
+                    <div className="bg-blue-500 h-1.5 rounded-full transition-all duration-1000" style={{width: `${project.stage_progress}%`}}></div>
+                  </div>}
+                </div>
+                {dev_stage[0] === 2 ? <span className="text-sm text-blue-500 font-medium">{project.stage_progress}%</span> : (dev_stage[0] > 2 ? <span className="text-sm text-green-500 font-medium">Concluído</span> : <span className="text-sm text-[hsl(var(--muted-foreground))]">Pendente</span>)}
+              </div>
+
+              {/*<!-- Fase 3: Desenvolvimento -->*/}
+              <div className="flex items-center">
+                <div className="flex-shrink-0 relative">
+                  {dev_stage[0] === 3
+                    ? (<><div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    </div><div className="absolute -bottom-6 left-4 w-0.5 h-6 bg-[hsl(var(--border))]"></div></>)
+                    : (dev_stage[0] > 3
+                      ? (<><div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                      </div><div className="absolute -bottom-6 left-4 w-0.5 h-6 bg-green-500"></div></>)
+                      : (<><div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+                        <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                      </div><div className="absolute -bottom-6 left-4 w-0.5 h-6 bg-[hsl(var(--border))]"></div></>)
+                    )
+                  }
+                </div>
+                <div className="ml-4 flex-1">
+                  <h4 className="font-medium text-[hsl(var(--foreground))]">Desenvolvimento</h4>
+                  <p className="text-sm text-[hsl(var(--muted-foreground))]">Implementação das funcionalidades</p>
+                  {dev_stage[0] === 3 && <div className="w-full bg-[hsl(var(--secondary))] rounded-full h-1.5 mt-1">
+                    <div className="bg-blue-500 h-1.5 rounded-full transition-all duration-1000" style={{width: `${project.stage_progress}%`}}></div>
+                  </div>}
+                </div>
+                {dev_stage[0] === 3 ? <span className="text-sm text-blue-500 font-medium">{project.stage_progress}%</span> : (dev_stage[0] > 3 ? <span className="text-sm text-green-500 font-medium">Concluído</span> : <span className="text-sm text-[hsl(var(--muted-foreground))]">Pendente</span>)}
+              </div>
+
+              {/*<!-- Fase 4: Teste -->*/}
+              <div className="flex items-center">
+                <div className="flex-shrink-0 relative">
+                  {dev_stage[0] === 4
+                    ? (<><div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    </div><div className="absolute -bottom-6 left-4 w-0.5 h-6 bg-[hsl(var(--border))]"></div></>)
+                    : (dev_stage[0] > 4
+                      ? (<><div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                      </div><div className="absolute -bottom-6 left-4 w-0.5 h-6 bg-green-500"></div></>)
+                      : (<><div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+                        <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                      </div><div className="absolute -bottom-6 left-4 w-0.5 h-6 bg-[hsl(var(--border))]"></div></>)
+                    )
+                  }
+                </div>
+                <div className="ml-4 flex-1">
+                  <h4 className="font-medium text-[hsl(var(--muted-foreground))]">Teste</h4>
+                  <p className="text-sm text-[hsl(var(--muted-foreground))]">Testes de qualidade e validação</p>
+                  {dev_stage[0] === 4 && <div className="w-full bg-[hsl(var(--secondary))] rounded-full h-1.5 mt-1">
+                    <div className="bg-blue-500 h-1.5 rounded-full transition-all duration-1000" style={{width: `${project.stage_progress}%`}}></div>
+                  </div>}
+                </div>
+                {dev_stage[0] === 4 ? <span className="text-sm text-blue-500 font-medium">{project.stage_progress}%</span> : (dev_stage[0] > 4 ? <span className="text-sm text-green-500 font-medium">Concluído</span> : <span className="text-sm text-[hsl(var(--muted-foreground))]">Pendente</span>)}
+              </div>
+
+              {/*<!-- Fase 5: Revisão Final -->*/}
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  {dev_stage[0] === 5
+                    ? (<div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    </div>)
+                    : (<div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+                      <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                      </svg>
+                    </div>)
+                  }
+                </div>
+                <div className="ml-4 flex-1">
+                  <h4 className="font-medium text-[hsl(var(--muted-foreground))]">Revisão Final</h4>
+                  <p className="text-sm text-[hsl(var(--muted-foreground))]">Ajustes finais e preparação para lançamento</p>
+                {dev_stage[0] === 5 && <div className="w-full bg-[hsl(var(--secondary))] rounded-full h-1.5 mt-1">
+                    <div className="bg-blue-500 h-1.5 rounded-full transition-all duration-1000" style={{width: `${project.stage_progress}%`}}></div>
+                  </div>}
+                </div>
+                {dev_stage[0] === 5 ? <span className="text-sm text-blue-500 font-medium">{project.stage_progress}%</span> : <span className="text-sm text-[hsl(var(--muted-foreground))]">Pendente</span>}
+              </div>
+            </div>
+
           </div>
         </div>
       </header>
