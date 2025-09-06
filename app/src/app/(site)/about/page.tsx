@@ -90,7 +90,7 @@ export default function AboutPage() {
             <div className="container mx-auto px-4 text-center">
                 <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white">Sobre Mim</h1>
                 <p className="text-xl text-blue-100 max-w-2xl mx-auto">
-                Conheça minha jornada, experiências e paixão por criar soluções digitais incríveis.
+                Conheça minha jornada, experiências e paixão por criar soluções digitais incríveis
                 </p>
             </div>
         </section>
