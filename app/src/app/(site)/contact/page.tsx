@@ -145,7 +145,7 @@ export default function ContactPage() {
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white">Vamos Trabalhar Juntos</h1>
           <p className="text-xl text-blue-100 max-w-2xl mx-auto">
-            Entre em contato comigo para discutir seu projeto, solicitar um orçamento ou simplesmente conversar sobre ideias.
+            Entre em contato comigo para discutir seu projeto, solicitar um orçamento ou simplesmente conversar sobre ideias
           </p>
         </div>
       </section>
