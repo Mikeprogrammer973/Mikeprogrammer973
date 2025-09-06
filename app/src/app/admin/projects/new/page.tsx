@@ -12,9 +12,10 @@ import {
   Save
 } from 'lucide-react'
 import { supabase } from 'mdp/lib/supabase/client'
-import { Project, Status } from 'mdp/lib/supabase/types/database'
+import { DevStage, Project, Status } from 'mdp/lib/supabase/types/database'
 import { useAuth } from 'mdp/hooks/useAuth'
 import { Spinner } from 'mdp/components/ui/spinner'
+import { strict } from 'assert'
 
 export default function NewProject() {
   const [_loading, setLoading] = useState(false)
@@ -31,7 +32,10 @@ export default function NewProject() {
     image_url: '',
     featured: false,
     category: '',
-    status: Status.Draft
+    status: Status.Draft,
+    dev_stage: null,
+    stage_progress: 0,
+    pro_date: null
   })
   const [techInput, setTechInput] = useState('')
   const router = useRouter()
@@ -308,7 +312,7 @@ export default function NewProject() {
             </label>
             <select
               value={formData.status}
-              onChange={(e) => setFormData({ ...formData, status: e.target.value as Status })}
+              onChange={(e) => {setFormData({ ...formData, status: e.target.value as Status })}}
               className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="draft">Rascunho</option>
@@ -329,6 +333,52 @@ export default function NewProject() {
             </label>
           </div>
         </div>
+
+        {(formData.status as string) === 'draft' && <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Dev Stage
+            </label>
+            <select
+              value={formData.dev_stage || ''}
+              onChange={(e) => setFormData({ ...formData, dev_stage: e.target.value as DevStage })}
+              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="planning_structure">Planejamento</option>
+              <option value="planning_design">Design</option>
+              <option value="development">Desenvolvimento</option>
+              <option value="testing">Teste</option>
+              <option value="production_setup">Configurar Produção</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Progresso
+            </label>
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value={formData.stage_progress || 0}
+              onChange={(e) => setFormData({ ...formData, stage_progress: parseInt(e.target.value) })}
+              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Data de Conclusão
+            </label>
+            <input
+              type="date"
+              value={formData.pro_date || ''}
+              onChange={(e) => setFormData({ ...formData, pro_date: e.target.value })}
+              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Ex: Web Development"
+            />
+          </div>
+        </div>}
 
         <div className="flex space-x-4 pt-6">
           <button

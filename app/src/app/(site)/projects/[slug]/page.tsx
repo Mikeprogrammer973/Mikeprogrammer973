@@ -25,6 +25,10 @@ interface Project {
   project_url: string | null
   github_url: string | null
   category: string | null
+  status: string
+  dev_stage: string
+  stage_progress: number
+  pro_date: string
   created_at: string
   updated_at: string
 }
@@ -69,7 +73,7 @@ export default function ProjectPage() {
       const { data: relatedData, error: relatedError } = await supabase
         .from('projects')
         .select('id, title, slug, description, image_url, category')
-        .eq('status', 'published')
+        .eq('status', project?.status)
         .neq('slug', slug)
         .eq('category', projectData.category)
         .limit(3)
@@ -150,7 +154,7 @@ export default function ProjectPage() {
                 <img
                   src={project.image_url || ''}
                   alt={project.title}
-                  className="hidden sm:flex w-12 h-12 md:w-14 md:h-14 rounded-full"
+                  className="hidden sm:flex w-10 h-10 md:w-12 md:h-12 rounded-full"
                 />
               )}
               {project.title}
@@ -258,9 +262,17 @@ export default function ProjectPage() {
                   <dd translate='no' className="text-[hsl(var(--foreground))]">{project.category || 'Não especificado'}</dd>
                 </div>
                 <div>
-                  <dt className="text-sm text-[hsl(var(--muted-foreground))]">Publicado em</dt>
+                  <dt className="text-sm text-[hsl(var(--muted-foreground))]">
+                    {!(project.status === 'draft') ? 'Publicado o' : 'Criado o'}
+                  </dt>
                   <dd className="text-[hsl(var(--foreground))]">{formatDate(project.created_at)}</dd>
                 </div>
+                {project.status === 'draft' && <div>
+                  <dt className="text-sm text-[hsl(var(--muted-foreground))]">
+                    Previsão de conclusão
+                  </dt>
+                  <dd className="text-[hsl(var(--primary))]">{formatDate(project.pro_date)}</dd>
+                </div>}
                 <div>
                   <dt className="text-sm text-[hsl(var(--muted-foreground))]">Última atualização</dt>
                   <dd className="text-[hsl(var(--foreground))]">{formatDate(project.updated_at)}</dd>

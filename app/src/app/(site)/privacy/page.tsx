@@ -1,4 +1,4 @@
-// app/privacy/page.tsx
+
 'use client'
 
 import { useState } from 'react'
@@ -81,7 +81,7 @@ export default function PrivacyPage() {
                   className="flex items-center p-3 bg-[hsl(var(--secondary))] rounded-lg text-sm hover:bg-[hsl(var(--secondary)/0.8)] transition-colors"
                 >
                   <Icon className="w-4 h-4 mr-2 text-[hsl(var(--primary))]" />
-                  {item.label}
+                  {item.label == 'Cookies' ? <span translate='no'>{item.label}</span> : item.label }
                 </button>
               )
             })}
@@ -171,7 +171,7 @@ export default function PrivacyPage() {
                 </p>
                 <ul className="list-disc list-inside space-y-2 mb-4">
                   <li>Formulários de contato preenchidos por você</li>
-                  <li><span translate='no'>Cookies</span> e tecnologias similares</li>
+                  <li><span className='mx-1' translate='no'>Cookies</span> e tecnologias similares</li>
                   <li>Registros automáticos do serviodr/navegador</li>
                   <li>Ferramentas de analytics</li>
                 </ul>
@@ -291,7 +291,7 @@ export default function PrivacyPage() {
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-semibold flex items-center">
                 <Cookie className="w-6 h-6 text-[hsl(var(--primary))] mr-2" />
-                5. <span translate='no'>Cookies</span> e Tecnologias Similares
+                5. <span className='mx-1' translate='no'>Cookies</span> e Tecnologias Similares
               </h2>
               <button
                 onClick={() => toggleSection('cookies')}
@@ -304,7 +304,7 @@ export default function PrivacyPage() {
             {openSections.cookies && (
               <div className="prose prose-lg max-w-none text-[hsl(var(--foreground))]">
                 <p className="mb-4">
-                  Utilizo <span translate='no'>cookies</span> e tecnologias similares para melhorar sua experiência:
+                  Utilizo <span className='mx-1' translate='no'>cookies</span> e tecnologias similares para melhorar sua experiência:
                 </p>
                 
                 <div className="overflow-x-auto mb-4">
@@ -336,16 +336,16 @@ export default function PrivacyPage() {
                   </table>
                 </div>
 
-                <h3 className="text-lg font-semibold mb-3">5.1. Controle de <span translate='no'>Cookies</span></h3>
+                <h3 className="text-lg font-semibold mb-3">5.1. Controle de <span className='mx-1' translate='no'>Cookies</span></h3>
                 <p className="mb-4">
-                  Você pode controlar e gerenciar <span translate='no'>cookies</span> através das configurações do seu navegador. 
-                  No entanto, a desativação de <span translate='no'>cookies</span> essenciais pode afetar a funcionalidade do site.
+                  Você pode controlar e gerenciar <span className='mx-1' translate='no'>cookies</span> através das configurações do seu navegador. 
+                  No entanto, a desativação de <span className='mx-1' translate='no'>cookies</span> essenciais pode afetar a funcionalidade do site.
                 </p>
 
                 <div className="bg-blue-200  border border-blue-700 rounded-lg p-4">
                   <p className="text-blue-700 text-sm">
                     <strong>💡 Dica:</strong> Acesse as configurações do seu navegador para gerenciar 
-                    suas preferências de <span translate='no'>cookies</span>.
+                    suas preferências de <span className='mx-1' translate='no'>cookies</span>.
                   </p>
                 </div>
               </div>
@@ -504,8 +504,8 @@ export default function PrivacyPage() {
                   será revisada no topo desta política.
                 </p>
 
-                <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
-                  <p className="text-green-800 dark:text-green-200 text-sm">
+                <div className="bg-green-200 border border-green-700 rounded-lg p-4">
+                  <p className="text-green-700 text-sm">
                     <strong>📅 Recomendação:</strong> Reveja esta política periodicamente para 
                     estar ciente de como protego suas informações.
                   </p>

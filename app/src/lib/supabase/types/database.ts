@@ -5,6 +5,14 @@ export enum Status {
   Archived = 'Arquivado'
 }
 
+export enum DevStage {
+  Planning_Structure = 'Planejamento',
+  Planning_Design = 'Design',
+  Development = 'Desenvolvimento',
+  Testing = 'Teste',
+  Production_Setup = "Configuração de Produção"
+}
+
 export interface Project {
   id?: string;
   title: string;
@@ -18,7 +26,10 @@ export interface Project {
   featured: boolean;
   category: string | null;
   status: Status;
+  dev_stage?: DevStage | null;
+  stage_progress?: number;
   priority?: number;
+  pro_date?: string | null;
   created_at?: string;
   updated_at?: string;
 }

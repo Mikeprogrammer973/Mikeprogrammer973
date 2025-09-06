@@ -1,81 +1,14 @@
+"use client"
 
 import Link from 'next/link'
 import { ArrowRight, Clock, Star, TrendingUp } from 'lucide-react'
 import { Button } from '../../components/ui/button'
 import { IncomingProjectCard, ProjectCard } from 'mdp/components/ui/project/cards'
+import { supabase } from 'mdp/lib/supabase/client'
+import { use, useEffect, useState } from 'react'
+import { Project } from 'mdp/lib/supabase/types/database'
 
 // dados de teste
-const featuredProjects = [
-  {
-    id: 1,
-    title: "E-commerce Platform",
-    description: "Plataforma completa de e-commerce com painel administrativo e gateway de pagamento integrado.",
-    category: "Full Stack",
-    technologies: ["Next.js", "Node.js", "PostgreSQL", "Stripe"],
-    image: "/api/placeholder/400/250",
-    projectUrl: "#",
-    githubUrl: "#",
-    featured: true,
-    status: "completed"
-  },
-  {
-    id: 2,
-    title: "Task Management App",
-    description: "Aplicativo de gerenciamento de tarefas com colaboração em tempo real e sincronização multiplataforma.",
-    category: "Frontend",
-    technologies: ["React", "Firebase", "Tailwind CSS", "Vite"],
-    image: "/api/placeholder/400/250",
-    projectUrl: "#",
-    githubUrl: "#",
-    featured: true,
-    status: "completed"
-  },
-  {
-    id: 3,
-    title: "Health Tracking Dashboard",
-    description: "Dashboard para monitoramento de métricas de saúde com visualizações interativas e relatórios.",
-    category: "Full Stack",
-    technologies: ["Vue.js", "Express", "MongoDB", "D3.js"],
-    image: "/api/placeholder/400/250",
-    projectUrl: "#",
-    githubUrl: "#",
-    featured: true,
-    status: "completed"
-  }
-]
-
-const incomingProjects = [
-  {
-    id: 4,
-    title: "AI Content Generator",
-    description: "Plataforma de geração de conteúdo usando inteligência artificial com interface intuitiva.",
-    category: "AI/ML",
-    technologies: ["Python", "FastAPI", "React", "OpenAI"],
-    progress: 65,
-    status: "development",
-    estimatedCompletion: "Dez 2024"
-  },
-  {
-    id: 5,
-    title: "Mobile Fitness App",
-    description: "Aplicativo mobile para acompanhamento de exercícios e nutrição com realidade aumentada.",
-    category: "Mobile",
-    technologies: ["React Native", "Firebase", "ARKit", "GraphQL"],
-    progress: 30,
-    status: "planning",
-    estimatedCompletion: "Mar 2025"
-  },
-  {
-    id: 6,
-    title: "Blockchain Marketplace",
-    description: "Mercado descentralizado para NFTs com smart contracts e integração com múltiplas blockchains.",
-    category: "Web3",
-    technologies: ["Solidity", "Ethers.js", "Next.js", "IPFS"],
-    progress: 15,
-    status: "design",
-    estimatedCompletion: "Jun 2025"
-  }
-]
 
 const skillsByCategory = {
   "Frontend": [
@@ -105,6 +38,47 @@ const skillsByCategory = {
 }
 
 export default function Home() {
+  const [featuredProjects, setFeaturedProjects] = useState<Project[]>([])
+  const [incomingProjects, setIncomingProjects] = useState<Project[]>([])
+  /*const [skillsByCategory, setSkillsByCategory] = useState<any>({})*/
+
+  useEffect(() => {
+    fetchFeaturedProjects()
+    fetchIncomingProjects()
+  }, [])
+
+  const fetchFeaturedProjects = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('projects')
+        .select('*')
+        .eq('featured', true)
+        .order('created_at', { ascending: false })
+
+      if (error) throw error
+
+      setFeaturedProjects(data || [])
+    } catch (error) {
+      console.error('Error fetching featured projects:', error)
+    }
+  }
+
+  const fetchIncomingProjects = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('projects')
+        .select('*')
+        .eq('status', 'draft')
+        .order('created_at', { ascending: false })
+
+      if (error) throw error
+
+      setIncomingProjects(data || [])
+    } catch (error) {
+      console.error('Error fetching incoming projects:', error)
+    }
+  }
+
   return (
     <div className="container mx-auto px-4 py-12">
       <section className="flex flex-col items-center text-center py-20">
@@ -136,7 +110,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-20">
+      {featuredProjects.length > 0 && <section className="py-20">
         <div className="text-center mb-16">
           <div className="inline-flex items-center justify-center px-4 py-1 bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] rounded-full text-sm font-medium mb-4">
             <Star className="w-4 h-4 mr-2" />
@@ -162,9 +136,9 @@ export default function Home() {
             </Link>
           </Button>
         </div>
-      </section>
+      </section>}
 
-      <section className="py-20 bg-muted/30 rounded-3xl px-6">
+      {incomingProjects.length > 0 && <section className="py-20 bg-muted/30 rounded-3xl px-6">
         <div className="text-center mb-16">
           <div className="inline-flex items-center justify-center px-4 py-1 bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 rounded-full text-sm font-medium mb-4">
             <Clock className="w-4 h-4 mr-2" />
@@ -181,7 +155,7 @@ export default function Home() {
             <IncomingProjectCard key={project.id} project={project} index={index} />
           ))}
         </div>
-      </section>
+      </section>}
 
       <section className="py-20">
         <div className="text-center mb-16">

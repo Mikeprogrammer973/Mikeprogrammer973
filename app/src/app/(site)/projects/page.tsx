@@ -24,6 +24,7 @@ interface Project {
   project_url: string | null
   github_url: string | null
   category: string | null
+  status: string
   featured: boolean
   created_at: string
 }
@@ -177,11 +178,11 @@ export default function ProjectsPage() {
           </div>
         </div>
 
-        {/* Projects Grid/List */}
+        {/* projetos Grid/List */}
         {viewMode === 'grid' ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {filteredProjects.map((project) => (
-              <div key={project.id} className="bg-[hsl(var(--card))] rounded-2xl border border-[hsl(var(--border))] overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+              <div key={project.id} className={"bg-[hsl(var(--card))] rounded-2xl border border-[hsl(var(--border))] overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group" + (project.status === 'draft' ? ' border-dashed border-2' : '')}>
                 {project.image_url && (
                   <div translate='no' className="relative h-48 overflow-hidden">
                     <img
@@ -201,7 +202,7 @@ export default function ProjectsPage() {
                       </span>
                     )}
                     {project.featured && (
-                      <span translate='no' className="px-3 py-1.5 bg-amber-100 text-white dark:bg-amber-900/20 dark:text-amber-400 rounded-full text-xs font-medium">
+                      <span translate='no' className="px-3 py-1.5 bg-amber-200 text-amber-600 rounded-full text-xs font-medium">
                         <Star className="w-4 h-4 mr-1" />
                       </span>
                     )}
@@ -275,7 +276,7 @@ export default function ProjectsPage() {
           /* List View */
           <div className="space-y-4 mb-8">
             {filteredProjects.map((project) => (
-              <div key={project.id} className="bg-[hsl(var(--card))] rounded-2xl border border-[hsl(var(--border))] p-6 hover:shadow-md transition-all">
+              <div key={project.id} className={"bg-[hsl(var(--card))] rounded-2xl border border-[hsl(var(--border))] p-6 hover:shadow-md transition-all" + (project.status === 'draft' ? ' border-dashed border-2' : '')}>
                 <div className="flex flex-col md:flex-row md:items-center gap-6">
                   {project.image_url && (
                     <div className="w-full md:w-48 h-32 overflow-hidden rounded-lg">
@@ -296,7 +297,7 @@ export default function ProjectsPage() {
                         </span>
                       )}
                       {project.featured && (
-                        <span className="px-3 py-1.5 bg-amber-100 text-white dark:bg-amber-900/20 dark:text-amber-400 rounded-full text-xs font-medium">
+                        <span className="px-3 py-1.5 bg-amber-200 text-amber-600 rounded-full text-xs font-medium">
                           <Star className="w-4 h-4 mr-1" />
                         </span>
                       )}
