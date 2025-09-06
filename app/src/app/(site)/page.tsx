@@ -122,7 +122,7 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+        <div className="flex flex-col md:flex-row items-center justify-center gap-8 mb-16">
           {featuredProjects.map((project, index) => (
             <ProjectCard key={project.id} project={project} index={index} />
           ))}
@@ -150,7 +150,7 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="flex flex-col md:flex-row items-center justify-center gap-8">
           {incomingProjects.map((project, index) => (
             <IncomingProjectCard key={project.id} project={project} index={index} />
           ))}

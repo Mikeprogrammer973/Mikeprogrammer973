@@ -121,7 +121,7 @@ export default function EditProject() {
 
       const file = e.target.files[0]
       const fileExt = file.name.split('.').pop()
-      const fileName = `${Math.random()}.${fileExt}`
+      const fileName = `${generateSlug(formData.title)}_${Math.random()}.${fileExt}`
       const filePath = `projects/${fileName}`
 
       const { error: uploadError } = await supabase.storage
@@ -169,6 +169,15 @@ export default function EditProject() {
         .eq('id', projectId)
 
       if (error) throw error
+
+      if(formData.image_url)
+      {
+        const { error: deleteImageError } = await supabase.storage
+          .from('images')
+          .remove([formData.image_url])
+
+        if (deleteImageError) throw deleteImageError
+      }
 
       router.push('/admin/projects')
       router.refresh()

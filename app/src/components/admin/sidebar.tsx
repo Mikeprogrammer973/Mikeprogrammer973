@@ -43,8 +43,8 @@ export default function AdminSidebar() {
       href: '/admin/projects',
       icon: Briefcase,
       submenu: [
-        { name: 'Todos os Projetos', href: '/admin/projects' },
-        { name: 'Novo Projeto', href: '/admin/projects/new' },
+        { name: 'Todos', href: '/admin/projects' },
+        { name: 'Novo', href: '/admin/projects/new' },
         { name: 'Categorias', href: '/admin/projects/categories' }
       ]
     },
@@ -53,8 +53,8 @@ export default function AdminSidebar() {
       href: '/admin/skills',
       icon: Code2,
       submenu: [
-        { name: 'Todas as Habilidades', href: '/admin/skills' },
-        { name: 'Nova Habilidade', href: '/admin/skills/new' },
+        { name: 'Todas', href: '/admin/skills' },
+        { name: 'Nova', href: '/admin/skills/new' },
         { name: 'Categorias', href: '/admin/skills/categories' }
       ]
     },

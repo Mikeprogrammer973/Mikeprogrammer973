@@ -183,7 +183,7 @@ export default function ProjectPage() {
               {project.description}
             </p>
 
-            <div className="mt-10 mb-6">
+            {project.status === 'draft' && <><div className="mt-10 mb-6">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-sm font-medium text-[hsl(var(--foreground))]">Progresso Geral</span>
                 <span className="text-sm font-bold text-[hsl(var(--primary))]">{dev_stage[1].toFixed(1)}%</span>
@@ -335,7 +335,7 @@ export default function ProjectPage() {
                 </div>
                 {dev_stage[0] === 5 ? <span className="text-sm text-blue-500 font-medium">{project.stage_progress}%</span> : <span className="text-sm text-[hsl(var(--muted-foreground))]">Pendente</span>}
               </div>
-            </div>
+            </div></>}
 
           </div>
         </div>

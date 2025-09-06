@@ -82,7 +82,7 @@ export default function NewProject() {
 
       const file = e.target.files[0]
       const fileExt = file.name.split('.').pop()
-      const fileName = `${Date.now()}.${fileExt}`
+      const fileName = `${generateSlug(formData.title)}_${Date.now()}.${fileExt}`
       const filePath = `projects/${fileName}`
 
       const { error: uploadError } = await supabase.storage

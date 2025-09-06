@@ -29,7 +29,7 @@ export default async function AdminLayout({
         <html lang="pt-BR" suppressHydrationWarning className={`${inter.variable} ${poppins.variable}`}>
             <head>
             </head>
-            <body className="font-sans">
+            <body className="font-sans dark">
                 <div className="min-h-screen flex flex-row bg-black text-white">
                   
                  <AdminSidebar />

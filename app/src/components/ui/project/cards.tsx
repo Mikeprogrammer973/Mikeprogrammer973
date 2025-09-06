@@ -11,7 +11,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
   const router = useRouter()
 
   return (
-    <div onClick={(e) => {e.stopPropagation()}} className="group relative animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
+    <div onClick={(e) => {e.stopPropagation()}} className="group relative animate-fade-in-up max-w-xl" style={{ animationDelay: `${index * 0.1}s` }}>
       <Card className="overflow-hidden border-1 transition-all duration-300 group-hover:shadow-xl group-hover:border-[hsl(var(--primary))]/20">
         <div className="relative h-48 bg-gradient-to-br from-blue-400 to-purple-500 overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -84,7 +84,7 @@ function IncomingProjectCard({ project, index }: { project: Project; index: numb
   const status = statusConfig[(project.dev_stage as string )as keyof typeof statusConfig] || statusConfig.development
 
   return (
-    <div className="animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
+    <div className="animate-fade-in-up max-w-xl" style={{ animationDelay: `${index * 0.1}s` }}>
       <Card onClick={() => router.push(`/projects/${project.slug}`)} className="cursor-pointer border-2 border-dashed hover-lift transition-all duration-300">
         <CardHeader>
           <div className="flex items-center justify-between mb-2">

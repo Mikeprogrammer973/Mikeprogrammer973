@@ -35,18 +35,17 @@ export interface Project {
 }
 
 export interface Skill {
-  id: string;
+  id?: string;
   name: string;
-  slug: string;
+  slug?: string;
   category: string;
   proficiency: number;
-  description: string | null;
+  description?: string | null;
   icon: string | null;
   color: string;
-  show_in_homepage: boolean;
-  priority: number;
-  created_at: string;
-  updated_at: string;
+  featured: boolean;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface Message {

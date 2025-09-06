@@ -71,6 +71,14 @@ export default function ProjectsList() {
         .eq('id', id)
 
       if (error) throw error
+
+      if(projects.find(project => project.id === id)?.image_url) {
+        const { error: deleteImageError } = await supabase.storage
+          .from('images')
+          .remove([projects.find(project => project.id === id)?.image_url as string])
+
+        if (deleteImageError) throw deleteImageError
+      }
       
       setProjects(projects.filter(project => project.id !== id))
     } catch (error) {

@@ -1,7 +1,7 @@
 
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { 
   Code, 
   Palette, 
@@ -23,10 +23,29 @@ import {
 } from 'lucide-react'
 import { Button } from 'mdp/components/ui/button'
 import Link from 'next/link'
+import { Skill } from 'mdp/lib/supabase/types/database'
+import { supabase } from 'mdp/lib/supabase/client'
+
+interface Skills {
+    frontend: Skill[]
+    backend: Skill[]
+    database: Skill[]
+    mobile: Skill[]
+    design: Skill[]
+    devops: Skill[]
+}
 
 export default function SkillsPage() {
   const [activeCategory, setActiveCategory] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
+  const [skills, setSkills] = useState<Skills>({
+    frontend: [],
+    backend: [],
+    database: [],
+    mobile: [],
+    design: [],
+    devops: []
+  })
 
   const categories = [
     { id: 'all', label: 'Todas', icon: BarChart3, color: 'bg-gray-500' },
@@ -38,48 +57,31 @@ export default function SkillsPage() {
     { id: 'devops', label: 'DevOps', icon: Cloud, color: 'bg-cyan-500' }
   ]
 
-  const skills = {
-    frontend: [
-      { name: 'React', level: 95, icon: Code, years: 2, projects: 25, color: 'bg-blue-500', description: 'Desenvolvimento de interfaces modernas e responsivas' },
-      { name: 'Next.js', level: 90, icon: Code, years: 3, projects: 18, color: 'bg-black', description: 'Aplicações full-stack com React' },
-      { name: 'TypeScript', level: 88, icon: Code, years: 3, projects: 20, color: 'bg-blue-600', description: 'JavaScript tipado para melhor desenvolvimento' },
-      { name: 'Tailwind CSS', level: 92, icon: Palette, years: 3, projects: 22, color: 'bg-cyan-500', description: 'Framework CSS utilitário' },
-      { name: 'Vue.js', level: 78, icon: Code, years: 2, projects: 8, color: 'bg-green-500', description: 'Framework progressivo JavaScript' },
-      { name: 'Angular', level: 72, icon: Code, years: 2, projects: 6, color: 'bg-red-500', description: 'Framework para aplicações web' }
-    ],
-    backend: [
-      { name: 'Node.js', level: 88, icon: Server, years: 2, projects: 20, color: 'bg-green-600', description: 'JavaScript no servidor' },
-      { name: 'Python', level: 85, icon: Server, years: 3, projects: 15, color: 'bg-yellow-500', description: 'Desenvolvimento back-end e automação' },
-      { name: 'Express.js', level: 86, icon: Server, years: 2, projects: 18, color: 'bg-gray-600', description: 'Framework web para Node.js' },
-      { name: 'NestJS', level: 80, icon: Server, years: 2, projects: 10, color: 'bg-red-600', description: 'Framework Node.js progressivo' },
-      { name: 'PHP', level: 75, icon: Server, years: 3, projects: 12, color: 'bg-purple-500', description: 'Linguagem para desenvolvimento web' }
-    ],
-    database: [
-      { name: 'PostgreSQL', level: 85, icon: Database, years: 2, projects: 16, color: 'bg-blue-700', description: 'Banco de dados relacional' },
-      { name: 'MongoDB', level: 82, icon: Database, years: 3, projects: 14, color: 'bg-green-700', description: 'Banco de dados NoSQL' },
-      { name: 'Redis', level: 78, icon: Database, years: 2, projects: 8, color: 'bg-red-600', description: 'Armazenamento em cache' },
-      { name: 'MySQL', level: 80, icon: Database, years: 3, projects: 12, color: 'bg-orange-600', description: 'Sistema de gerenciamento de banco de dados' }
-    ],
-    mobile: [
-      { name: 'React Native', level: 84, icon: Smartphone, years: 3, projects: 10, color: 'bg-blue-400', description: 'Desenvolvimento mobile cross-platform' },
-      { name: 'Flutter', level: 75, icon: Smartphone, years: 2, projects: 6, color: 'bg-cyan-600', description: 'UI toolkit para aplicações nativas' },
-      { name: 'iOS', level: 70, icon: Smartphone, years: 2, projects: 4, color: 'bg-gray-800', description: 'Desenvolvimento para Apple' },
-      { name: 'Android', level: 72, icon: Smartphone, years: 2, projects: 5, color: 'bg-green-600', description: 'Desenvolvimento para Android' }
-    ],
-    design: [
-      { name: 'Figma', level: 90, icon: Palette, years: 2, projects: 25, color: 'bg-purple-600', description: 'Design de interfaces e prototipagem' },
-      { name: 'Adobe XD', level: 85, icon: Palette, years: 3, projects: 18, color: 'bg-pink-600', description: 'Design e prototipagem' },
-      { name: 'UI/UX', level: 88, icon: Palette, years: 2, projects: 22, color: 'bg-orange-500', description: 'Design de experiência do usuário' },
-      { name: 'Photoshop', level: 80, icon: Palette, years: 3, projects: 15, color: 'bg-blue-500', description: 'Edição e manipulação de imagens' }
-    ],
-    devops: [
-      { name: 'Docker', level: 82, icon: Cloud, years: 3, projects: 12, color: 'bg-blue-500', description: 'Containerização de aplicações' },
-      { name: 'AWS', level: 78, icon: Cloud, years: 2, projects: 8, color: 'bg-orange-500', description: 'Serviços em nuvem da Amazon' },
-      { name: 'Git', level: 90, icon: GitBranch, years: 2, projects: 25, color: 'bg-orange-600', description: 'Controle de versão' },
-      { name: 'CI/CD', level: 80, icon: Zap, years: 3, projects: 10, color: 'bg-green-500', description: 'Integração e entrega contínua' },
-      { name: 'Linux', level: 85, icon: Cpu, years: 2, projects: 15, color: 'bg-yellow-600', description: 'Sistema operacional' }
-    ]
-  }
+  useEffect(() => {
+    fetchSkills()
+  }, [])
+
+  const fetchSkills = async () => {
+    const { data, error } = await supabase
+    .from('skills')
+    .select('*')
+
+    if (error) {
+        console.error('Error fetching skills:', error)
+        return
+    }
+
+    const skillsByCategory: Skills = {
+        frontend: data.filter(skill => skill.category === 'frontend'),
+        backend: data.filter(skill => skill.category === 'backend'),
+        database: data.filter(skill => skill.category === 'database'),
+        mobile: data.filter(skill => skill.category === 'mobile'),
+        design: data.filter(skill => skill.category === 'design'),
+        devops: data.filter(skill => skill.category === 'devops')
+    }
+
+    setSkills(skillsByCategory)
+}
 
   const allSkills = Object.values(skills).flat()
   const filteredSkills = allSkills.filter(skill => {
@@ -94,9 +96,9 @@ export default function SkillsPage() {
 
   const stats = [
     { icon: Code, value: '15+', label: 'Tecnologias' },
-    { icon: Award, value: '50+', label: 'Projetos' },
+    { icon: Award, value: '20+', label: 'Projetos' },
     { icon: TrendingUp, value: '2+', label: 'Anos Exp' },
-    { icon: Target, value: '95%', label: 'Satisfação' }
+    { icon: Target, value: '90%', label: 'Satisfação' }
   ]
 
   return (
@@ -166,15 +168,15 @@ export default function SkillsPage() {
             {/* habiliades */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
             {filteredSkills.map((skill, index) => {
-                const Icon = skill.icon
+                const Icon = categories.find(c => c.id === skill.category)?.icon || Code
                 return (
                 <div key={index} className="bg-[hsl(var(--card))] rounded-2xl p-6 border border-[hsl(var(--border))] hover:shadow-xl transition-all duration-300 group">
                     <div className="flex items-start justify-between mb-4">
-                    <div className={`w-12 h-12 ${skill.color} rounded-lg flex items-center justify-center`}>
+                    <div style={{backgroundColor: `${skill.color}`}} className={`w-12 h-12 rounded-lg flex items-center justify-center`}>
                         <Icon className="w-6 h-6 text-white" />
                     </div>
                     <div className="text-right">
-                        <div className="text-2xl font-bold text-[hsl(var(--primary))]">{skill.level}%</div>
+                        <div className="text-2xl font-bold text-[hsl(var(--primary))]">{skill.proficiency}%</div>
                         <div className="text-sm text-[hsl(var(--muted-foreground))]">domínio</div>
                     </div>
                     </div>
@@ -191,14 +193,14 @@ export default function SkillsPage() {
                     <div className="w-full bg-[hsl(var(--secondary))] rounded-full h-2 mb-4">
                     <div 
                         className="h-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 transition-all duration-1000"
-                        style={{ width: `${skill.level}%` }}
+                        style={{ width: `${skill.proficiency}%` }}
                     ></div>
                     </div>
 
-                    <div className="flex justify-between text-sm text-[hsl(var(--muted-foreground))]">
-                    <span>{skill.years} anos</span>
-                    <span>{skill.projects} projetos</span>
-                    </div>
+                    {/*<div className="flex justify-between text-sm text-[hsl(var(--muted-foreground))]">
+                        <span>{skill.years} anos</span>
+                        <span>{skill.projects} projetos</span>
+                    </div>*/}
 
                     {/* nivel */}
                     <div className="flex items-center mt-3">
@@ -206,7 +208,7 @@ export default function SkillsPage() {
                         <Star
                         key={star}
                         className={`w-4 h-4 ${
-                            star <= Math.ceil(skill.level / 20)
+                            star <= Math.ceil(skill.proficiency / 20)
                             ? 'text-yellow-400 fill-current'
                             : 'text-[hsl(var(--muted-foreground))]'
                         }`}
@@ -278,13 +280,13 @@ export default function SkillsPage() {
                     <div className="flex justify-between text-sm mb-2">
                         <span>Avançado (80-100%)</span>
                         <span className="text-[hsl(var(--primary))] font-semibold">
-                        {allSkills.filter(s => s.level >= 80).length} habilidades
+                        {allSkills.filter(s => s.proficiency >= 80).length} habilidades
                         </span>
                     </div>
                     <div className="w-full bg-[hsl(var(--secondary))] rounded-full h-2">
                         <div 
                         className="h-2 rounded-full bg-green-500"
-                        style={{ width: `${(allSkills.filter(s => s.level >= 80).length / allSkills.length) * 100}%` }}
+                        style={{ width: `${(allSkills.filter(s => s.proficiency >= 80).length / allSkills.length) * 100}%` }}
                         ></div>
                     </div>
                     </div>
@@ -293,13 +295,13 @@ export default function SkillsPage() {
                     <div className="flex justify-between text-sm mb-2">
                         <span>Intermediário (60-79%)</span>
                         <span className="text-[hsl(var(--primary))] font-semibold">
-                        {allSkills.filter(s => s.level >= 60 && s.level < 80).length} habilidades
+                        {allSkills.filter(s => s.proficiency >= 60 && s.proficiency < 80).length} habilidades
                         </span>
                     </div>
                     <div className="w-full bg-[hsl(var(--secondary))] rounded-full h-2">
                         <div 
                         className="h-2 rounded-full bg-yellow-500"
-                        style={{ width: `${(allSkills.filter(s => s.level >= 60 && s.level < 80).length / allSkills.length) * 100}%` }}
+                        style={{ width: `${(allSkills.filter(s => s.proficiency >= 60 && s.proficiency < 80).length / allSkills.length) * 100}%` }}
                         ></div>
                     </div>
                     </div>
@@ -308,13 +310,13 @@ export default function SkillsPage() {
                     <div className="flex justify-between text-sm mb-2">
                         <span>Básico (0-59%)</span>
                         <span className="text-[hsl(var(--primary))] font-semibold">
-                        {allSkills.filter(s => s.level < 60).length} habilidades
+                        {allSkills.filter(s => s.proficiency < 60).length} habilidades
                         </span>
                     </div>
                     <div className="w-full bg-[hsl(var(--secondary))] rounded-full h-2">
                         <div 
                         className="h-2 rounded-full bg-red-500"
-                        style={{ width: `${(allSkills.filter(s => s.level < 60).length / allSkills.length) * 100}%` }}
+                        style={{ width: `${(allSkills.filter(s => s.proficiency < 60).length / allSkills.length) * 100}%` }}
                         ></div>
                     </div>
                     </div>
