@@ -107,7 +107,7 @@ export default function ContactPage() {
 
   if (isSubmitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[hsl(var(--background))] to-[hsl(var(--muted))]/30 py-12">
+      <div className="min-h-screen py-12">
         <div className="container mx-auto px-4 max-w-4xl">
           <div className="text-center py-16">
             <div className="flex justify-center mb-6">
