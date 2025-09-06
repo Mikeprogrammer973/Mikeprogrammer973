@@ -78,7 +78,7 @@ function IncomingProjectCard({ project, index }: { project: Project; index: numb
     planning_structure: { color: "bg-yellow-100 text-yellow-600", label: "Planejamento" },
     planning_design: { color: "bg-purple-100 text-purple-600", label: "Design" },
     testing: { color: "bg-green-100 text-green-600", label: "Teste" },
-    production_setup: { color: "bg-indigo-100 text-indigo-600", label: "Configuração de Produção" },
+    production_setup: { color: "bg-indigo-100 text-indigo-600", label: "Revisão Final" },
   }
 
   const status = statusConfig[(project.dev_stage as string )as keyof typeof statusConfig] || statusConfig.development
