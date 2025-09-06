@@ -45,7 +45,6 @@ export default function AdminSidebar() {
       submenu: [
         { name: 'Todos', href: '/admin/projects' },
         { name: 'Novo', href: '/admin/projects/new' },
-        { name: 'Categorias', href: '/admin/projects/categories' }
       ]
     },
     {
@@ -55,7 +54,6 @@ export default function AdminSidebar() {
       submenu: [
         { name: 'Todas', href: '/admin/skills' },
         { name: 'Nova', href: '/admin/skills/new' },
-        { name: 'Categorias', href: '/admin/skills/categories' }
       ]
     },
     {
@@ -73,16 +71,6 @@ export default function AdminSidebar() {
         { name: 'Categorias', href: '/admin/blog/categories' }
       ]
     },
-    {
-      name: 'Configurações',
-      href: '/admin/settings',
-      icon: Settings,
-      submenu: [
-        { name: 'Geral', href: '/admin/settings/general' },
-        { name: 'Aparência', href: '/admin/settings/appearance' },
-        { name: 'Usuários', href: '/admin/settings/users' }
-      ]
-    }
   ]
 
   const toggleSubmenu = (itemName: string) => {
