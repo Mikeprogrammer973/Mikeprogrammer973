@@ -62,7 +62,8 @@ export default function Footer() {
       links: [
         { name: 'Desenvolvimento Web', href: '/projects?category=web' },
         { name: 'Aplicativos Mobile', href: '/projects?category=mobile' },
-        { name: 'Design de UI/UX', href: '/projects?category=design' },
+        { name: 'Aplicativos Console', href: '/projects?category=console' },
+        { name: 'Aplicativos Desktop', href: '/projects?category=desktop' },      
         { name: 'Código Aberto', href: '/projects?category=opensource' }
       ]
     },
