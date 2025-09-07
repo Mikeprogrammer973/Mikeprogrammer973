@@ -39,7 +39,7 @@ export default function PrivacyPage() {
   const lastUpdated = "4 de Setembro de 2025"
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[hsl(var(--background))] to-[hsl(var(--muted)/0.3)]">
+    <div className="min-h-screen">
       <div className="container mx-auto px-4 py-12 max-w-4xl">
         <div className="text-center mb-12">
           <div className="flex justify-center mb-6">
