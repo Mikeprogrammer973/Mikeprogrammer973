@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import { supabase } from 'mdp/lib/supabase/client'
 import { Spinner } from 'mdp/components/ui/spinner'
+import { useSearchParams, useRouter } from 'next/navigation'
 
 interface Project {
   id: string
@@ -39,6 +40,20 @@ export default function ProjectsPage() {
   const [sortBy, setSortBy] = useState<'created_at' | 'title'>('created_at')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
   const [categories, setCategories] = useState<string[]>([])
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const category = searchParams.get("category") || "all";
+    setCategoryFilter(category);
+  }, [searchParams]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("category", categoryFilter);
+
+    router.replace(`?${params.toString()}`);
+  }, [categoryFilter, router, searchParams]);
 
   useEffect(() => {
     fetchProjects()

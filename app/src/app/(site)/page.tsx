@@ -1,50 +1,47 @@
 "use client"
 
 import Link from 'next/link'
-import { ArrowRight, Clock, Star, TrendingUp } from 'lucide-react'
+import { ArrowRight, Clock, Cloud, Code, Database, Palette, Server, Smartphone, Star, TrendingUp } from 'lucide-react'
 import { Button } from '../../components/ui/button'
 import { IncomingProjectCard, ProjectCard } from 'mdp/components/ui/project/cards'
 import { supabase } from 'mdp/lib/supabase/client'
-import { use, useEffect, useState } from 'react'
-import { Project } from 'mdp/lib/supabase/types/database'
+import { useEffect, useState } from 'react'
+import { Project, Skill } from 'mdp/lib/supabase/types/database'
 
-// dados de teste
-
-const skillsByCategory = {
-  "Frontend": [
-    { name: "React", level: 95, icon: "⚛️" },
-    { name: "Next.js", level: 90, icon: "▲" },
-    { name: "TypeScript", level: 88, icon: "📘" },
-    { name: "Tailwind CSS", level: 92, icon: "🎨" }
-  ],
-  "Backend": [
-    { name: "Node.js", level: 85, icon: "🟢" },
-    { name: "PostgreSQL", level: 80, icon: "🐘" },
-    { name: "Python", level: 75, icon: "🐍" },
-    { name: "Redis", level: 70, icon: "🔴" }
-  ],
-  "Mobile": [
-    { name: "React Native", level: 82, icon: "📱" },
-    { name: "Flutter", level: 68, icon: "💙" },
-    { name: "iOS", level: 60, icon: "🍎" },
-    { name: "Android", level: 65, icon: "🤖" }
-  ],
-  "DevOps": [
-    { name: "Docker", level: 78, icon: "🐳" },
-    { name: "AWS", level: 72, icon: "☁️" },
-    { name: "Git", level: 90, icon: "📝" },
-    { name: "CI/CD", level: 75, icon: "🔄" }
-  ]
+interface Skills {
+    frontend: Skill[]
+    backend: Skill[]
+    database: Skill[]
+    mobile: Skill[]
+    design: Skill[]
+    devops: Skill[]
 }
 
 export default function Home() {
   const [featuredProjects, setFeaturedProjects] = useState<Project[]>([])
   const [incomingProjects, setIncomingProjects] = useState<Project[]>([])
-  /*const [skillsByCategory, setSkillsByCategory] = useState<any>({})*/
+  const [skillsByCategory, setSkillsByCategory] = useState<Skills>({
+    frontend: [],
+    backend: [],
+    database: [],
+    mobile: [],
+    design: [],
+    devops: []
+  })
+
+  const categories = [
+    { id: 'frontend', label: 'Frontend', icon: Code, color: 'bg-blue-500' },
+    { id: 'backend', label: 'Backend', icon: Server, color: 'bg-green-500' },
+    { id: 'database', label: 'Database', icon: Database, color: 'bg-orange-500' },
+    { id: 'mobile', label: 'Mobile', icon: Smartphone, color: 'bg-purple-500' },
+    { id: 'design', label: 'Design', icon: Palette, color: 'bg-pink-500' },
+    { id: 'devops', label: 'DevOps', icon: Cloud, color: 'bg-cyan-500' }
+  ]
 
   useEffect(() => {
     fetchFeaturedProjects()
     fetchIncomingProjects()
+    fetchSkills()
   }, [])
 
   const fetchFeaturedProjects = async () => {
@@ -76,6 +73,30 @@ export default function Home() {
       setIncomingProjects(data || [])
     } catch (error) {
       console.error('Error fetching incoming projects:', error)
+    }
+  }
+
+  const fetchSkills = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('skills')
+        .select('*')
+        .eq('featured', true)
+
+      if (error) throw error
+
+      const skillsByCategory: Skills = {
+        frontend: data.filter(skill => skill.category === 'frontend'),
+        backend: data.filter(skill => skill.category === 'backend'),
+        database: data.filter(skill => skill.category === 'database'),
+        mobile: data.filter(skill => skill.category === 'mobile'),
+        design: data.filter(skill => skill.category === 'design'),
+        devops: data.filter(skill => skill.category === 'devops')
+      }
+
+      setSkillsByCategory(skillsByCategory)
+    } catch (error) {
+      console.error('Error fetching skills:', error)
     }
   }
 
@@ -174,28 +195,33 @@ export default function Home() {
             <div key={category} className="animate-fade-in-up" style={{ animationDelay: `${categoryIndex * 0.1}s` }}>
               <h3 className="text-xl font-semibold mb-6 text-[hsl(var(--foreground))] flex items-center">
                 <span className="w-2 h-2 bg-[hsl(var(--primary))] rounded-full mr-3"></span>
-                {category}
+                {categories.find(c => c.id === category)?.label}
               </h3>
               <div className="space-y-4">
-                {skills.map((skill, skillIndex) => (
-                  <div key={skill.name} className="flex items-center justify-between p-4 bg-[hsl(var(--card))] rounded-xl border hover-lift transition-all duration-300">
-                    <div className="flex items-center space-x-3">
-                      <span className="text-xl">{skill.icon}</span>
-                      <span className="font-medium">{skill.name}</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <div className="w-20 bg-secondary rounded-full h-2">
-                        <div 
-                          className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full transition-all duration-1000" 
-                          style={{ width: `${skill.level}%` }}
-                        ></div>
+                {skills.map((skill: Skill) => {
+                  const Icon = categories.find(c => c.id === skill.category)?.icon || Code
+                  return (
+                    <div key={skill.name} className="flex items-center justify-between p-4 bg-[hsl(var(--card))] rounded-xl border hover-lift transition-all duration-300">
+                      <div className="flex items-center space-x-3">
+                        <div style={{backgroundColor: `${skill.color}`}} className={`w-12 h-12 rounded-lg flex items-center justify-center`}>
+                          <Icon className="w-6 h-6 text-white" />
+                        </div>
+                        <span className="font-medium">{skill.name}</span>
                       </div>
-                      <span className="text-sm font-medium text-[hsl(var(--muted-foreground))] w-8">
-                        {skill.level}%
-                      </span>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-20 bg-secondary rounded-full h-2">
+                          <div 
+                            className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full transition-all duration-1000" 
+                            style={{ width: `${skill.proficiency}%` }}
+                          ></div>
+                        </div>
+                        <span className="text-sm font-medium text-[hsl(var(--muted-foreground))] w-8">
+                          {skill.proficiency}%
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             </div>
           ))}

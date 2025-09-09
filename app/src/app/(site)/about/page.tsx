@@ -78,7 +78,7 @@ export default function AboutPage() {
   ]
 
   const stats = [
-    { number: "50+", label: "Projetos Concluídos" },
+    { number: "20+", label: "Projetos Concluídos" },
     { number: "25+", label: "Clientes Satisfeitos" },
     { number: "3", label: "Prêmios de Design" },
     { number: "100%", label: "Entregas no Prazo" }
