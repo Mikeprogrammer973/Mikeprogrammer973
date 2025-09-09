@@ -7,6 +7,8 @@ import { ThemeProvider } from '../../components/theme/theme-provider'
 import Navbar from '../../components/ui/navbar'
 import Footer from '../../components/ui/footer'
 import GoogleTranslateLoader from '../../components/ui/google-translate-loader'
+import { Suspense } from 'react'
+import { Spinner } from 'mdp/components/ui/spinner'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -35,13 +37,6 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning className={`${inter.variable} ${poppins.variable}`}>
       <head>
-        {/*<link
-          rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-          integrity="sha512-8lYjz6jVwU3ZpWyEtH3u7L3Ho9kKnNkn6u25oLzXdxzRDN0xsnXJYpP5OSdJ2D3FvAv7wOiJjZ1B2dP04+zG8A=="
-          crossOrigin="anonymous"
-          referrerPolicy="no-referrer"
-        />*/}
         <GoogleTranslateLoader/>
       </head>
       <body className="font-sans">
@@ -54,7 +49,9 @@ export default function RootLayout({
           <div className="flex flex-col min-h-screen">
             <Navbar />
             <main className="flex-grow">
-              {children}
+              <Suspense fallback={<Spinner />}>
+                {children}
+              </Suspense>
             </main>
             <Footer />
           </div>
