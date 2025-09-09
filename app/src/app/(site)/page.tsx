@@ -178,7 +178,7 @@ export default function Home() {
         </div>
       </section>}
 
-      <section className="py-20">
+      {Object.values(skillsByCategory).flat().length > 0 && <section className="py-20">
         <div className="text-center mb-16">
           <div className="inline-flex items-center justify-center px-4 py-1 bg-green-100 text-green-600 dark:bg-green-900/20 dark:text-green-400 rounded-full text-sm font-medium mb-4">
             <TrendingUp className="w-4 h-4 mr-2" />
@@ -235,7 +235,7 @@ export default function Home() {
             </Link>
           </Button>
         </div>
-      </section>
+      </section>}
     </div>
   )
 }
