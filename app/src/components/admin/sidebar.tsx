@@ -57,6 +57,11 @@ export default function AdminSidebar() {
       ]
     },
     {
+      name: 'Perfil',
+      href: '/admin/profile',
+      icon: User
+    },
+    {
       name: 'Mensagens',
       href: '/admin/messages',
       icon: MessageSquare

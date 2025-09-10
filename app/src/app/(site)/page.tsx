@@ -6,7 +6,8 @@ import { Button } from '../../components/ui/button'
 import { IncomingProjectCard, ProjectCard } from 'mdp/components/ui/project/cards'
 import { supabase } from 'mdp/lib/supabase/client'
 import { useEffect, useState } from 'react'
-import { Project, Skill } from 'mdp/lib/supabase/types/database'
+import { Profile, Project, Skill } from 'mdp/lib/supabase/types/database'
+import { Spinner } from 'mdp/components/ui/spinner'
 
 interface Skills {
     frontend: Skill[]
@@ -18,6 +19,7 @@ interface Skills {
 }
 
 export default function Home() {
+  const [loading, setLoading] = useState(true)
   const [featuredProjects, setFeaturedProjects] = useState<Project[]>([])
   const [incomingProjects, setIncomingProjects] = useState<Project[]>([])
   const [skillsByCategory, setSkillsByCategory] = useState<Skills>({
@@ -28,6 +30,7 @@ export default function Home() {
     design: [],
     devops: []
   })
+  const [profile, setProfile] = useState<Profile>()
 
   const categories = [
     { id: 'frontend', label: 'Frontend', icon: Code, color: 'bg-blue-500' },
@@ -39,12 +42,30 @@ export default function Home() {
   ]
 
   useEffect(() => {
+    fetchProfile()
     fetchFeaturedProjects()
     fetchIncomingProjects()
     fetchSkills()
   }, [])
 
+  const fetchProfile = async () => {
+    setLoading(true)
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*').single()
+
+      if (error) throw error
+
+      setProfile(data)
+      setLoading(false)
+    } catch (error) {
+      console.error('Error fetching profile:', error)
+    }
+  }
+
   const fetchFeaturedProjects = async () => {
+    setLoading(true)
     try {
       const { data, error } = await supabase
         .from('projects')
@@ -55,12 +76,14 @@ export default function Home() {
       if (error) throw error
 
       setFeaturedProjects(data || [])
+      setLoading(false)
     } catch (error) {
       console.error('Error fetching featured projects:', error)
     }
   }
 
   const fetchIncomingProjects = async () => {
+    setLoading(true)
     try {
       const { data, error } = await supabase
         .from('projects')
@@ -71,12 +94,14 @@ export default function Home() {
       if (error) throw error
 
       setIncomingProjects(data || [])
+      setLoading(false)
     } catch (error) {
       console.error('Error fetching incoming projects:', error)
     }
   }
 
   const fetchSkills = async () => {
+    setLoading(true)
     try {
       const { data, error } = await supabase
         .from('skills')
@@ -95,9 +120,14 @@ export default function Home() {
       }
 
       setSkillsByCategory(skillsByCategory)
+      setLoading(false)
     } catch (error) {
       console.error('Error fetching skills:', error)
     }
+  }
+
+  if (loading) {
+    return <Spinner />
   }
 
   return (
@@ -105,16 +135,16 @@ export default function Home() {
       <section className="flex flex-col items-center text-center py-20">
         <div className="animate-fade-in-up mb-6">
           <div className="w-32 h-32 lg:w-48 lg:h-48 p-1 mx-auto rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg">
-            <img className='w-full h-full object-cover rounded-full' src="https://pbs.twimg.com/profile_images/1474048692374196236/qCeE57B4_400x400.jpg" alt="profile" />
+            <img className='w-full h-full object-cover rounded-full' src={profile?.photo_url} alt="profile" />
           </div>
         </div>
         
         <h1 className="text-4xl md:text-6xl font-bold mb-6 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-          Desenvolvedor <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">Full Stack</span>
+          {profile?.title.split(' ')[0]} <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">{profile?.title.slice(profile?.title.split(' ')[0].length)}</span>
         </h1>
         
         <p className="text-xl text-[hsl(var(--muted-foreground))] max-w-2xl mx-auto mb-10 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-          Transformando ideias em experiências digitais excepcionais com tecnologias modernas
+          {profile?.slogans[1]}
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>

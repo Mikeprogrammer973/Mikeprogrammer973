@@ -103,7 +103,7 @@ export default function SkillsPage() {
   const stats = [
     { icon: Code, value: '15+', label: 'Tecnologias' },
     { icon: Award, value: '20+', label: 'Projetos' },
-    { icon: TrendingUp, value: '2+', label: 'Anos Exp' },
+    { icon: TrendingUp, value: '4+', label: 'Anos Exp' },
     { icon: Target, value: '90%', label: 'Satisfação' }
   ]
 

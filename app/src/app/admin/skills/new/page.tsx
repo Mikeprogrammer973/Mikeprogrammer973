@@ -9,6 +9,7 @@ import { Button } from 'mdp/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from 'mdp/components/ui/card'
 import { ArrowLeft, Save, Palette, Sparkles } from 'lucide-react'
 import { Skill } from 'mdp/lib/supabase/types/database'
+import { useAuth } from 'mdp/hooks/useAuth'
 
 const defaultColors = [
   '#3B82F6', 
@@ -32,6 +33,7 @@ const categories = [
 ]
 
 export default function NewSkill() {
+  const {} = useAuth(true)
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState<Skill>({

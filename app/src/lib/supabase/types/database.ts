@@ -48,6 +48,75 @@ export interface Skill {
   updated_at?: string;
 }
 
+export interface SocialLinks {
+  linkedin?: string;
+  github?: string;
+  twitter?: string;
+  instagram?: string;
+  facebook?: string;
+  youtube?: string;
+  [key: string]: string | undefined;
+}
+
+export interface Profile {
+  id: string;
+  full_name: string;
+  title: string;
+  description?: string;
+  about?: string;
+  history?: string;
+  email: string;
+  phone?: string;
+  address?: string;
+  website?: string;
+  photo_url?: string;
+  resume_url?: string;
+  social_links: SocialLinks;
+  slogans: string[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Education {
+  id: string;
+  profile_id: string;
+  institution: string;
+  degree: string;
+  field: string;
+  start_date: string;
+  end_date?: string;
+  current: boolean;
+  description?: string;
+  grade?: string;
+  activities?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export type EmploymentType = 
+  | 'full-time' 
+  | 'part-time' 
+  | 'contract' 
+  | 'freelance' 
+  | 'internship';
+
+export interface Experience {
+  id: string;
+  profile_id: string;
+  company: string;
+  position: string;
+  employment_type: EmploymentType;
+  location?: string;
+  start_date: string;
+  end_date?: string;
+  current: boolean;
+  description?: string;
+  achievements: string[];
+  technologies: string[];
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Message {
   id: string;
   name: string;
@@ -81,17 +150,6 @@ export interface BlogPost {
   created_at: string;
   updated_at: string;
   published_at: string | null;
-}
-
-export interface Category {
-  id: string;
-  name: string;
-  slug: string;
-  description: string | null;
-  type: 'project' | 'skill' | 'blog';
-  color: string;
-  priority: number;
-  created_at: string;
 }
 
 export interface Setting {

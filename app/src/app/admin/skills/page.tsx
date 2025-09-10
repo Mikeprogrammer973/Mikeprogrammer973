@@ -22,6 +22,7 @@ import {
   Cloud
 } from 'lucide-react'
 import { Spinner } from 'mdp/components/ui/spinner'
+import { useAuth } from 'mdp/hooks/useAuth'
 
 interface Skill {
   id: string
@@ -35,9 +36,10 @@ interface Skill {
 }
 
 export default function AdminSkills() {
+  const {loading, session} = useAuth(true)
   const [skills, setSkills] = useState<Skill[]>([])
   const [filteredSkills, setFilteredSkills] = useState<Skill[]>([])
-  const [loading, setLoading] = useState(true)
+  const [loading_, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('all')
 
@@ -125,7 +127,7 @@ export default function AdminSkills() {
     { id: 'devops', name: 'DevOps', icon: <Cloud className="w-4 h-4" /> }
   ]
 
-  if (loading) {
+  if (loading || loading_) {
     return <Spinner />
   }
 
