@@ -1,7 +1,7 @@
 
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { 
   Mail, 
   Phone, 
@@ -18,6 +18,8 @@ import { Button } from 'mdp/components/ui/button'
 import { supabase } from 'mdp/lib/supabase/client'
 import { Spinner } from 'mdp/components/ui/spinner'
 import Link from 'next/link'
+import { Profile } from 'mdp/lib/supabase/types/database'
+import { EmailService } from 'mdp/lib/email/service'
 
 type ContactType = 'general' | 'quote' | 'project' | 'collaboration' | 'question'
 
@@ -25,6 +27,27 @@ export default function ContactPage() {
   const [selectedType, setSelectedType] = useState<ContactType>('general')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [profile, setProfile] = useState<Profile>()
+
+  useEffect(() => {
+    fetchProfile()
+  })
+
+  const fetchProfile = async () => {
+    try {
+      const { data, error } = await supabase.from('profiles').select('*').single()
+      if (error) throw error
+      setProfile(data)
+    } catch (error) {
+      console.error('Error fetching profile:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  fetchProfile()
+
 
   const contactTypes = [
     {
@@ -79,10 +102,12 @@ export default function ContactPage() {
 
     console.log(data)
 
-    setTimeout(() => {
-        setIsSubmitting(false)
-      setIsSubmitted(true)
-    }, 4000)
+    await EmailService.sendWelcomeEmail({
+      name: "Mike",
+      email: "antiquesclub007@gmail.com"
+    })
+
+    setIsSubmitting(false)
 
     /*try {
       const { error } = await supabase
@@ -101,7 +126,7 @@ export default function ContactPage() {
     }*/
   }
 
-  if(isSubmitting) {
+  if(isSubmitting || loading) {
     return <Spinner />
   }
 
@@ -163,7 +188,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Email</h3>
-                    <p className="text-[hsl(var(--muted-foreground))]">mikepascal.delta@gmail.com</p>
+                    <p className="text-[hsl(var(--muted-foreground))]">{profile?.email}</p>
                     <p className="text-sm text-[hsl(var(--muted-foreground))]/80">Resposta em até 24h</p>
                   </div>
                 </div>
@@ -174,7 +199,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Telefone</h3>
-                    <p className="text-[hsl(var(--muted-foreground))]">+1 (514) 299-8184</p>
+                    <p className="text-[hsl(var(--muted-foreground))]">{profile?.phone}</p>
                     <p className="text-sm text-[hsl(var(--muted-foreground))]/80">Seg a Sex, 9h-18h</p>
                   </div>
                 </div>
@@ -185,7 +210,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Localização</h3>
-                    <p className="text-[hsl(var(--muted-foreground))]">Montréal, Canadá</p>
+                    <p className="text-[hsl(var(--muted-foreground))]">{profile?.address}</p>
                     <p className="text-sm text-[hsl(var(--muted-foreground))]/80">Atendimento remoto worldwide</p>
                   </div>
                 </div>

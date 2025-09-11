@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Download,
   MapPin,
@@ -17,70 +17,82 @@ import {
 } from 'lucide-react'
 import { Button } from 'mdp/components/ui/button'
 import Link from 'next/link'
+import { Education, Experience, Profile } from 'mdp/lib/supabase/types/database'
+import { supabase } from 'mdp/lib/supabase/client'
+import { Spinner } from 'mdp/components/ui/spinner'
 
 export default function AboutPage() {
   const [activeTab, setActiveTab] = useState<'bio' | 'education' | 'experience'>('bio')
+  const [profile, setProfile] = useState<Profile>()
+  const [loading, setLoading] = useState(true)
+  const [educations, setEducations] = useState<Education[]>()
+  const [experiences, setExperiences] = useState<Experience[]>()
 
-  const personalInfo = {
-    name: "Mike Pascal",
-    fullName: "Mike Dervensky Pascal",
-    title: "Desenvolvedor Full Stack",
-    location: "Montréal, Canadá",
-    email: "mikepascal.delta@gmail.com",
-    experience: "2+ anos de experiência",
-    photo: "https://pbs.twimg.com/profile_images/1474048692374196236/qCeE57B4_400x400.jpg",
-    bio: "Sou um desenvolvedor full stack apaixonado por criar experiências digitais excepcionais. Combinando habilidades técnicas sólidas com sensibilidade design, transformo ideias em produtos funcionais e visualmente impressionantes."
+  useEffect(() => {
+    fetchProfile()
+    fetchEducations()
+    fetchExperiences()
+  }, [])
+
+  const fetchProfile = async () => {
+    setLoading(true)
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*').single()
+
+      if (error) throw error
+
+      setProfile(data)
+      setLoading(false)
+    } catch (error) {
+      console.error('Error fetching profile:', error)
+    }
   }
 
-  const education = [
-    {
-      degree: "Bacharelado em Ciência da Computação",
-      institution: "Universidade de São Paulo (USP)",
-      period: "2016-2020",
-      description: "Formação com ênfase em engenharia de software e inteligência artificial."
-    },
-    {
-      degree: "Pós-graduação em UX/UI Design",
-      institution: "FIAP",
-      period: "2021-2022",
-      description: "Especialização em design de interfaces e experiência do usuário."
-    },
-    {
-      degree: "Certificação AWS Solutions Architect",
-      institution: "Amazon Web Services",
-      period: "2022",
-      description: "Certificação profissional em arquitetura de soluções na nuvem."
-    }
-  ]
+  const fetchEducations = async () => {
+    setLoading(true)
+    try {
+      const { data, error } = await supabase
+        .from('educations')
+        .select('*')
+        .order('start_date', { ascending: false })
 
-  const experience = [
-    {
-      position: "Desenvolvedor Full Stack Sênior",
-      company: "TechSolutions Inc.",
-      period: "2022 - Presente",
-      description: "Liderança no desenvolvimento de aplicações web e mobile para clientes internacionais.",
-      achievements: ["Equipe de 5 desenvolvedores", "+15 projetos entregues", "95% satisfação do cliente"]
-    },
-    {
-      position: "Desenvolvedor Front-end",
-      company: "Digital Agency Brasil",
-      period: "2020 - 2022",
-      description: "Desenvolvimento de interfaces modernas e responsivas para diversos clientes.",
-      achievements: ["+30 projetos", "Design system próprio", "Prêmio de melhor interface 2021"]
-    },
-    {
-      position: "Estagiário em Desenvolvimento",
-      company: "StartUp Paulista",
-      period: "2019 - 2020",
-      description: "Primeira experiência profissional desenvolvendo features para aplicação web.",
-      achievements: ["Promovido a júnior em 6 meses", "Feature award", "Melhor estagiário do ano"]
+      if (error) throw error
+
+      setEducations(data)
+      setLoading(false)
+    } catch (error) {
+      console.error('Error fetching educations:', error)
     }
-  ]
+  }
+
+  const fetchExperiences = async () =>{
+    setLoading(true)
+    try {
+      const { data, error } = await supabase
+        .from('experiences')
+        .select('*')
+        .order('start_date', { ascending: false })
+  
+      if (error) throw error
+
+      setExperiences(data)
+      setLoading(false)
+    } catch (error) {
+      console.error('Error fetching experiences:', error)
+    }
+  }
+
+  if (loading)
+  {
+    return <Spinner />
+  }
 
   const stats = [
     { number: "20+", label: "Projetos Concluídos" },
     { number: "25+", label: "Clientes Satisfeitos" },
-    { number: "4+", label: "Anos de Experiência" },
+    { number: `${profile?.exps_years}+`, label: "Anos de Experiência" },
     { number: "100%", label: "Entregas no Prazo" }
   ]
 
@@ -88,7 +100,7 @@ export default function AboutPage() {
     <div className="min-h-screen">
         <section className="bg-gradient-to-br from-blue-600 to-purple-600 py-20">
             <div className="container mx-auto px-4 text-center">
-                <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white">Sobre Mim</h1>
+                <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white">Meu Perfil</h1>
                 <p className="text-xl text-blue-100 max-w-2xl mx-auto">
                 Conheça minha jornada, experiências e paixão por criar soluções digitais incríveis
                 </p>
@@ -101,47 +113,53 @@ export default function AboutPage() {
                 <div className="bg-[hsl(var(--card))]/80 backdrop-blur-xl rounded-3xl p-8 border border-[hsl(var(--border))] shadow-2xl hover:shadow-[0_8px_30px_rgb(0,0,0,0.2)] transition-all duration-500 text-center">
                 <div className="relative w-64 h-64 mx-auto mb-6">
                     <img
-                    src={personalInfo.photo}
-                    alt={personalInfo.name}
+                    src={profile?.photo_url}
+                    alt={profile?.full_name}
                     className="rounded-3xl object-cover shadow-lg border border-[hsl(var(--border))]"
                     />
                     <div className="absolute -inset-4 bg-gradient-to-r from-blue-500 to-purple-600 rounded-3xl opacity-25 blur-2xl"></div>
                 </div>
 
-                <h2 className="text-3xl font-bold mb-2">{personalInfo.fullName}</h2>
-                <p className="text-[hsl(var(--primary))] font-semibold mb-4 text-lg">{personalInfo.title}</p>
+                <h2 className="text-3xl font-bold mb-2">{profile?.full_name}</h2>
+                <p className="text-[hsl(var(--primary))] font-semibold mb-4 text-lg">{profile?.title}</p>
 
                 <div className="space-y-3 text-sm text-[hsl(var(--muted-foreground))]">
                     <div className="flex items-center justify-center">
                     <MapPin className="w-4 h-4 mr-2" />
-                    {personalInfo.location}
+                    {profile?.address}
                     </div>
                     <div className="flex items-center justify-center">
                     <Briefcase className="w-4 h-4 mr-2" />
-                    {personalInfo.experience}
+                    {profile?.exps_years}+ anos de experiência
                     </div>
                     <div className="flex items-center justify-center">
                     <MessageSquareIcon className="w-4 h-4 mr-2" />
-                    {personalInfo.email}
+                    {profile?.email}
                     </div>
                 </div>
 
                 {/* Botões sociais */}
                 <div className="flex justify-center space-x-4 mt-6">
-                    <Button size="sm" variant="outline" className="rounded-full hover:scale-105 transition-transform">
-                    <Linkedin className="w-4 h-4 mr-2" />
-                    LinkedIn
-                    </Button>
-                    <Button size="sm" variant="outline" className="rounded-full hover:scale-105 transition-transform">
-                    <Github className="w-4 h-4 mr-2" />
-                    GitHub
-                    </Button>
+                    <Link href="https://linkedin.com/in/mike-pascal-280927247">
+                      <Button size="sm" variant="outline" className="rounded-full hover:scale-105 transition-transform">
+                        <Linkedin className="w-4 h-4 mr-2" />
+                        LinkedIn
+                      </Button>
+                    </Link>
+                    <Link href="https://github.com/Mikeprogrammer973">
+                      <Button size="sm" variant="outline" className="rounded-full hover:scale-105 transition-transform">
+                        <Github className="w-4 h-4 mr-2" />
+                        GitHub
+                      </Button>
+                    </Link>
                 </div>
 
-                <Button className="w-full mt-6 rounded-full text-lg py-6 hover:scale-[1.02] transition-transform">
-                    <Download className="w-4 h-4 mr-2" />
-                    Baixar meu CV
-                </Button>
+                <a href={profile?.resume_url} download={profile?.resume_url?.split('/').pop()}>
+                  <Button className="w-full mt-6 rounded-full text-lg py-6 hover:scale-[1.02] transition-transform">
+                      <Download className="w-4 h-4 mr-2" />
+                      Baixar meu CV
+                  </Button>
+                </a>
                 </div>
             </div>
 
@@ -150,10 +168,10 @@ export default function AboutPage() {
                 <div className="bg-[hsl(var(--card))]/80 backdrop-blur-lg rounded-3xl p-8 border border-[hsl(var(--border))] shadow-lg mb-8">
                 <h2 className="text-2xl font-semibold mb-6">Minha História</h2>
                 <p className="text-lg text-[hsl(var(--foreground))] leading-relaxed mb-6">
-                    {personalInfo.bio}
+                    {profile?.about}
                 </p>
                 <p className="text-[hsl(var(--muted-foreground))] leading-relaxed">
-                    Minha jornada na tecnologia começou aos 15 anos, criando meus primeiros sites. Desde então, venho me especializando em desenvolvimento full stack, sempre buscando unir o melhor da tecnologia com design excepcional.
+                    {profile?.history}
                 </p>
                 </div>
 
@@ -196,22 +214,22 @@ export default function AboutPage() {
             {activeTab === 'education' && (
                 <div className="space-y-8">
                 <h2 className="text-2xl font-semibold mb-6">Formação Acadêmica</h2>
-                {education.map((item, index) => (
+                {educations?.map((item, index) => (
                     <div key={index} className="flex group">
                     <div className="flex flex-col items-center mr-6">
                         <div className="w-12 h-12 bg-[hsl(var(--primary))] rounded-full flex items-center justify-center">
                         <GraduationCap className="w-6 h-6 text-white" />
                         </div>
-                        {index < education.length - 1 && (
+                        {index < educations.length - 1 && (
                         <div className="w-1 bg-[hsl(var(--border))] flex-grow my-2"></div>
                         )}
                     </div>
                     <div className="flex-1 pb-6">
-                        <h3 className="text-lg font-semibold mb-2">{item.degree}</h3>
-                        <p className="text-[hsl(var(--primary))] font-medium mb-2">{item.institution}</p>
+                        <h3 className="text-lg font-semibold mb-2">{item.degree} {item.field}</h3>
+                        <p translate='no' className="text-[hsl(var(--primary))] font-medium mb-2">{item.institution}</p>
                         <div className="flex items-center text-sm text-[hsl(var(--muted-foreground))] mb-3">
                         <Calendar className="w-4 h-4 mr-2" />
-                        {item.period}
+                        {new Date(item.start_date).getFullYear()} - {item.current ? 'Presente' : (item.end_date ? new Date(item.end_date).getFullYear() : 'Presente')}
                         </div>
                         <p className="text-[hsl(var(--foreground))]">{item.description}</p>
                     </div>
@@ -224,31 +242,32 @@ export default function AboutPage() {
             {activeTab === 'experience' && (
                 <div className="space-y-8">
                 <h2 className="text-2xl font-semibold mb-6">Experiência Profissional</h2>
-                {experience.map((exp, index) => (
+                {experiences?.map((exp, index) => (
                     <div key={index} className="flex group">
                     <div className="flex flex-col items-center mr-6">
                         <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                         <Briefcase className="w-6 h-6 text-white" />
                         </div>
-                        {index < experience.length - 1 && (
+                        {index < experiences.length - 1 && (
                         <div className="w-1 bg-[hsl(var(--border))] flex-grow my-2"></div>
                         )}
                     </div>
                     <div className="flex-1 pb-8">
                         <h3 className="text-lg font-semibold mb-2">{exp.position}</h3>
-                        <p className="text-[hsl(var(--primary))] font-medium mb-2">{exp.company}</p>
+                        <p translate='no' className="text-[hsl(var(--primary))] font-medium mb-2">{exp.company}</p>
                         <div className="flex items-center text-sm text-[hsl(var(--muted-foreground))] mb-4">
                         <Calendar className="w-4 h-4 mr-2" />
-                        {exp.period}
+                        {new Date(exp.start_date).getFullYear()} - {exp.current ? 'Presente' : (exp.end_date ? new Date(exp.end_date).getFullYear() : 'Presente')}
                         </div>
                         <p className="text-[hsl(var(--foreground))] mb-4">{exp.description}</p>
                         <div className="flex flex-wrap gap-2">
-                        {exp.achievements.map((achievement, i) => (
+                        {exp.technologies.map((tech, i) => (
                             <span
                             key={i}
+                            translate='no'
                             className="px-3 py-1 bg-[hsl(var(--primary)/0.1)] text-[hsl(var(--primary))] rounded-full text-sm"
                             >
-                            {achievement}
+                            {tech}
                             </span>
                         ))}
                         </div>
@@ -264,7 +283,7 @@ export default function AboutPage() {
                 <h2 className="text-2xl font-semibold mb-6">Minha Jornada</h2>
                 <div className="prose prose-lg max-w-none text-[hsl(var(--foreground))]">
                     <p className="text-lg leading-relaxed">
-                    Sou um desenvolvedor full stack com mais de 5 anos de experiência criando
+                    Sou um desenvolvedor full stack com mais de {profile?.exps_years} anos de experiência criando
                     soluções digitais inovadoras. Minha paixão por tecnologia começou cedo,
                     e desde então venho me dedicando a criar experiências que unem funcionalidade
                     e design excepcional.

@@ -51,7 +51,7 @@ export default function Footer() {
       title: 'Navegação',
       links: [
         { name: 'Início', href: '/' },
-        { name: 'Sobre mim', href: '/about' },
+        { name: 'Perfil', href: '/about' },
         { name: 'Habilidades', href: '/skills' },
         { name: 'Projetos', href: '/projects' },
         { name: 'Contato', href: '/contact' }

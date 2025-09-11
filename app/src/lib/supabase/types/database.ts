@@ -62,6 +62,7 @@ export interface Profile {
   id: string;
   full_name: string;
   title: string;
+  exps_years: number;
   description?: string;
   about?: string;
   history?: string;

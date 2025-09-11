@@ -87,7 +87,7 @@ function IncomingProjectCard({ project, index }: { project: Project; index: numb
     <div className="animate-fade-in-up max-w-xl" style={{ animationDelay: `${index * 0.1}s` }}>
       <Card onClick={() => router.push(`/projects/${project.slug}`)} className="cursor-pointer border-2 border-dashed hover-lift transition-all duration-300">
         <CardHeader>
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2 justify-between mb-2">
             <span className={`px-3 py-1 rounded-full text-xs font-medium ${status.color}`}>
               {status.label}
             </span>
