@@ -224,7 +224,7 @@ export default function Home() {
           {Object.entries(skillsByCategory).map(([category, skills], categoryIndex) => (
             <div key={category} className="animate-fade-in-up" style={{ animationDelay: `${categoryIndex * 0.1}s` }}>
               <h3 className="text-xl font-semibold mb-6 text-[hsl(var(--foreground))] flex items-center">
-                <span className="w-2 h-2 bg-[hsl(var(--primary))] rounded-full mr-3"></span>
+                <span translate="no" className="w-2 h-2 bg-[hsl(var(--primary))] rounded-full mr-3"></span>
                 {categories.find(c => c.id === category)?.label}
               </h3>
               <div className="space-y-4">
@@ -236,7 +236,7 @@ export default function Home() {
                         <div style={{backgroundColor: `${skill.color}`}} className={`w-12 h-12 rounded-lg flex items-center justify-center`}>
                           <Icon className="w-6 h-6 text-white" />
                         </div>
-                        <span className="font-medium">{skill.name}</span>
+                        <span translate="no" className="font-medium">{skill.name}</span>
                       </div>
                       <div className="flex items-center space-x-2">
                         <div className="w-20 bg-secondary rounded-full h-2">
