@@ -223,8 +223,8 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           {Object.entries(skillsByCategory).map(([category, skills], categoryIndex) => (
             <div key={category} className="animate-fade-in-up" style={{ animationDelay: `${categoryIndex * 0.1}s` }}>
-              <h3 className="text-xl font-semibold mb-6 text-[hsl(var(--foreground))] flex items-center">
-                <span translate="no" className="w-2 h-2 bg-[hsl(var(--primary))] rounded-full mr-3"></span>
+              <h3 translate="no" className="text-xl font-semibold mb-6 text-[hsl(var(--foreground))] flex items-center">
+                <span className="w-2 h-2 bg-[hsl(var(--primary))] rounded-full mr-3"></span>
                 {categories.find(c => c.id === category)?.label}
               </h3>
               <div className="space-y-4">
