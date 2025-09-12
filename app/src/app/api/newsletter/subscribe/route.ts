@@ -22,14 +22,19 @@ export async function POST(request: NextRequest) {
       .eq('email', email)
       .single();
 
+    console.log("rxt: ", existing)
+    
     if (existing) {
+      console.log(existing)
       if (existing.subscribed) {
+        console.log("ativo")
         return NextResponse.json(
           { error: 'Este email já está inscrito' },
           { status: 400 }
         );
       } else {
         // Reativar inscrição
+        console.log("re-ativando")
         const { error } = await supabase
           .from('newsletter_subscriptions')
           .update({
@@ -45,6 +50,7 @@ export async function POST(request: NextRequest) {
       }
     } else {
       // Nova inscrição
+      console.log("nova")
       const { error } = await supabase
         .from('newsletter_subscriptions')
         .insert({
