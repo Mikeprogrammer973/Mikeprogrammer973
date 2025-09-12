@@ -1,7 +1,8 @@
 
-import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from 'mdp/lib/supabase/client';
-import { EmailService } from 'mdp/lib/email/service';
+import { NextRequest, NextResponse } from 'next/server'
+import { supabase } from 'mdp/lib/supabase/client'
+import { EmailFactory } from 'mdp/lib/email/Factory'
+import { sendEmail } from 'mdp/lib/email/send'
 
 export async function POST(request: NextRequest) {
   try {
@@ -58,10 +59,18 @@ export async function POST(request: NextRequest) {
 
     // email de boas-vindas
     try {
-      await EmailService.sendWelcomeEmail({
-        name: name || 'Assinante',
-        email
-      });
+          const __email = EmailFactory.createWelcomeEmail(
+             name || 'Cliente',
+             email
+          )
+          const { subject, html, text } = __email.render();
+
+          await sendEmail({
+            to: email,
+            subject,
+            html,
+            text,
+          });
     } catch (emailError) {
       console.error('Erro ao enviar email de boas-vindas:', emailError);
     }
