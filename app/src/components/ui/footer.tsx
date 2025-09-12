@@ -147,7 +147,7 @@ export default function Footer() {
                 placeholder="Seu melhor email"
                 className="px-4 py-2 text-center border border-[hsl(var(--muted-foreground))]30 rounded-lg focus:outline-none focus:ring-1 focus:ring-[hsl(var(--primary))]/10 bg-[hsl(var(--background))] flex-1 min-w-0"
               />*/}
-              <Link href="/newsletter" className="w-full">
+              <Link href="/newsletter" className="w-full block">
                 <Button className="whitespace-nowrap text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transition-all duration-300">
                    Inscrever-se na minha newsletter
                 </Button>
