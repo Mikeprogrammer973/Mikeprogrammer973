@@ -102,11 +102,6 @@ export default function ContactPage() {
 
     console.log(data)
 
-    await EmailService.sendWelcomeEmail({
-      name: "Mike",
-      email: "antiquesclub007@gmail.com"
-    })
-
     setIsSubmitting(false)
 
     /*try {

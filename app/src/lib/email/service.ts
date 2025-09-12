@@ -11,6 +11,16 @@ interface ProjectData {
   image?: string;
 }
 
+interface GeneralEmailData {
+  title: string;
+  message: string;
+  cta?: {
+    text: string;
+    url: string;
+  };
+  additionalContent?: string;
+}
+
 export class EmailService {
   static async sendWelcomeEmail(recipient: EmailRecipient) {
     return this.sendEmail('welcome', recipient);
@@ -28,7 +38,7 @@ export class EmailService {
     return this.sendEmail('unsubscribe-confirmation', recipient);
   }
 
-  static async sendGeneralEmail(recipient: EmailRecipient, data: unknown) {
+  static async sendGeneralEmail(recipient: EmailRecipient, data: GeneralEmailData) {
     return this.sendEmail('general', recipient, data);
   }
 

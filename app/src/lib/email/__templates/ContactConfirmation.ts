@@ -68,8 +68,8 @@ export class ContactConfirmationEmail extends EmailTemplate {
         font-size: 16px;
         color: #e5e5e5;
       ">
-        Enquanto isso, você pode <a href="https://seusite.com/projects" style="color: #3b82f6; text-decoration: none;">explorar meus projetos</a> 
-        ou <a href="https://seusite.com/blog" style="color: #3b82f6; text-decoration: none;">ler meus artigos mais recentes</a>.
+        Enquanto isso, você pode <a href="https://mikedp.vercel.app/projects" style="color: #3b82f6; text-decoration: none;">explorar meus projetos</a> 
+        ou <a href="https://mikedp.vercel.app/blog" style="color: #3b82f6; text-decoration: none;">ler meus artigos mais recentes</a>.
       </p>
       
       <p style="
@@ -79,7 +79,7 @@ export class ContactConfirmationEmail extends EmailTemplate {
         font-weight: bold;
       ">
         Atenciosamente,<br>
-        Marcelo Silva
+        Mike D. Pascal
       </p>
     `;
 

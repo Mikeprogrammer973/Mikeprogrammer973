@@ -65,7 +65,6 @@ export default function Home() {
   }
 
   const fetchFeaturedProjects = async () => {
-    setLoading(true)
     try {
       const { data, error } = await supabase
         .from('projects')
@@ -76,14 +75,12 @@ export default function Home() {
       if (error) throw error
 
       setFeaturedProjects(data || [])
-      setLoading(false)
     } catch (error) {
       console.error('Error fetching featured projects:', error)
     }
   }
 
   const fetchIncomingProjects = async () => {
-    setLoading(true)
     try {
       const { data, error } = await supabase
         .from('projects')
@@ -94,14 +91,12 @@ export default function Home() {
       if (error) throw error
 
       setIncomingProjects(data || [])
-      setLoading(false)
     } catch (error) {
       console.error('Error fetching incoming projects:', error)
     }
   }
 
   const fetchSkills = async () => {
-    setLoading(true)
     try {
       const { data, error } = await supabase
         .from('skills')
@@ -120,7 +115,6 @@ export default function Home() {
       }
 
       setSkillsByCategory(skillsByCategory)
-      setLoading(false)
     } catch (error) {
       console.error('Error fetching skills:', error)
     }

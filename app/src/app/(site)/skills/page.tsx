@@ -64,8 +64,6 @@ export default function SkillsPage() {
   }, [])
 
   const fetchSkills = async () => {
-    setLoading(true)
-
     const { data, error } = await supabase
     .from('skills')
     .select('*')

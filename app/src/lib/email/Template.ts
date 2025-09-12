@@ -101,7 +101,7 @@ export abstract class EmailTemplate {
     `;
   }
 
-  protected getContainer(content: string): string {
+  protected getContainer(content: string, withFooter = true): string {
     return `
       <!DOCTYPE html>
       <html>
@@ -167,7 +167,7 @@ export abstract class EmailTemplate {
                   </tr>
                 </table>
 
-                ${this.getFooter()}
+                ${withFooter ? this.getFooter() : ''}
               </td>
             </tr>
           </table>

@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
         );
         break;
 
-      /*case 'unsubscribe-confirmation':
+      case 'unsubscribe-confirmation':
         email = EmailFactory.createUnsubscribeEmail(
           recipient.name || 'Cliente',
           recipient.email
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
           recipient.email,
           data
         );
-        break;*/
+        break;
 
       default:
         return NextResponse.json(

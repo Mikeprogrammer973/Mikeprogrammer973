@@ -2,10 +2,10 @@
 import { EmailTemplate } from '../Template';
 
 interface NewProjectEmailProps {
-  projectName: string;
-  projectDescription: string;
-  projectUrl: string;
-  projectImage?: string;
+  name: string;
+  description: string;
+  url: string;
+  image?: string;
 }
 
 export class NewProjectEmail extends EmailTemplate {
@@ -17,11 +17,11 @@ export class NewProjectEmail extends EmailTemplate {
     super(recipientName, recipientEmail);
   }
 
-  protected subject = `🎉 Novo projeto lançado: ${this.props.projectName}`;
-  protected previewText = `Acabei de lançar ${this.props.projectName} - confira!`;
+  protected subject = `🎉 Novo projeto lançado: ${this.props.name}`;
+  protected previewText = `Acabei de lançar ${this.props.name} - confira!`;
 
   render() {
-    const { projectName, projectDescription, projectUrl, projectImage } = this.props;
+    const { name, description, url, image } = this.props;
 
     const content = `
       <h1 style="
@@ -43,16 +43,14 @@ export class NewProjectEmail extends EmailTemplate {
         Olá, ${this.recipientName}! Acabei de publicar um novo projeto e queria compartilhar com você.
       </p>
       
-      ${projectImage ? `
-        <div style="text-align: center; margin: 0 0 24px 0;">
+      ${image ? `
+        <div style="text-align: center; margin: 0 0 24px 0; padding: 30px; border-radius: 8px; border: 1px solid #374151; background-color: #fff; box-sizing: border-box;">
           <img 
-            src="${projectImage}" 
-            alt="${projectName}"
+            src="${image}" 
+            alt="${name}"
             style="
               max-width: 100%;
               height: auto;
-              border-radius: 8px;
-              border: 1px solid #374151;
             "
           />
         </div>
@@ -60,24 +58,26 @@ export class NewProjectEmail extends EmailTemplate {
       
       <h2 style="
         margin: 0 0 12px 0;
-        font-size: 20px;
+        font-size: 30px;
         font-weight: bold;
         color: #3b82f6;
+        text-align: center;
       ">
-        ${projectName}
+        ${name}
       </h2>
       
       <p style="
         margin: 0 0 24px 0;
         font-size: 16px;
-        color: #e5e5e5;
+        color: #a19999;
+        text-align: center;
       ">
-        ${projectDescription}
+        ${description}
       </p>
       
       <div style="text-align: center; margin: 0 0 24px 0;">
         <a
-          href="${projectUrl}"
+          href="${url}"
           style="
             display: inline-block;
             background: linear-gradient(135deg, #3b82f6, #8b5cf6);
@@ -109,7 +109,7 @@ export class NewProjectEmail extends EmailTemplate {
           💡 Gostaria de contribuir?
         </h3>
         <p style="margin: 0; color: #e5e5e5;">
-          Este projeto é open source e estou sempre aberto a feedback, sugestões e contribuições!
+          Estou sempre aberto a feedback, sugestões e contribuições!
         </p>
       </div>
       
@@ -128,7 +128,7 @@ export class NewProjectEmail extends EmailTemplate {
         font-weight: bold;
       ">
         Atenciosamente,<br>
-        Marcelo Silva
+        Mike D. Pascal
       </p>
     `;
 
