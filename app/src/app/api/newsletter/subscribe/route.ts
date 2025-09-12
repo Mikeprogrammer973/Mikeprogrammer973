@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     // Verificar se já existe
     const { data: existing } = await supabase
       .from('newsletter_subscriptions')
-      .select('id, subscribed')
+      .select('*')
       .eq('email', email)
       .single();
 
@@ -59,18 +59,18 @@ export async function POST(request: NextRequest) {
 
     // email de boas-vindas
     try {
-          const __email = EmailFactory.createWelcomeEmail(
-             name || 'Cliente',
-             email
-          )
-          const { subject, html, text } = __email.render();
+      const __email = EmailFactory.createWelcomeEmail(
+        name || 'Cliente',
+        email
+      )
+      const { subject, html, text } = __email.render();
 
-          await sendEmail({
-            to: email,
-            subject,
-            html,
-            text,
-          });
+      await sendEmail({
+        to: email,
+        subject,
+        html,
+        text,
+      });
     } catch (emailError) {
       console.error('Erro ao enviar email de boas-vindas:', emailError);
     }
