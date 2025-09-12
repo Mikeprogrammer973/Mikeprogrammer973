@@ -142,13 +142,13 @@ export default function Footer() {
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
-              <input
+              {/*<input
                 type="email"
                 placeholder="Seu melhor email"
                 className="px-4 py-2 text-center border border-[hsl(var(--muted-foreground))]30 rounded-lg focus:outline-none focus:ring-1 focus:ring-[hsl(var(--primary))]/10 bg-[hsl(var(--background))] flex-1 min-w-0"
-              />
+              />*/}
               <Button className="whitespace-nowrap text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transition-all duration-300">
-                Inscrever
+                Inscrever-se na minha newsletter
               </Button>
             </div>
           </div>
