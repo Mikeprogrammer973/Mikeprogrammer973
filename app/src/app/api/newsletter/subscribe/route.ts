@@ -16,17 +16,17 @@ export async function POST(request: NextRequest) {
     }
 
     // Verificar se já existe
-    const { data: existing } = await supabase
+    const { data } = await supabase
       .from('newsletter_subscriptions')
       .select('*')
       .eq('email', email)
       .single();
 
-    console.log("rxt: ", existing)
+    console.log("rxt: ", data)
     
-    if (existing) {
-      console.log(existing)
-      if (existing.subscribed) {
+    if (data) {
+      console.log(data)
+      if (data.subscribed) {
         console.log("ativo")
         return NextResponse.json(
           { error: 'Este email já está inscrito' },
