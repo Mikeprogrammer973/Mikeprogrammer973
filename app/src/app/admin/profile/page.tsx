@@ -85,7 +85,7 @@ export default function AdminProfile() {
         <div className="flex items-center justify-between mb-8">
             <div className="flex items-center space-x-4">
             <Button variant="outline" asChild className="border-gray-700 text-gray-300 hover:bg-gray-800 hover:text-white">
-                <Link href="/admin/dashboard">
+                <Link href="/admin">
                 <ArrowLeft className="w-4 h-4 mr-2 inline-block" />
                 Voltar
                 </Link>

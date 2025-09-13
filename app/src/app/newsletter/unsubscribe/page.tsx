@@ -86,7 +86,7 @@ export default function UnsubscribePage() {
         <div className="text-center mb-8">
           <Link href="/" className="inline-block mb-6">
             <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-sm hover:scale-105 transition-transform duration-300">
-              <span className="font-mono tracking-tighter">mdp</span>
+              <span translate='no' className="font-mono tracking-tighter">mdp</span>
             </div>
           </Link>
           <h1 className="text-3xl font-bold text-white mb-4">

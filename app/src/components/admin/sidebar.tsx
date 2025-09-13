@@ -15,7 +15,8 @@ import {
   Menu,
   X,
   ChevronDown,
-  ChevronRight
+  ChevronRight,
+  BellIcon
 } from 'lucide-react'
 import { supabase } from 'mdp/lib/supabase/client'
 
@@ -65,6 +66,11 @@ export default function AdminSidebar() {
       name: 'Mensagens',
       href: '/admin/messages',
       icon: MessageSquare
+    },
+    {
+      name: 'Newsletter',
+      href: '/admin/newsletter',
+      icon: BellIcon
     },
     {
       name: 'Blog',

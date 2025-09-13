@@ -71,6 +71,11 @@ export abstract class EmailTemplate {
             ">
               &copy; ${new Date().getFullYear()} Mike D. Pascal. Todos os direitos reservados.
             </p>
+            <p style="margin: 5px 0px; font-size: 14px; color: #a3a3a3;">
+              <a href="https://linkedin.com/in/mike-pascal-280927247" style="color: #3b82f6; text-decoration: none; margin: 0 8px;">LinkedIn</a> • 
+              <a href="https://github.com/Mikeprogrammer973" style="color: #3b82f6; text-decoration: none; margin: 0 8px;">GitHub</a> • 
+              <a href="https://x.com/IlSognatore007" style="color: #3b82f6; text-decoration: none; margin: 0 8px;">Twitter</a>
+            </p>
             <p style="
               margin: 0 0 16px 0;
               font-size: 14px;
@@ -78,7 +83,7 @@ export abstract class EmailTemplate {
               font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             ">
               <a
-                href="{{unsubscribe_link}}"
+                href="https://mikedp.vercel.app/newsletter/unsubscribe"
                 style="
                   color: #a3a3a3;
                   text-decoration: underline;

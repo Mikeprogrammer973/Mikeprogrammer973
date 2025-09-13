@@ -16,25 +16,20 @@ export async function POST(request: NextRequest) {
     }
 
     // Verificar se já existe
-    const { data } = await supabase
+    const { data: existing } = await supabase
       .from('newsletter_subscriptions')
       .select('*')
       .eq('email', email)
       .single();
-
-    console.log("rxt: ", data)
     
-    if (data) {
-      console.log(data)
-      if (data.subscribed) {
-        console.log("ativo")
+    if (existing) {
+      if (existing.subscribed) {
         return NextResponse.json(
           { error: 'Este email já está inscrito' },
           { status: 400 }
         );
       } else {
         // Reativar inscrição
-        console.log("re-ativando")
         const { error } = await supabase
           .from('newsletter_subscriptions')
           .update({
@@ -50,7 +45,6 @@ export async function POST(request: NextRequest) {
       }
     } else {
       // Nova inscrição
-      console.log("nova")
       const { error } = await supabase
         .from('newsletter_subscriptions')
         .insert({
@@ -66,7 +60,7 @@ export async function POST(request: NextRequest) {
     // email de boas-vindas
     try {
       const __email = EmailFactory.createWelcomeEmail(
-        name || 'Cliente',
+        name || 'Assinante',
         email
       )
       const { subject, html, text } = __email.render();
