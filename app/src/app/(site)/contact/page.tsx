@@ -78,7 +78,7 @@ export default function ContactPage() {
         )
       } catch (error) {
         console.error('Error sending message:', error)
-        alert('Erro ao enviar mensagem. Tente novamente.')
+        alert('Erro ao enviar mensagem. Tente novamente. 》》' + error)
       } finally {
         setIsSubmitting(false)
       }
