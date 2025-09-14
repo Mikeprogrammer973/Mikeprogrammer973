@@ -53,6 +53,8 @@ export class VerificationEmail extends EmailTemplate {
             ${this.code.split('').map((digit, index) => `
               <div style="
                 padding: 10px;
+                margin: 5px;
+                display: inline-block; 
                 background: #111827;
                 border: 2px solid #374151;
                 border-radius: 8px;
