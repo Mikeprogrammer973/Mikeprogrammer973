@@ -141,7 +141,7 @@ export default function ContactPage() {
 
   if (isVerifying) {
     return (
-      <div className='min-h-screen flex items-center justify-center'>
+      <div className='min-h-screen p-10 flex items-center justify-center'>
         <EmailVerification
           email={verificationEmail}
           onVerificationComplete={handleVerificationComplete}
