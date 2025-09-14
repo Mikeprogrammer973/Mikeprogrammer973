@@ -134,7 +134,7 @@ export default function AdminSkills() {
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center flex-wrap gap-4 justify-between mb-8">
           <div className="flex items-center space-x-4">
             <Button variant="outline" asChild className="border-gray-700 hover:bg-gray-800">
               <Link href="/admin">
