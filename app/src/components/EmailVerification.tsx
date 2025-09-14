@@ -197,7 +197,7 @@ export default function EmailVerification({
           Verificação de Email
         </h2>
         <p className="text-[hsl(var(--muted-foreground))]">
-          Enviamos um código de 7 dígitos para <strong>{email}</strong>
+          Um código de 7 dígitos foi enviado para <strong>{email}</strong>
         </p>
       </div>
 
