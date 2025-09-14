@@ -28,8 +28,8 @@ export function useEmailVerification({ onVerificationSuccess, onVerificationFail
   const handleSendCode = useCallback(async (): Promise<number> => {
     try {
         const code = Math.floor(1000000 + Math.random() * 9000000);
-
-        await EmailService.sendGeneralEmail(
+        console.log(code)
+        /*await EmailService.sendGeneralEmail(
             {
                 name: "Usuário",
                 email: verificationEmail
@@ -38,7 +38,7 @@ export function useEmailVerification({ onVerificationSuccess, onVerificationFail
                 title: "Código de verificação",
                 message: code.toString(),
             }
-        )
+        )*/
 
         return code
     } catch (error) {

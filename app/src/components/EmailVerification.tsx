@@ -114,17 +114,26 @@ export default function EmailVerification({
   // Verificar código
   const verifyCode = async (enteredCode: string) => {
     if (enteredCode !== generatedCode?.toString()) {
-      setError('Código inválido. Tente novamente.')
-      setCode(Array(7).fill(''))
-      inputRefs.current[0]?.focus()
+      setError('Código inválido. Tente novamente.');
+      setCode(Array(7).fill(''));
+      inputRefs.current[0]?.focus();
+      return;
     }
 
-    setSuccess(true)
+    setIsLoading(true);
+    setError('');
     
-    setTimeout(()=>{
-        onVerificationComplete(success)
-    }, 3000)
-
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      setSuccess(true);
+      onVerificationComplete(true);
+    } catch (err) {
+      setError('Erro na verificação. Tente novamente.');
+      onVerificationComplete(false);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Reenviar código

@@ -40,11 +40,14 @@ export default function ContactPage() {
     handleSendCode
   } = useEmailVerification({
     onVerificationSuccess: () => {
+      console.log('Verificação bem-sucedida')
       setIsSubmitting(false)
       setIsSubmitted(true)
     },
     onVerificationFailure: () => {
-      console.log('Falha na verificação do email');
+      console.log('Falha na verificação do email')
+      setIsSubmitting(false)
+      alert('Falha na verificação do email. Tente novamente.')
     }
   })
 
