@@ -3,51 +3,83 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useEmailVerification } from 'mdp/hooks/useEmailVerification';
+import EmailVerification from 'mdp/components/EmailVerification';
 
 export default function NewsletterPage() {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const {
+    isVerifying,
+    verificationEmail,
+    startVerification,
+    handleVerificationComplete,
+    handleSendCode
+  } = useEmailVerification(
+    {
+      onVerificationSuccess: async () => {
+        try {
+          const response = await fetch('/api/newsletter/subscribe', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, name }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            setMessage({
+              type: 'success',
+              text: 'Inscrição realizada com sucesso! Verifique seu email para confirmar.'
+            });
+            setEmail('');
+            setName('');
+          } else {
+            setMessage({
+              type: 'error',
+              text: data.error || 'Erro ao realizar inscrição. Tente novamente.'
+            });
+          }
+        } catch (error) {
+          setMessage({
+            type: 'error',
+            text: 'Erro de conexão. Tente novamente.'
+          });
+        } finally {
+          setIsLoading(false);
+        }
+      },
+      onVerificationFailure() {
+        console.log('Falha na verificação do email')
+        alert('Falha na verificação do email. Tente novamente.')
+      },
+    }
+  )
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setMessage(null);
 
-    try {
-      const response = await fetch('/api/newsletter/subscribe', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, name }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        setMessage({
-          type: 'success',
-          text: 'Inscrição realizada com sucesso! Verifique seu email para confirmar.'
-        });
-        setEmail('');
-        setName('');
-      } else {
-        setMessage({
-          type: 'error',
-          text: data.error || 'Erro ao realizar inscrição. Tente novamente.'
-        });
-      }
-    } catch (error) {
-      setMessage({
-        type: 'error',
-        text: 'Erro de conexão. Tente novamente.'
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    startVerification(email)
   };
+
+  if (isVerifying) {
+    return (
+      <div className='min-h-screen p-10 flex items-center justify-center'>
+        <EmailVerification
+          email={verificationEmail}
+          onVerificationComplete={handleVerificationComplete}
+          onResendCode={handleSendCode}
+          className="max-w-md mx-auto"
+        />
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen py-12">

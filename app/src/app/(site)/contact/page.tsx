@@ -18,10 +18,11 @@ import { Button } from 'mdp/components/ui/button'
 import { supabase } from 'mdp/lib/supabase/client'
 import { Spinner } from 'mdp/components/ui/spinner'
 import Link from 'next/link'
-import { Profile } from 'mdp/lib/supabase/types/database'
+import { Message, Profile } from 'mdp/lib/supabase/types/database'
 import { EmailService } from 'mdp/lib/email/service'
 import EmailVerification from 'mdp/components/EmailVerification'
 import { useEmailVerification } from 'mdp/hooks/useEmailVerification'
+import { useClientIp } from 'mdp/hooks/useClientIp'
 
 type ContactType = 'general' | 'quote' | 'project' | 'collaboration' | 'question'
 
@@ -31,6 +32,24 @@ export default function ContactPage() {
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [loading, setLoading] = useState(true)
   const [profile, setProfile] = useState<Profile>()
+  const {ip} = useClientIp()
+  const [data, setData] = useState<Message>(
+    {
+      name: '',
+      email: '',
+      phone: '',
+      company: '',
+      type: 'general',
+      subject: '',
+      message: '',
+      budget: '',
+      deadline: '',
+      read: false,
+      archived: false,
+      ip_address: ip,
+      user_agent: ''
+    }
+  )
 
   const {
     isVerifying,
@@ -39,10 +58,23 @@ export default function ContactPage() {
     handleVerificationComplete,
     handleSendCode
   } = useEmailVerification({
-    onVerificationSuccess: () => {
+    onVerificationSuccess: async () => {
       console.log('Verificação bem-sucedida')
-      setIsSubmitting(false)
-      setIsSubmitted(true)
+      
+      try {
+        const { error } = await supabase
+          .from('messages')
+          .insert([data])
+
+        if (error) throw error
+        
+        setIsSubmitted(true)
+      } catch (error) {
+        console.error('Error sending message:', error)
+        alert('Erro ao enviar mensagem. Tente novamente.')
+      } finally {
+        setIsSubmitting(false)
+      }
     },
     onVerificationFailure: () => {
       console.log('Falha na verificação do email')
@@ -108,38 +140,16 @@ export default function ContactPage() {
     setIsSubmitting(true)
     
     const formData = new FormData(e.currentTarget)
-    const data = {
-      name: formData.get('name'),
-      email: formData.get('email'),
-      phone: formData.get('phone'),
-      company: formData.get('company'),
-      type: selectedType,
-      subject: formData.get('subject'),
-      message: formData.get('message'),
-      budget: formData.get('budget'),
-      deadline: formData.get('deadline'),
-      created_at: new Date().toISOString()
-    }
+    setData((prev) =>{
+      return {
+        ...prev,
+        ...Object.fromEntries(formData),
+        type: selectedType,
+        user_agent: window.navigator.userAgent
+      }
+    })
 
-    /*setIsSubmitting(false)*/
-
-    startVerification(data.email as string)
-
-    /*try {
-      const { error } = await supabase
-        .from('messages')
-        .insert([data])
-
-      if (error) throw error
-      
-      setIsSubmitted(true)
-      e.currentTarget.reset()
-    } catch (error) {
-      console.error('Error sending message:', error)
-      alert('Erro ao enviar mensagem. Tente novamente.')
-    } finally {
-      setIsSubmitting(false)
-    }*/
+    startVerification(formData.get('email') as string)
   }
 
   if (isVerifying) {

@@ -119,17 +119,19 @@ export interface Experience {
 }
 
 export interface Message {
-  id: string;
   name: string;
   email: string;
+  phone: string | null;
+  company: string | null;
+  budget: string | null;
+  deadline: string | null;
   subject: string | null;
   message: string;
   read: boolean;
   archived: boolean;
-  category: 'general' | 'work' | 'question' | 'other';
+  type: string;
   ip_address: string | null;
   user_agent: string | null;
-  created_at: string;
 }
 
 export interface BlogPost {

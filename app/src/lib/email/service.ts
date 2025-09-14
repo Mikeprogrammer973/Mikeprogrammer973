@@ -12,6 +12,7 @@ interface ProjectData {
 }
 
 interface GeneralEmailData {
+  subject: string
   title: string;
   message: string;
   cta?: {
@@ -40,6 +41,10 @@ export class EmailService {
 
   static async sendGeneralEmail(recipient: EmailRecipient, data: GeneralEmailData) {
     return this.sendEmail('general', recipient, data);
+  }
+
+  static async sendVerificationEmail(recipient: EmailRecipient, code: string) {
+    return this.sendEmail('verification', recipient, code);
   }
 
   private static async sendEmail(type: string, recipient: EmailRecipient, data?: unknown) {

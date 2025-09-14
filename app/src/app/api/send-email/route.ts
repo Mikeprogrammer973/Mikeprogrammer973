@@ -62,6 +62,14 @@ export async function POST(request: NextRequest) {
           data
         );
         break;
+      
+      case 'verification':
+        email = EmailFactory.createVerificationEmail(
+          recipient.name || 'Cliente',
+          recipient.email,
+          data
+        );
+        break;
 
       default:
         return NextResponse.json(

@@ -3,39 +3,69 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useEmailVerification } from 'mdp/hooks/useEmailVerification';
+import EmailVerification from 'mdp/components/EmailVerification';
 
 export default function UnsubscribePage() {
   const [email, setEmail] = useState('');
   const [reason, setReason] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const {
+    isVerifying,
+    verificationEmail,
+    startVerification,
+    handleVerificationComplete,
+    handleSendCode
+  } = useEmailVerification({
+    onVerificationSuccess: async () => {
+      try {
+        const response = await fetch('/api/newsletter/unsubscribe', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, reason }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          setIsSuccess(true);
+        } else {
+          alert(data.error || 'Erro ao cancelar inscrição');
+        }
+      } catch (error) {
+        alert('Erro de conexão. Tente novamente.');
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    onVerificationFailure: () => {
+      console.log('Falha na verificação do email')
+      alert('Falha na verificação do email. Tente novamente.')
+    }
+  })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    try {
-      const response = await fetch('/api/newsletter/unsubscribe', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, reason }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        setIsSuccess(true);
-      } else {
-        alert(data.error || 'Erro ao cancelar inscrição');
-      }
-    } catch (error) {
-      alert('Erro de conexão. Tente novamente.');
-    } finally {
-      setIsLoading(false);
-    }
+    startVerification(email)
   };
+
+  if (isVerifying) {
+    return (
+      <div className='min-h-screen p-10 flex items-center justify-center'>
+        <EmailVerification
+          email={verificationEmail}
+          onVerificationComplete={handleVerificationComplete}
+          onResendCode={handleSendCode}
+          className="max-w-md mx-auto"
+        />
+      </div>
+    )
+  }
 
   if (isSuccess) {
     return (

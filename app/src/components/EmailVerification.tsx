@@ -18,7 +18,7 @@ export default function EmailVerification({
   onResendCode,
   className = ''
 }: EmailVerificationProps) {
-  const [code, setCode] = useState<string[]>(Array(7).fill(''));
+  const [code, setCode] = useState<string[]>(Array(5).fill(''));
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -56,7 +56,7 @@ export default function EmailVerification({
 
   // Focar próximo input
   const focusNextInput = (index: number) => {
-    if (index < 6) {
+    if (index < 4) {
       inputRefs.current[index + 1]?.focus();
     }
   };
@@ -77,12 +77,12 @@ export default function EmailVerification({
     setCode(newCode);
     setError('');
 
-    if (value && index < 6) {
+    if (value && index < 4) {
       focusNextInput(index);
     }
 
     // Verificar se todos os dígitos foram preenchidos
-    if (newCode.every(digit => digit !== '') && index === 6) {
+    if (newCode.every(digit => digit !== '') && index === 4) {
       verifyCode(newCode.join(''));
     }
   };
@@ -93,7 +93,7 @@ export default function EmailVerification({
       focusPrevInput(index);
     } else if (e.key === 'ArrowLeft' && index > 0) {
       focusPrevInput(index);
-    } else if (e.key === 'ArrowRight' && index < 6) {
+    } else if (e.key === 'ArrowRight' && index < 4) {
       focusNextInput(index);
     }
   };
@@ -101,9 +101,9 @@ export default function EmailVerification({
   // Colar código
   const handlePaste = (e: React.ClipboardEvent) => {
     e.preventDefault();
-    const pastedData = e.clipboardData.getData('text').slice(0, 7);
+    const pastedData = e.clipboardData.getData('text').slice(0, 5);
     
-    if (/^\d{7}$/.test(pastedData)) {
+    if (/^\d{5}$/.test(pastedData)) {
       const newCode = pastedData.split('');
       setCode(newCode);
       setError('');
@@ -115,7 +115,7 @@ export default function EmailVerification({
   const verifyCode = async (enteredCode: string) => {
     if (enteredCode !== generatedCode?.toString()) {
       setError('Código inválido. Tente novamente.');
-      setCode(Array(7).fill(''));
+      setCode(Array(5).fill(''));
       inputRefs.current[0]?.focus();
       return;
     }
@@ -124,7 +124,7 @@ export default function EmailVerification({
     setError('');
     
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 2000));
       
       setSuccess(true);
       onVerificationComplete(true);
@@ -142,7 +142,7 @@ export default function EmailVerification({
 
     setIsLoading(true);
     setError('');
-    setCode(Array(7).fill(''));
+    setCode(Array(5).fill(''));
     
     try {
       const code = await onResendCode();
@@ -163,7 +163,7 @@ export default function EmailVerification({
 
   // Resetar verificação
   const handleReset = async () => {
-    setCode(Array(7).fill(''));
+    setCode(Array(5).fill(''));
     setError('');
     setSuccess(false);
     const newCode = await onResendCode()
@@ -206,7 +206,7 @@ export default function EmailVerification({
           Verificação de Email
         </h2>
         <p className="text-[hsl(var(--muted-foreground))]">
-          Um código de 7 dígitos foi enviado para <strong>{email}</strong>
+          Um código de 5 dígitos foi enviado para <strong>{email}</strong>
         </p>
       </div>
 
@@ -226,7 +226,7 @@ export default function EmailVerification({
       {/* inputs */}
       <div className="mb-6">
         <label className="block text-sm font-medium text-[hsl(var(--foreground))] mb-3">
-          Digite o código de 7 dígitos:
+          Digite o código de 5 dígitos:
         </label>
         <div className="flex justify-center space-x-2" onPaste={handlePaste}>
           {code.map((digit, index) => (

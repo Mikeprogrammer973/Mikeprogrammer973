@@ -2,6 +2,7 @@
 import { EmailTemplate } from '../Template';
 
 interface GeneralEmailProps {
+  subject: string;
   title: string;
   message: string;
   cta?: {
@@ -20,7 +21,7 @@ export class GeneralEmail extends EmailTemplate {
     super(recipientName, recipientEmail);
   }
 
-  protected subject = this.props.title;
+  protected subject = this.props.subject;
   protected previewText = this.props.message.substring(0, 150) + '...';
 
   render() {

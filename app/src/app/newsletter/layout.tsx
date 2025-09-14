@@ -37,7 +37,7 @@ export default function NewsLetterLayout({
       <head>
         <GoogleTranslateLoader/>
       </head>
-      <body className="font-sans">
+      <body className="font-sans dark">
         <div className="flex flex-col min-h-screen bg-black">
           <div className='p-5 sticky top-0 z-10'>
             <TranslateWidget/>
