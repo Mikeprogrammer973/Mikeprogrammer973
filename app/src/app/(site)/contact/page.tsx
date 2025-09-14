@@ -20,6 +20,8 @@ import { Spinner } from 'mdp/components/ui/spinner'
 import Link from 'next/link'
 import { Profile } from 'mdp/lib/supabase/types/database'
 import { EmailService } from 'mdp/lib/email/service'
+import EmailVerification from 'mdp/components/EmailVerification'
+import { useEmailVerification } from 'mdp/hooks/useEmailVerification'
 
 type ContactType = 'general' | 'quote' | 'project' | 'collaboration' | 'question'
 
@@ -29,6 +31,22 @@ export default function ContactPage() {
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [loading, setLoading] = useState(true)
   const [profile, setProfile] = useState<Profile>()
+
+  const {
+    isVerifying,
+    verificationEmail,
+    startVerification,
+    handleVerificationComplete,
+    handleSendCode
+  } = useEmailVerification({
+    onVerificationSuccess: () => {
+      setIsSubmitting(false)
+      setIsSubmitted(true)
+    },
+    onVerificationFailure: () => {
+      console.log('Falha na verificação do email');
+    }
+  })
 
   useEffect(() => {
     fetchProfile()
@@ -100,9 +118,9 @@ export default function ContactPage() {
       created_at: new Date().toISOString()
     }
 
-    console.log(data)
+    /*setIsSubmitting(false)*/
 
-    setIsSubmitting(false)
+    startVerification(data.email as string)
 
     /*try {
       const { error } = await supabase
@@ -119,6 +137,19 @@ export default function ContactPage() {
     } finally {
       setIsSubmitting(false)
     }*/
+  }
+
+  if (isVerifying) {
+    return (
+      <div className='min-h-screen flex items-center justify-center'>
+        <EmailVerification
+          email={verificationEmail}
+          onVerificationComplete={handleVerificationComplete}
+          onResendCode={handleSendCode}
+          className="max-w-md mx-auto"
+        />
+      </div>
+    )
   }
 
   if(isSubmitting || loading) {

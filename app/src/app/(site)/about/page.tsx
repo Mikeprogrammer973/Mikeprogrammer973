@@ -35,7 +35,6 @@ export default function AboutPage() {
   }, [])
 
   const fetchProfile = async () => {
-    setLoading(true)
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -51,7 +50,6 @@ export default function AboutPage() {
   }
 
   const fetchEducations = async () => {
-    setLoading(true)
     try {
       const { data, error } = await supabase
         .from('educations')
@@ -61,14 +59,12 @@ export default function AboutPage() {
       if (error) throw error
 
       setEducations(data)
-      setLoading(false)
     } catch (error) {
       console.error('Error fetching educations:', error)
     }
   }
 
   const fetchExperiences = async () =>{
-    setLoading(true)
     try {
       const { data, error } = await supabase
         .from('experiences')
@@ -78,7 +74,6 @@ export default function AboutPage() {
       if (error) throw error
 
       setExperiences(data)
-      setLoading(false)
     } catch (error) {
       console.error('Error fetching experiences:', error)
     }
