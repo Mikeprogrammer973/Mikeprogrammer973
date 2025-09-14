@@ -69,6 +69,13 @@ export default function ContactPage() {
         if (error) throw error
         
         setIsSubmitted(true)
+
+        await EmailService.sendContactConfirmation(
+          {
+            name: data.name,
+            email: data.email
+          }
+        )
       } catch (error) {
         console.error('Error sending message:', error)
         alert('Erro ao enviar mensagem. Tente novamente.')
