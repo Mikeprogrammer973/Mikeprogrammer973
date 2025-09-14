@@ -83,7 +83,7 @@ export class ContactConfirmationEmail extends EmailTemplate {
       </p>
     `;
 
-    const html = this.getContainer(content);
+    const html = this.getContainer(content, false);
     const text = this.generateTextVersion(content);
 
     return { subject: this.subject, html, text };
