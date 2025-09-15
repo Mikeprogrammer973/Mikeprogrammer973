@@ -267,7 +267,7 @@ export default function ExperienceManager({ experiences, onUpdate }: ExperienceM
                   type="button"
                   className="bg-blue-600 hover:bg-blue-700 text-white"
                 >
-                  Adicionar
+                  <Plus className="w-4 h-4" />
                 </Button>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -300,7 +300,7 @@ export default function ExperienceManager({ experiences, onUpdate }: ExperienceM
                   type="button"
                   className="bg-blue-600 hover:bg-blue-700 text-white"
                 >
-                  Adicionar
+                  <Plus className="w-4 h-4" />
                 </Button>
               </div>
               <div className="flex flex-wrap gap-2">
