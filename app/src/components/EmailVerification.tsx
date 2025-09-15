@@ -126,7 +126,10 @@ export default function EmailVerification({
     try {
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      setSuccess(true);
+      setSuccess(true)
+      
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      
       onVerificationComplete(true);
     } catch (err) {
       setError('Erro na verificação. Tente novamente.');
