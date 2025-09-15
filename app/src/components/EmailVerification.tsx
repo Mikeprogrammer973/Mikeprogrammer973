@@ -270,7 +270,9 @@ export default function EmailVerification({
       </div>
 
       {isLoading && (
-        <Spinner />
+        <div className="absolute inset-0 bg-[hsl(var(--background))] rounded-xl flex items-center justify-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[hsl(var(--primary))]"></div>
+        </div>
       )}
     </div>
   );
