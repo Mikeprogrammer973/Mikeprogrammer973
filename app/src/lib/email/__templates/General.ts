@@ -100,7 +100,7 @@ export class GeneralEmail extends EmailTemplate {
         color: #e5e5e5;
       ">
         Se você tiver alguma dúvida ou precisar de mais informações, não hesite em responder este email 
-        ou <a href="https://mikedp.vercel.app/contact" style="color: #3b82f6; text-decoration: none;">entrar em contato diretamente</a>.
+        ou <a href="https://mikedp.vercel.app/contact" style="color: #3b82f6; text-decoration: none;">entrar em contato diretamente comigo</a>.
       </p>
       
       <p style="
