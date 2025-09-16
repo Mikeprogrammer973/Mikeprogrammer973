@@ -72,7 +72,7 @@ export class UnsubscribeEmail extends EmailTemplate {
       ">
         Mesmo assim, você ainda pode me acompanhar através das redes sociais ou 
         <a href="https://mikedp.vercel.app/contact" style="color: #3b82f6; text-decoration: none;">entrar em contato</a> 
-        diretamente se precisar de algo.
+        diretamente comigo se precisar de algo.
       </p>
       
       <div style="
