@@ -3,7 +3,7 @@ import { EmailTemplate } from '../Template';
 
 export class ContactConfirmationEmail extends EmailTemplate {
   protected subject = 'Mensagem recebida! 📩';
-  protected previewText = 'Agradeço seu contato e retornarei em breve.';
+  protected previewText = 'Agradeço o seu contato e retornarei em breve.';
 
   render() {
     const content = `
@@ -14,7 +14,7 @@ export class ContactConfirmationEmail extends EmailTemplate {
         color: #f5f5f5;
         text-align: center;
       ">
-        Obrigado pelo contato, ${this.recipientName}! 🙏
+        Obrigado por ter me contatado, ${this.recipientName}! 🙏
       </h1>
       
       <p style="
