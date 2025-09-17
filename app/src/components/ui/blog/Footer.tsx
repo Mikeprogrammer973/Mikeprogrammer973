@@ -130,7 +130,7 @@ export default function BlogFooter() {
             </p>
             <Button
                 onClick={() => router.push("/newsletter")}
-                className="whitespace-nowrap text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transition-all duration-300">
+                className="whitespace-nowrap w-full text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transition-all duration-300">
                 Inscrever-se na minha newsletter
             </Button>
           </div>
