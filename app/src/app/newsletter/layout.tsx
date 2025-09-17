@@ -2,6 +2,7 @@
 import type { Metadata } from 'next'
 import { Inter, Poppins } from 'next/font/google'
 import 'mdp/styles/globals.css'
+import 'mdp/styles/gg-tr-ovrd.css'
 import { Suspense } from 'react'
 import { Spinner } from 'mdp/components/ui/spinner'
 import GoogleTranslateLoader from 'mdp/components/ui/google-translate-loader'
