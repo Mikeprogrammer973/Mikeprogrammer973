@@ -3,6 +3,7 @@
 import { ThemeProvider } from 'mdp/components/theme/theme-provider';
 import 'mdp/styles/globals.css';
 import { Metadata } from 'next';
+import { Suspense } from 'react';
 
 export const metadata: Metadata = {
   title: 'Mike D. Pascal | Blog',
@@ -30,7 +31,9 @@ export default function BlogLayout({
           disableTransitionOnChange
         >
             <main>
-                {children}
+                <Suspense>
+                  {children}
+                </Suspense>
             </main>
         </ThemeProvider>
       </body>
