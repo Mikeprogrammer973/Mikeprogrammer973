@@ -31,7 +31,7 @@ export default function BlogHeader() {
     { name: 'Início', href: '/blog', icon: HomeIcon },
     { name: 'Categorias', href: '/blog/categories', icon: MenuSquare },
     { name: 'Autores', href: '/blog/authors', icon: Users },
-    { name: 'Sobre', href: '/blog/about', icon: InfoIcon },
+    { name: 'Info', href: '/blog/about', icon: InfoIcon },
   ];
 
   const handleSearch = (e: React.FormEvent) => {
@@ -142,7 +142,7 @@ export default function BlogHeader() {
                   href="/blog/login"
                   className="px-4 py-2 rounded-md text-sm font-medium hover:bg-[hsl(var(--accent))]"
                 >
-                  Entrar
+                  Logar-se
                 </Link>
                 <Link
                   href="/blog/register"
@@ -206,7 +206,7 @@ export default function BlogHeader() {
                     className="px-2 py-2 text-center rounded-md hover:bg-[hsl(var(--accent))]"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    Entrar
+                    Logar-se
                   </Link>
                   <Link
                     href="/blog/register"
