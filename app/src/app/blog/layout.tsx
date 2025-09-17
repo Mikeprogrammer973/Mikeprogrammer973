@@ -3,6 +3,7 @@
 import { ThemeProvider } from 'mdp/components/theme/theme-provider';
 import GoogleTranslateLoader from 'mdp/components/ui/google-translate-loader'
 import 'mdp/styles/globals.css';
+import 'mdp/styles/gg-tr-ovrd.css'
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 
