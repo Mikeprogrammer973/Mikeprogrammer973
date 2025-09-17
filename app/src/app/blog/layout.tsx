@@ -1,6 +1,7 @@
 
 //import { UserProvider } from 'mdp/lib/contexts/UserContext';
 import { ThemeProvider } from 'mdp/components/theme/theme-provider';
+import GoogleTranslateLoader from 'mdp/components/ui/google-translate-loader'
 import 'mdp/styles/globals.css';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
@@ -22,6 +23,7 @@ export default function BlogLayout({
     //<UserProvider>
       <html lang="pt-BR" suppressHydrationWarning className="font-sans">
       <head>
+        <GoogleTranslateLoader/>
       </head>
       <body>
         <ThemeProvider
