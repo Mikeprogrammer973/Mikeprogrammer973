@@ -4,7 +4,7 @@
 import Link from 'next/link'
 import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
-import { Moon, Sun, Menu, X } from 'lucide-react'
+import { Moon, Sun, Menu, X, HomeIcon, User, Wrench, FileIcon, MessageSquareIcon, Globe } from 'lucide-react'
 import Logo from './logo'
 import TranslateWidget from './translate-widget'
 import { usePathname } from 'next/navigation'
@@ -28,11 +28,12 @@ export default function Navbar() {
   }
 
   const navItems = [
-    { name: 'Início', href: '/' },
-    { name: 'Perfil', href: '/about' },
-    { name: 'Habilidades', href: '/skills' },
-    { name: 'Projetos', href: '/projects' },
-    { name: 'Contato', href: '/contact' },
+    { name: 'Início', href: '/', icon: HomeIcon },
+    { name: 'Perfil', href: '/about', icon: User },
+    { name: 'Habilidades', href: '/skills', icon: Wrench },
+    { name: 'Projetos', href: '/projects', icon: FileIcon },
+    { name: 'Contato', href: '/contact', icon: MessageSquareIcon },
+    { name: 'Blog', href: '/blog', icon: Globe }
   ]
 
   return (
@@ -45,7 +46,7 @@ export default function Navbar() {
             <Link
               key={item.name}
               href={item.href}
-              className={"transition-colors relative group" + (is_Selected(item.href) ? ' text-[hsl(var(--primary))]/70 hover:[hsl(var(--primary))]' : ' text-[hsl(var(--foreground))]/70 hover:text-[hsl(var(--foreground))] ')}
+              className={"transition-colors relative group" + (is_Selected(item.href) ? ' text-[hsl(var(--foreground))] font-bold' : ' text-[hsl(var(--foreground))]/70 hover:text-[hsl(var(--foreground))] ')}
               aria-current={is_Selected(item.href)}
             >
               {item.name}
@@ -83,9 +84,10 @@ export default function Navbar() {
               <Link
                 key={item.name}
                 href={item.href}
-                className={"transition-colors py-2 font-medium" + (is_Selected(item.href) ? ' text-[hsl(var(--primary))]/70 hover:[hsl(var(--primary))]' : ' text-[hsl(var(--foreground))]/70 hover:text-[hsl(var(--foreground))]')}
+                className={"transition-colors flex gap-2 py-2 font-medium" + (is_Selected(item.href) ? ' text-[hsl(var(--foreground))]/ font-bold' : ' text-[hsl(var(--foreground))]/70 hover:text-[hsl(var(--foreground))]')}
                 onClick={() => setIsOpen(false)}
               >
+                <item.icon className='w-4' />
                 {item.name}
               </Link>
             ))}
