@@ -150,7 +150,7 @@ export default function BlogPage() {
             <div className="flex flex-wrap justify-center gap-2 mb-6">
               {searchQuery && (
                 <span className="bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] px-3 py-1 rounded-full text-sm flex items-center">
-                  Busca: "{searchQuery}"
+                  Busca: &ldquo;{searchQuery}&ldquo;
                   <button
                     onClick={() => setSearchQuery('')}
                     className="ml-2 hover:text-[hsl(var(--primary))]/70"
