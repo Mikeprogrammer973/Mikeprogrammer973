@@ -23,7 +23,7 @@ export default function BlogFooter() {
       { name: 'Artigos', href: '/blog/posts' },
       { name: 'Categorias', href: '/blog/categories' },
       { name: 'Autores', href: '/blog/authors' },
-      { name: 'Sobre', href: '/blog/about' },
+      { name: 'Info', href: '/blog/about' },
     ],
     legal: [
       { name: 'Privacidade', href: '/blog/privacy' },
