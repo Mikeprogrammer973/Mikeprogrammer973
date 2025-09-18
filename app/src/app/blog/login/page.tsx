@@ -23,7 +23,7 @@ export default function LoginPage() {
     setError('');
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      /*const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
@@ -35,7 +35,8 @@ export default function LoginPage() {
 
       if (data.user) {
         router.push('/blog/dashboard');
-      }
+      }*/
+      await new Promise(resolve => setTimeout(resolve, 3000))
     } catch (error: unknown) {
       setError(error as  string);
     } finally {

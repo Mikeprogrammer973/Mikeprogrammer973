@@ -3,7 +3,6 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { X, RotateCcw, MailCheck } from 'lucide-react';
-import { Spinner } from './ui/spinner';
 
 interface EmailVerificationProps {
   email: string;

@@ -4,10 +4,10 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { createClient } from '@/lib/supabase/client';
+import { supabase } from 'mdp/lib/supabase/client';
 import { Eye, EyeOff, UserPlus, Mail, User, Lock } from 'lucide-react';
-import BlogHeader from '@/components/blog/Header';
-import BlogFooter from '@/components/blog/Footer';
+import BlogHeader from 'mdp/components/ui/blog/Header';
+import BlogFooter from 'mdp/components/ui/blog/Footer';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -21,7 +21,6 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
-  const supabase = createClient();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -42,75 +41,38 @@ export default function RegisterPage() {
       return;
     }
 
-    if (formData.password.length < 6) {
-      setError('A senha deve ter pelo menos 6 caracteres');
+    if (formData.password.length < 8) {
+      setError('A senha deve ter pelo menos 8 caracteres');
       setLoading(false);
       return;
     }
 
     try {
-      // 1. Criar usuário no Auth
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-        options: {
-          data: {
-            username: formData.username
-          }
-        }
-      });
-
-      if (authError) {
-        setError(authError.message);
-        return;
-      }
-
-      if (authData.user) {
-        // 2. Criar perfil do usuário
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .insert([
-            {
-              id: authData.user.id,
-              username: formData.username,
-              email: formData.email,
-              avatar_url: null,
-              bio: null,
-              website: null
-            }
-          ]);
-
-        if (profileError) {
-          setError(profileError.message);
-          return;
-        }
-
-        // 3. Redirecionar para dashboard
-        router.push('/blog/dashboard');
-      }
-    } catch (error: any) {
-      setError(error.message);
+      // criar usuário
+      await new Promise(resolve => setTimeout(resolve, 3000))
+    } catch (error: unknown) {
+      setError(error as string);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-[hsl(var(--background))] flex flex-col">
       <BlogHeader />
       
       <main className="flex-grow flex items-center justify-center py-12 px-4">
         <div className="max-w-md w-full space-y-8">
           <div className="text-center">
             <h1 className="text-3xl font-bold">Criar Conta</h1>
-            <p className="text-muted-foreground mt-2">
+            <p className="text-[hsl(var(--muted-foreground))] mt-2">
               Junte-se à nossa comunidade de escritores
             </p>
           </div>
 
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             {error && (
-              <div className="bg-destructive/15 text-destructive p-3 rounded-md text-sm">
+              <div className="bg-[hsl(var(--destructive))]/10 text-[hsl(var(--destructive))] p-3 rounded-md text-sm">
                 {error}
               </div>
             )}
@@ -121,7 +83,7 @@ export default function RegisterPage() {
                   Nome de Usuário
                 </label>
                 <div className="relative">
-                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[hsl(var(--muted-foreground))] w-5 h-5" />
                   <input
                     id="username"
                     name="username"
@@ -129,7 +91,7 @@ export default function RegisterPage() {
                     required
                     value={formData.username}
                     onChange={handleChange}
-                    className="w-full px-10 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full px-10 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))]"
                     placeholder="seunome"
                   />
                 </div>
@@ -140,7 +102,7 @@ export default function RegisterPage() {
                   Email
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[hsl(var(--muted-foreground))] w-5 h-5" />
                   <input
                     id="email"
                     name="email"
@@ -148,7 +110,7 @@ export default function RegisterPage() {
                     required
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full px-10 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full px-10 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))]"
                     placeholder="seu@email.com"
                   />
                 </div>
@@ -159,7 +121,7 @@ export default function RegisterPage() {
                   Senha
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[hsl(var(--muted-foreground))] w-5 h-5" />
                   <input
                     id="password"
                     name="password"
@@ -167,7 +129,7 @@ export default function RegisterPage() {
                     required
                     value={formData.password}
                     onChange={handleChange}
-                    className="w-full px-10 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary pr-10"
+                    className="w-full px-10 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))] pr-10"
                     placeholder="••••••••"
                   />
                   <button
@@ -176,9 +138,9 @@ export default function RegisterPage() {
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
-                      <EyeOff className="h-5 w-5 text-muted-foreground" />
+                      <EyeOff className="h-5 w-5 text-[hsl(var(--muted-foreground))]" />
                     ) : (
-                      <Eye className="h-5 w-5 text-muted-foreground" />
+                      <Eye className="h-5 w-5 text-[hsl(var(--muted-foreground))]" />
                     )}
                   </button>
                 </div>
@@ -189,7 +151,7 @@ export default function RegisterPage() {
                   Confirmar Senha
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[hsl(var(--muted-foreground))] w-5 h-5" />
                   <input
                     id="confirmPassword"
                     name="confirmPassword"
@@ -197,7 +159,7 @@ export default function RegisterPage() {
                     required
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    className="w-full px-10 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary pr-10"
+                    className="w-full px-10 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))] pr-10"
                     placeholder="••••••••"
                   />
                   <button
@@ -206,9 +168,9 @@ export default function RegisterPage() {
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   >
                     {showConfirmPassword ? (
-                      <EyeOff className="h-5 w-5 text-muted-foreground" />
+                      <EyeOff className="h-5 w-5 text-[hsl(var(--muted-foreground))]" />
                     ) : (
-                      <Eye className="h-5 w-5 text-muted-foreground" />
+                      <Eye className="h-5 w-5 text-[hsl(var(--muted-foreground))]" />
                     )}
                   </button>
                 </div>
@@ -219,7 +181,7 @@ export default function RegisterPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-primary text-primary-foreground py-2 px-4 rounded-md hover:opacity-90 disabled:opacity-50 flex items-center justify-center"
+                className="w-full bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] py-2 px-4 rounded-md hover:opacity-90 disabled:opacity-50 flex items-center justify-center"
               >
                 {loading ? (
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-current"></div>
@@ -233,7 +195,7 @@ export default function RegisterPage() {
             </div>
 
             <div className="text-center text-sm">
-              <span className="text-muted-foreground">Já tem uma conta? </span>
+              <span className="text-[hsl(var(--muted-foreground))]">Já tem uma conta? </span>
               <Link href="/blog/login" className="text-primary hover:underline">
                 Fazer login
               </Link>
@@ -245,4 +207,4 @@ export default function RegisterPage() {
       <BlogFooter />
     </div>
   );
-            }
+}
