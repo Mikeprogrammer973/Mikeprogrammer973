@@ -21,6 +21,20 @@ export function useAuth(redirectIfNotAuth = true) {
         console.error('Erro ao verificar sessão:', error)
       }
 
+      const { data: user, error: userError } = await supabase.auth.getUser()
+
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('email', user?.user?.email ?? '')
+        .single()
+
+      if (profileError) {
+        alert('Acceso negado!')
+        await supabase.auth.signOut()
+        return
+      }
+
       setSession(session)
       setLoading(false)
 

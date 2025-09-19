@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { supabase } from 'mdp/lib/supabase/client';
@@ -20,11 +20,18 @@ import {
 } from 'lucide-react';
 import Logo from '../logo';
 
+interface User {
+  id: string;
+  username: string;
+  avatar_url: string;
+}
+
 export default function BlogHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const pathname = usePathname();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { theme, setTheme } = useTheme();
 
   const navigation = [
@@ -46,8 +53,14 @@ export default function BlogHeader() {
     window.location.href = '/blog';
   };
 
-  // Verificar se o usuário está autenticado - teste
-  const isAuthenticated = false
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      const { data } = await supabase.auth.getSession();
+      setIsAuthenticated(data.session !== null);
+    };
+
+    checkAuthentication();
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 bg-[hsl(var(--background))]/80 backdrop-blur-md border-b">
@@ -113,18 +126,11 @@ export default function BlogHeader() {
                 {isUserMenuOpen && (
                   <div className="absolute bg-[hsl(var(--background))]/95 right-0 mt-2 w-48 bg-popover border rounded-md shadow-lg py-1 z-50">
                     <Link
-                      href="/blog/dashboard"
+                      href={"/blog/dashboard"}
                       className="block px-4 py-2 text-sm hover:bg-[hsl(var(--accent))]"
                       onClick={() => setIsUserMenuOpen(false)}
                     >
                       Dashboard
-                    </Link>
-                    <Link
-                      href="/blog/profile"
-                      className="block px-4 py-2 text-sm hover:bg-[hsl(var(--accent))]"
-                      onClick={() => setIsUserMenuOpen(false)}
-                    >
-                      Perfil
                     </Link>
                     <button
                       onClick={handleSignOut}

@@ -5,15 +5,13 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff } from 'lucide-react'
 import { supabase } from 'mdp/lib/supabase/client'
-import { useAuth } from 'mdp/hooks/useAuth'
 import { Spinner } from 'mdp/components/ui/spinner'
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [_loading, setLoading] = useState(false)
-  const { session, loading } = useAuth()
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const router = useRouter()
 
@@ -29,8 +27,6 @@ export default function AdminLogin() {
       })
 
       if (error) throw error
-
-      await supabase.auth.getSession()
       
       router.push('/admin')
       router.refresh()
@@ -45,7 +41,7 @@ export default function AdminLogin() {
     }
   }
 
-  if (loading || _loading) {
+  if (loading) {
     return <Spinner />
   }
 

@@ -48,12 +48,46 @@ export default function RegisterPage() {
     }
 
     try {
-      // criar usuário
-      await new Promise(resolve => setTimeout(resolve, 3000))
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
+            username: formData.username
+          }
+        }
+      });
+
+      if (authError) {
+        setError(authError.message);
+        return;
+      }
+
+      if (authData.user) {
+        const { error: profileError } = await supabase
+          .from('authors')
+          .insert([
+            {
+              user_id: authData.user.id,
+              username: formData.username,
+              email: formData.email,
+              avatar_url: null,
+              bio: null,
+              website: null
+            }
+          ]);
+
+        if (profileError) {
+          setError(profileError.message);
+          return
+        }
+
+        router.push(`/blog/${authData.user.id}/dashboard`);
+      }
     } catch (error: unknown) {
-      setError(error as string);
+      setError(error as string)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   };
 
