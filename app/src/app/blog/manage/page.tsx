@@ -216,7 +216,7 @@ export default function DashboardPage() {
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-semibold">Meus Posts</h2>
                 <button
-                  onClick={() => router.push('/blog/post/new')}
+                  onClick={() => router.push('/blog/manage/posts/new')}
                   className="bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] px-4 py-2 rounded-md hover:opacity-90 flex items-center space-x-2"
                 >
                   <PlusCircle className="w-4 h-4" />
@@ -241,7 +241,7 @@ export default function DashboardPage() {
                     Comece criando seu primeiro post!
                   </p>
                   <button
-                    onClick={() => router.push('/blog/post/new')}
+                    onClick={() => router.push('/blog/manage/posts/new')}
                     className="bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] px-4 py-2 rounded-md hover:opacity-90"
                   >
                     Criar Primeiro Post

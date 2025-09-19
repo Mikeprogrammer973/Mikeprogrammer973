@@ -1,11 +1,14 @@
-// src/app/blog/post/create/page.tsx
+
 'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
-import RichTextEditor from '@/components/blog/RichTextEditor';
-import BlogHeader from '@/components/blog/Header';
+import { supabase } from 'mdp/lib/supabase/client'
+import BlogHeader from 'mdp/components/ui/blog/Header';
+import RichTextEditor from 'mdp/components/ui/blog/PostEditor';
+import BlogFooter from 'mdp/components/ui/blog/Footer';
+import { ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
 
 export default function CreatePostPage() {
   const [title, setTitle] = useState('');
@@ -15,7 +18,6 @@ export default function CreatePostPage() {
   const [tags, setTags] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
-  const supabase = createClient();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,12 +59,17 @@ export default function CreatePostPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[hsl(var(--background))]">
       <BlogHeader />
       
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold mb-8">Criar Novo Post</h1>
+          <h1 className="text-3xl font-bold mb-8 flex gap-4 items-center">
+            <Link title='Voltar' href={'/blog/manage'} className='py-1 mr-2 rounded-md text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--primary))] hover:text-[hsl(var(--muted))]'>
+                <ArrowLeft className='w-10' />
+            </Link>
+            <span>Criar Novo Post</span>
+          </h1>
           
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
@@ -74,7 +81,7 @@ export default function CreatePostPage() {
                 id="title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-4 py-2 border rounded-md"
+                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))]"
                 required
               />
             </div>
@@ -88,7 +95,7 @@ export default function CreatePostPage() {
                 value={excerpt}
                 onChange={(e) => setExcerpt(e.target.value)}
                 rows={3}
-                className="w-full px-4 py-2 border rounded-md"
+                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))]"
                 required
               />
             </div>
@@ -112,16 +119,16 @@ export default function CreatePostPage() {
                   id="category"
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="w-full px-4 py-2 border rounded-md"
+                  className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))]"
                   required
                 >
-                  <option value="">Selecione uma categoria</option>
-                  <option value="React">React</option>
-                  <option value="Next.js">Next.js</option>
-                  <option value="CSS">CSS</option>
-                  <option value="JavaScript">JavaScript</option>
-                  <option value="TypeScript">TypeScript</option>
-                  <option value="Banco de Dados">Banco de Dados</option>
+                  <option className='bg-[hsl(var(--primary-foreground))]' value="">Selecione uma categoria</option>
+                  <option className='bg-[hsl(var(--primary-foreground))]' value="React">React</option>
+                  <option className='bg-[hsl(var(--primary-foreground))]' value="Next.js">Next.js</option>
+                  <option className='bg-[hsl(var(--primary-foreground))]' value="CSS">CSS</option>
+                  <option className='bg-[hsl(var(--primary-foreground))]' value="JavaScript">JavaScript</option>
+                  <option className='bg-[hsl(var(--primary-foreground))]' value="TypeScript">TypeScript</option>
+                  <option className='bg-[hsl(var(--primary-foreground))]' value="Banco de Dados">Banco de Dados</option>
                 </select>
               </div>
 
@@ -134,7 +141,7 @@ export default function CreatePostPage() {
                   id="tags"
                   value={tags}
                   onChange={(e) => setTags(e.target.value)}
-                  className="w-full px-4 py-2 border rounded-md"
+                  className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))]"
                   placeholder="react, nextjs, tutorial"
                 />
               </div>
@@ -144,7 +151,7 @@ export default function CreatePostPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="bg-primary text-primary-foreground px-6 py-2 rounded-md hover:opacity-90 disabled:opacity-50"
+                className="bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] px-6 py-2 rounded-md hover:opacity-90 disabled:opacity-50"
               >
                 {isSubmitting ? 'Salvando...' : 'Salvar como Rascunho'}
               </button>
@@ -163,6 +170,7 @@ export default function CreatePostPage() {
           </form>
         </div>
       </main>
+      <BlogFooter />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-// src/components/blog/RichTextEditor.tsx
+
 'use client';
 
 import { useEditor, EditorContent } from '@tiptap/react';
@@ -28,6 +28,7 @@ export default function RichTextEditor({
   placeholder = 'Escreva seu conteúdo aqui...',
 }: RichTextEditorProps) {
   const editor = useEditor({
+    immediatelyRender: false,
     extensions: [
       StarterKit,
       Placeholder.configure({
