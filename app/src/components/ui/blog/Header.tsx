@@ -126,7 +126,7 @@ export default function BlogHeader() {
                 {isUserMenuOpen && (
                   <div className="absolute bg-[hsl(var(--background))]/95 right-0 mt-2 w-48 bg-popover border rounded-md shadow-lg py-1 z-50">
                     <Link
-                      href={"/blog/dashboard"}
+                      href={"/blog/manage"}
                       className="block px-4 py-2 text-sm hover:bg-[hsl(var(--accent))]"
                       onClick={() => setIsUserMenuOpen(false)}
                     >

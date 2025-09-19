@@ -35,7 +35,7 @@ export default function LoginPage() {
 
       if (data.user) {
         console.log('Usuário logado:', data.user);
-        router.push(`/blog/${data.user.id}/dashboard`);
+        router.push('/blog/manage');
       }
     } catch (error: unknown) {
       setError(error as  string);
@@ -52,8 +52,8 @@ export default function LoginPage() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/blog/${(await (supabase.auth.getUser())).data.user?.id}/dashboard`,
-        },
+          redirectTo: window.location.origin+'/blog/manage'
+        }
       });
 
       if (error) {

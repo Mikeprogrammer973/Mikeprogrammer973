@@ -82,7 +82,7 @@ export default function RegisterPage() {
           return
         }
 
-        router.push(`/blog/${authData.user.id}/dashboard`);
+        router.push('/blog/manage');
       }
     } catch (error: unknown) {
       setError(error as string)
