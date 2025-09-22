@@ -12,8 +12,8 @@ import CategoryMenu from 'mdp/components/ui/blog/CategoryMenu';
 import PostCard from 'mdp/components/ui/blog/PostCard';
 
 interface Author {
-  username: string;
-  avatar_url: string | null;
+  username: string | null
+  avatar_url: string | null
 }
 
 interface Post {
@@ -64,10 +64,7 @@ export default function BlogPage() {
       // Buscar posts publicados
       const { data: postsData } = await supabase
         .from('blog_posts')
-        .select(`
-          *,
-          author:profiles(username, avatar_url)
-        `)
+        .select('*')
         .eq('status', 'published')
         .order('created_at', { ascending: false });
 
@@ -84,6 +81,8 @@ export default function BlogPage() {
 
       setPosts(postsData || []);
       setCategories(categoryCounts || {});
+
+      console.log(postsData, categoriesData)
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -106,7 +105,7 @@ export default function BlogPage() {
         post.title.toLowerCase().includes(query) ||
         post.excerpt?.toLowerCase().includes(query) ||
         post.content.toLowerCase().includes(query) ||
-        post.author.username.toLowerCase().includes(query) ||
+        //post.author.username.toLowerCase().includes(query) ||
         post.category.toLowerCase().includes(query) ||
         post.tags.some((tag: string )=> tag.toLowerCase().includes(query))
       ) || []
@@ -231,7 +230,7 @@ export default function BlogPage() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {filteredPosts.map((post) => (
-                  <PostCard key={post.id} post={post} />
+                  <PostCard key={post.id} variant='featured' post={post} />
                 ))}
               </div>
             )}
@@ -251,9 +250,9 @@ export default function BlogPage() {
                 onChange={(e) => setSelectedCategory(e.target.value)}
                 className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))]"
               >
-                <option value="all">Todas as categorias</option>
+                <option className='bg-[hsl(var(--primary-foreground))]' value="all">Todas as categorias</option>
                 {Object.keys(categories).map((category) => (
-                  <option key={category} value={category}>
+                  <option translate='no' className='bg-[hsl(var(--primary-foreground))]' key={category} value={category}>
                     {category} ({categories[category]})
                   </option>
                 ))}
@@ -270,13 +269,15 @@ export default function BlogPage() {
                   .map((post) => (
                     <Link
                       key={post.id}
-                      href={`/blog/post/${post.id}`}
+                      href={`/blog/posts/${post.id}`}
                       className="block group"
                     >
                       <div className="flex items-start space-x-3">
-                        <div className="w-16 h-16 bg-[hsl(var(--muted))] rounded-lg flex-shrink-0"></div>
+                        {post.cover_image && <div className="w-16 h-16 bg-[hsl(var(--muted))] rounded-lg flex-shrink-0">
+                          <img className='w-full h-full rounded-lg' src={post.cover_image} alt="cover-img" />
+                        </div>}
                         <div>
-                          <h4 className="font-medium group-hover:text-[hsl(var(--primary))] transition-colors line-clamp-2">
+                          <h4 translate='no' className="font-medium group-hover:text-[hsl(var(--primary))] transition-colors line-clamp-2">
                             {post.title}
                           </h4>
                           <p className="text-sm text-[hsl(var(--muted-foreground))]">

@@ -46,7 +46,7 @@ export default function DashboardPage() {
   const router = useRouter()
 
   const menuItems = [
-    { id: 'posts', label: 'Meus Posts', icon: FileText },
+    { id: 'posts', label: 'Minhas Publicações', icon: FileText },
     { id: 'stats', label: 'Estatísticas', icon: BarChart3 },
     { id: 'profile', label: 'Perfil', icon: User }
   ];
@@ -220,7 +220,7 @@ export default function DashboardPage() {
                   className="bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] px-4 py-2 rounded-md hover:opacity-90 flex items-center space-x-2"
                 >
                   <PlusCircle className="w-4 h-4" />
-                  <span>Novo Post</span>
+                  <span>Nova Publicação</span>
                 </button>
               </div>
 
@@ -238,13 +238,13 @@ export default function DashboardPage() {
                   <FileText className="w-12 h-12 text-[hsl(var(--muted-foreground))] mx-auto mb-4" />
                   <h3 className="text-lg font-semibold mb-2">Nenhum post encontrado</h3>
                   <p className="text-[hsl(var(--muted-foreground))] mb-4">
-                    Comece criando seu primeiro post!
+                    Comece criando sua primeira publicação!
                   </p>
                   <button
                     onClick={() => router.push('/blog/manage/posts/new')}
                     className="bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] px-4 py-2 rounded-md hover:opacity-90"
                   >
-                    Criar Primeiro Post
+                    Criar Primeira Publicação
                   </button>
                 </div>
               ) : (
@@ -258,11 +258,10 @@ export default function DashboardPage() {
                   
                   {posts.map((post) => (
                     <div key={post.id} className="grid grid-cols-1 md:grid-cols-4 gap-5 md:gap-0 p-4 border-b last:border-b-0 items-center">
-                      <div className="font-medium truncate text-2xl md:text-lg">{post.title}</div>
+                      <div translate='no' className="font-medium truncate text-2xl md:text-lg">{post.title}</div>
                       
                       <div className="flex items-center space-x-2">
                         {getStatusIcon(post.status)}
-                        <span>{getStatusText(post.status)}</span>
                       </div>
                       
                       <div className="flex space-x-4 text-sm text-[hsl(var(--muted-foreground))]">
@@ -309,14 +308,14 @@ export default function DashboardPage() {
                   <div className="text-3xl font-bold text-[hsl(var(--primary))] mb-2">
                     {userStats.totalPosts}
                   </div>
-                  <div className="text-[hsl(var(--muted-foreground))]">Total de Posts</div>
+                  <div className="text-[hsl(var(--muted-foreground))]">Total de Publicações</div>
                 </div>
                 
                 <div className="bg-[hsl(var(--card))] border rounded-lg p-6 text-center">
                   <div className="text-3xl font-bold text-green-600 mb-2">
                     {userStats.publishedPosts}
                   </div>
-                  <div className="text-[hsl(var(--muted-foreground))]">Posts Publicados</div>
+                  <div className="text-[hsl(var(--muted-foreground))]">Publicações Publicadas</div>
                 </div>
                 
                 <div className="bg-[hsl(var(--card))] border rounded-lg p-6 text-center">
@@ -336,9 +335,9 @@ export default function DashboardPage() {
 
               {/* Gráficos de estatísticas */}
               <div className="bg-[hsl(var(--card))] border rounded-lg p-6">
-                <h3 className="text-lg font-semibold mb-4">Desempenho dos Posts</h3>
+                <h3 className="text-lg font-semibold mb-4">Desempenho das Pulicações</h3>
                 <div className="h-64 bg-[hsl(var(--muted))] rounded-lg flex items-center justify-center">
-                  <p className="text-[hsl(var(--muted-foreground))]">Gráficos de estatísticas serão implementados aqui</p>
+                  <p className="text-[hsl(var(--muted-foreground))]">Gráficos de estatísticas aqui</p>
                 </div>
               </div>
             </div>

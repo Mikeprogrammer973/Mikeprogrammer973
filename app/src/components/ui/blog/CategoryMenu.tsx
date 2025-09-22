@@ -31,8 +31,9 @@ export default function CategoryMenu({ categories, maxItems = 10 }: CategoryMenu
       <div className="space-y-2">
         {mainCategories.map((category) => (
           <Link
+            translate='no'
             key={category.name}
-            href={`/blog/category/${encodeURIComponent(category.name)}`}
+            href={`/blog/categories/${encodeURIComponent(category.name)}`}
             className="flex items-center justify-between py-2 hover:text-[hsl(var(--primary))] transition-colors"
           >
             <span className="capitalize">{category.name}</span>
@@ -44,8 +45,9 @@ export default function CategoryMenu({ categories, maxItems = 10 }: CategoryMenu
         
         {hasExtraCategories && isExpanded && extraCategories.map((category) => (
           <Link
+            translate='no'
             key={category.name}
-            href={`/blog/category/${encodeURIComponent(category.name)}`}
+            href={`/blog/categories/${encodeURIComponent(category.name)}`}
             className="flex items-center justify-between py-2 hover:text-[hsl(var(--primary))] transition-colors"
           >
             <span className="capitalize">{category.name}</span>

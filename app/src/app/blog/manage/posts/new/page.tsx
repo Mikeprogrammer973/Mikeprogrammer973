@@ -12,6 +12,7 @@ import Link from 'next/link';
 
 export default function CreatePostPage() {
   const [title, setTitle] = useState('');
+  const [cover, setCover] = useState('')
   const [content, setContent] = useState('');
   const [excerpt, setExcerpt] = useState('');
   const [category, setCategory] = useState('');
@@ -36,6 +37,7 @@ export default function CreatePostPage() {
         .insert([
           {
             title,
+            cover_image: cover,
             content,
             excerpt,
             category,
@@ -50,7 +52,7 @@ export default function CreatePostPage() {
         throw error;
       }
 
-      router.push('/blog/dashboard');
+      router.push('/blog/manage');
     } catch (error) {
       console.error('Error creating post:', error);
     } finally {
@@ -72,6 +74,20 @@ export default function CreatePostPage() {
           </h1>
           
           <form onSubmit={handleSubmit} className="space-y-6">
+             <div>
+              <label htmlFor="cover" className="block text-sm font-medium mb-2">
+                Imagem de cobertura
+              </label>
+              <input
+                type="text"
+                id="cover"
+                value={cover}
+                onChange={(e) => setCover(e.target.value)}
+                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))]"
+                placeholder='URL da imagem de cobertura'
+              />
+              {cover && <img className='my-10 p-2 rounded-md w-full aspect-video border border-[hsl(var(--primary))]' src={cover} alt="cover-image" />} 
+            </div>
             <div>
               <label htmlFor="title" className="block text-sm font-medium mb-2">
                 Título

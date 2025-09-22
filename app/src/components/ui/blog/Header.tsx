@@ -27,12 +27,25 @@ interface User {
 }
 
 export default function BlogHeader() {
+  const [mounted, setMounted] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const pathname = usePathname();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { theme, setTheme } = useTheme();
+
+  useEffect(() => {
+    setMounted(true)
+    const checkAuthentication = async () => {
+      const { data } = await supabase.auth.getSession();
+      setIsAuthenticated(data.session !== null);
+    };
+
+    checkAuthentication();
+  }, []);
+
+  if (!mounted) return null
 
   const navigation = [
     { name: 'Início', href: '/blog', icon: HomeIcon },
@@ -52,15 +65,6 @@ export default function BlogHeader() {
     await supabase.auth.signOut();
     window.location.href = '/blog';
   };
-
-  useEffect(() => {
-    const checkAuthentication = async () => {
-      const { data } = await supabase.auth.getSession();
-      setIsAuthenticated(data.session !== null);
-    };
-
-    checkAuthentication();
-  }, []);
 
   return (
     <header className="sticky top-0 z-50 bg-[hsl(var(--background))]/80 backdrop-blur-md border-b">
