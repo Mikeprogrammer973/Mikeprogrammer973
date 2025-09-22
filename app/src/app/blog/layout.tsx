@@ -1,5 +1,5 @@
 
-//import { UserProvider } from 'mdp/lib/contexts/UserContext';
+import { UserProvider } from 'mdp/lib/contexts/User';
 import { ThemeProvider } from 'mdp/components/theme/theme-provider';
 import GoogleTranslateLoader from 'mdp/components/ui/google-translate-loader'
 import 'mdp/styles/globals.css';
@@ -21,7 +21,6 @@ export default function BlogLayout({
   children: React.ReactNode;
 }) {
   return (
-    //<UserProvider>
       <html lang="pt-BR" suppressHydrationWarning className="font-sans">
       <head>
         <GoogleTranslateLoader/>
@@ -35,12 +34,13 @@ export default function BlogLayout({
         >
             <main>
                 <Suspense>
-                  {children}
+                  <UserProvider>
+                    {children}
+                  </UserProvider>
                 </Suspense>
             </main>
         </ThemeProvider>
       </body>
       </html>
-    //</UserProvider>
   );
 }

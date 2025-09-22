@@ -1,6 +1,7 @@
 'use client'
 
 import { Share2Icon } from 'lucide-react';
+import Comments from 'mdp/components/ui/blog/Comments';
 import BlogFooter from 'mdp/components/ui/blog/Footer';
 import BlogHeader from 'mdp/components/ui/blog/Header';
 import { supabase } from 'mdp/lib/supabase/client';
@@ -28,8 +29,9 @@ interface Post {
 }
 
 export default function PostPage() {
+    const params = useParams()
     const [post, setPost] = useState<Post>({
-        id: '',
+        id: params.id as string,
         title: '',
         excerpt: '',
         content: '',
@@ -44,8 +46,6 @@ export default function PostPage() {
         },
         tags: []
     })
-
-    const params = useParams()
 
     useEffect(()=>{
         fetchPost()
@@ -167,8 +167,7 @@ export default function PostPage() {
         </article>
 
         <section className="max-w-3xl mx-auto mt-16">
-            <h2 className="text-2xl font-bold mb-6">Comentários</h2>
-            {/* Componente de comments */}
+            <Comments postId={post.id} />
         </section>
         </main>
 
