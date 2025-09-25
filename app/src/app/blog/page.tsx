@@ -16,6 +16,12 @@ interface Author {
   avatar_url: string | null
 }
 
+interface Category {
+  id: string
+  name: string
+  slug: string
+}
+
 interface Post {
   id: string;
   title: string;
@@ -26,7 +32,7 @@ interface Post {
   likes: number;
   comments_count?: number;
   read_time?: number;
-  category: string;
+  category: Category
   content: string;
   tags: string[]
 }
@@ -34,7 +40,7 @@ interface Post {
 export default function BlogPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
-  const [categories, setCategories] = useState<Record<string, number>>({});
+  const [categories, setCategories] = useState<(Category & { count: number })[] | []>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -70,17 +76,34 @@ export default function BlogPage() {
 
       // Buscar categorias
       const { data: categoriesData } = await supabase
-        .from('blog_posts')
-        .select('category')
-        .eq('status', 'published');
+        .from('blog_posts_categories')
+        .select('*')
 
-      const categoryCounts = categoriesData?.reduce((acc: Record<string, number>, post) => {
-        acc[post.category] = (acc[post.category] || 0) + 1;
-        return acc;
-      }, {});
+      // Buscar autores
+      const { data: authorsData } = await supabase
+        .from('authors')
+        .select('id, username, avatar_url')
 
-      setPosts(postsData || []);
-      setCategories(categoryCounts || {});
+      const categories: (Category & { count: number })[] = []
+
+      categoriesData?.map(category => {
+        categories.push({...category, count: postsData?.filter(post => post.category_id === category.id).length})
+      })
+
+      const posts: Post[] = []
+
+      postsData?.map(async (post) => {
+        posts.push(
+          {
+            ...post, 
+            category: categoriesData?.find(category => category.id === post.category_id),
+            author: authorsData?.find(author => author.id === post.author_id)
+          }
+        )
+      })
+
+      setPosts(posts || []);
+      setCategories(categories || []);
 
       console.log(postsData, categoriesData)
     } catch (error) {
@@ -95,7 +118,7 @@ export default function BlogPage() {
 
     // Filtrar por categoria
     if (selectedCategory !== 'all') {
-      filtered = filtered?.filter(post => post.category === selectedCategory) || [];
+      filtered = filtered?.filter(post => post.category.name === selectedCategory) || [];
     }
 
     // Filtrar por busca
@@ -105,8 +128,8 @@ export default function BlogPage() {
         post.title.toLowerCase().includes(query) ||
         post.excerpt?.toLowerCase().includes(query) ||
         post.content.toLowerCase().includes(query) ||
-        //post.author.username.toLowerCase().includes(query) ||
-        post.category.toLowerCase().includes(query) ||
+        post.author?.username?.toLowerCase().includes(query) ||
+        post.category.name.toLowerCase().includes(query) ||
         post.tags.some((tag: string )=> tag.toLowerCase().includes(query))
       ) || []
     }
@@ -251,9 +274,9 @@ export default function BlogPage() {
                 className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))]"
               >
                 <option className='bg-[hsl(var(--primary-foreground))]' value="all">Todas as categorias</option>
-                {Object.keys(categories).map((category) => (
-                  <option translate='no' className='bg-[hsl(var(--primary-foreground))]' key={category} value={category}>
-                    {category} ({categories[category]})
+                {categories.map((category) => (
+                  <option translate='no' className='bg-[hsl(var(--primary-foreground))]' key={category.id} value={category.name}>
+                    {category.name} ({categories.filter(c => c.name === category.name)[0]?.count})
                   </option>
                 ))}
               </select>

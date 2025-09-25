@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from 'mdp/lib/supabase/client';
 import { 
@@ -22,6 +22,7 @@ import {
 import BlogHeader from 'mdp/components/ui/blog/Header';
 import BlogFooter from 'mdp/components/ui/blog/Footer';
 import ProfileEditor from 'mdp/components/ui/blog/ProfileEditor';
+import getUser, { User as UserType } from 'mdp/lib/getUser';
 
 interface Post {
   id: string;
@@ -44,31 +45,46 @@ export default function DashboardPage() {
     totalViews: 0
   });
   const router = useRouter()
+  const [user, setUser] = useState<UserType | null>(null)
 
   const menuItems = [
-    { id: 'posts', label: 'Minhas Publicações', icon: FileText },
+    { id: 'posts', label: 'Meus Artigos', icon: FileText },
     { id: 'stats', label: 'Estatísticas', icon: BarChart3 },
     { id: 'profile', label: 'Perfil', icon: User }
   ];
 
   useEffect(() => {
-    fetchUserPosts()
+    fetchUser()
   }, [])
+
+  useEffect(() => {
+    if (user) {
+      fetchUserPosts();
+    }
+  }, [user]);
+
+  const fetchUser = async () => {
+    try {
+      const user = await getUser()
+
+      if (!user) {
+        router.push('/blog/login')
+        return
+      }
+
+      setUser(user)
+    } catch (error) {
+      console.error('Error fetching user:', error);
+    }
+  }
 
   // Buscar posts do usuário
   const fetchUserPosts = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        router.push('/blog/login');
-        return;
-      }
-
       const { data, error } = await supabase
         .from('blog_posts')
         .select('*')
-        .eq('author_id', user.id )
+        .eq('author_id', user?.profile.id )
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -214,13 +230,13 @@ export default function DashboardPage() {
           {activeTab === 'posts' && (
             <div>
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-semibold">Meus Posts</h2>
+                <h2 className="text-2xl font-semibold">Meus Artigos</h2>
                 <button
                   onClick={() => router.push('/blog/manage/posts/new')}
                   className="bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] px-4 py-2 rounded-md hover:opacity-90 flex items-center space-x-2"
                 >
                   <PlusCircle className="w-4 h-4" />
-                  <span>Nova Publicação</span>
+                  <span>Novo Artigo</span>
                 </button>
               </div>
 
@@ -236,15 +252,15 @@ export default function DashboardPage() {
               ) : posts.length === 0 ? (
                 <div className="text-center py-12">
                   <FileText className="w-12 h-12 text-[hsl(var(--muted-foreground))] mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">Nenhum post encontrado</h3>
+                  <h3 className="text-lg font-semibold mb-2">Nenhum artigo encontrado</h3>
                   <p className="text-[hsl(var(--muted-foreground))] mb-4">
-                    Comece criando sua primeira publicação!
+                    Comece criando seu primeiro artigo!
                   </p>
                   <button
                     onClick={() => router.push('/blog/manage/posts/new')}
                     className="bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] px-4 py-2 rounded-md hover:opacity-90"
                   >
-                    Criar Primeira Publicação
+                    Criar Primeiro Artigo
                   </button>
                 </div>
               ) : (
@@ -308,14 +324,14 @@ export default function DashboardPage() {
                   <div className="text-3xl font-bold text-[hsl(var(--primary))] mb-2">
                     {userStats.totalPosts}
                   </div>
-                  <div className="text-[hsl(var(--muted-foreground))]">Total de Publicações</div>
+                  <div className="text-[hsl(var(--muted-foreground))]">Total de Artigos</div>
                 </div>
                 
                 <div className="bg-[hsl(var(--card))] border rounded-lg p-6 text-center">
                   <div className="text-3xl font-bold text-green-600 mb-2">
                     {userStats.publishedPosts}
                   </div>
-                  <div className="text-[hsl(var(--muted-foreground))]">Publicações Publicadas</div>
+                  <div className="text-[hsl(var(--muted-foreground))]">Artigos Publicados</div>
                 </div>
                 
                 <div className="bg-[hsl(var(--card))] border rounded-lg p-6 text-center">
@@ -335,7 +351,7 @@ export default function DashboardPage() {
 
               {/* Gráficos de estatísticas */}
               <div className="bg-[hsl(var(--card))] border rounded-lg p-6">
-                <h3 className="text-lg font-semibold mb-4">Desempenho das Pulicações</h3>
+                <h3 className="text-lg font-semibold mb-4">Desempenho dos Artigos</h3>
                 <div className="h-64 bg-[hsl(var(--muted))] rounded-lg flex items-center justify-center">
                   <p className="text-[hsl(var(--muted-foreground))]">Gráficos de estatísticas aqui</p>
                 </div>

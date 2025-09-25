@@ -19,12 +19,7 @@ import {
   InfoIcon
 } from 'lucide-react';
 import Logo from '../logo';
-
-interface User {
-  id: string;
-  username: string;
-  avatar_url: string;
-}
+import getUser, { User } from 'mdp/lib/getUser';
 
 export default function BlogHeader() {
   const [mounted, setMounted] = useState(false)
@@ -32,17 +27,19 @@ export default function BlogHeader() {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const pathname = usePathname();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
   const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     setMounted(true)
-    const checkAuthentication = async () => {
-      const { data } = await supabase.auth.getSession();
-      setIsAuthenticated(data.session !== null);
-    };
+  }, []);
 
-    checkAuthentication();
+  useEffect(() => {
+    const fetchUser = async () => {
+      const user = await getUser()
+      setUser(user)
+    }
+    fetchUser()
   }, []);
 
   if (!mounted) return null
@@ -116,15 +113,22 @@ export default function BlogHeader() {
               )}
             </button>
 
-            {isAuthenticated ? (
+            {user ? (
               <div className="relative">
                 <button
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                   className="flex items-center space-x-2 p-2 rounded-md hover:bg-[hsl(var(--accent))]"
                 >
-                  <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
-                    U
-                  </div>
+                  {user.profile.avatar_url
+                    ? <img
+                        src={user.profile.avatar_url || ''}
+                        alt={user.profile.username || 'Autor'}
+                        className="w-10 h-10 rounded-full"
+                    />
+                    : <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white">
+                        {user.profile?.username?.charAt(0).toUpperCase() || 'U'}
+                    </div> 
+                  }
                 </button>
 
                 {isUserMenuOpen && (
@@ -209,7 +213,7 @@ export default function BlogHeader() {
                 </div>
               </form>
 
-              {!isAuthenticated && (
+              {!user && (
                 <div className="flex flex-col space-y-2 pt-4 border-t">
                   <Link
                     href="/blog/login"

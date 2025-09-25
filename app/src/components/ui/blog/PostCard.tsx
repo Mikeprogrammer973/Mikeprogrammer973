@@ -23,7 +23,11 @@ interface Post {
   likes: number;
   comments_count?: number;
   read_time?: number;
-  category: string;
+  category: {
+    name: string;
+    slug: string;
+    id: string;
+  }
 }
 
 interface PostCardProps {
@@ -42,8 +46,8 @@ export default function PostCard({ post, variant = 'default' }: PostCardProps) {
         )}
         <div className="p-6">
           <div className="flex items-center text-sm text-[hsl(var(--muted-foreground))] mb-3">
-            <span className="bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] px-2 py-1 rounded-full text-xs">
-              {post.category}
+            <span className="bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] px-2 py-1 rounded-full text-xs text-center">
+              {post.category.name}
             </span>
             <span className="mx-2">•</span>
             <div translate='yes' className="flex items-center">
@@ -73,7 +77,7 @@ export default function PostCard({ post, variant = 'default' }: PostCardProps) {
             <div className="flex items-center space-x-3">
               <div className="flex items-center text-sm text-[hsl(var(--muted-foreground))]">
                 <User className="w-4 h-4 mr-1" />
-                {/*<span>{post.author.username}</span>*/}Author name
+                {<span>{post.author.username}</span>}
               </div>
               
               <div className="flex items-center text-sm text-[hsl(var(--muted-foreground))]">
@@ -116,7 +120,7 @@ export default function PostCard({ post, variant = 'default' }: PostCardProps) {
       <div className="p-4">
         <div className="flex items-center text-xs text-[hsl(var(--muted-foreground))] mb-2">
           <span className="bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] px-2 py-1 rounded-full">
-            {post.category}
+            {post.category.name}
           </span>
           <span className="mx-2">•</span>
           <span>{new Date(post.created_at).toLocaleDateString('pt-BR')}</span>
@@ -137,7 +141,7 @@ export default function PostCard({ post, variant = 'default' }: PostCardProps) {
         <div className="flex items-center justify-between text-sm text-[hsl(var(--muted-foreground))]">
           <div className="flex items-center">
             <User className="w-4 h-4 mr-1" />
-            {/*<span>{post.author.username}</span>*/}
+            {<span>{post.author.username}</span>}
           </div>
           
           <div className="flex items-center space-x-2">

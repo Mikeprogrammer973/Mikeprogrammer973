@@ -2,23 +2,25 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useUser } from 'mdp/lib/contexts/User';
 import { 
   MessageCircle, 
   Send, 
-  User,
   MoreVertical,
   Trash2,
   Edit3
 } from 'lucide-react';
 import { supabase } from 'mdp/lib/supabase/client';
 import Link from 'next/link';
+import getUser, { User } from 'mdp/lib/getUser';
 
 interface Comment {
   id: string;
   content: string;
   created_at: string;
-  author_id: string;
+  author: {
+    username: string;
+    avatar_url: string;
+  }
   post_id: string;
 }
 
@@ -33,17 +35,32 @@ export default function Comments({ postId }: CommentsProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editContent, setEditContent] = useState('');
-  const { user } = useUser();
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    fetchComments();
+    const fetchUser = async () => {
+      try {
+        const user = await getUser()
+        setUser(user)
+      } catch (error) {
+        console.error('Error fetching user:', error)
+      }
+    }
+
+    fetchUser()
+  }, [])
+
+  useEffect(() => {
+    if (postId) {
+      fetchComments()
+    }
   }, [postId]);
 
   const fetchComments = async () => {
     try {
       const { data, error } = await supabase
         .from('blog_comments')
-        .select('*')
+        .select(`*, author:authors(username, avatar_url)`)
         .eq('post_id', postId)
         .order('created_at', { ascending: true });
 
@@ -71,7 +88,7 @@ export default function Comments({ postId }: CommentsProps) {
         .insert([
           {
             post_id: postId,
-            author_id: user.id,
+            author_id: user.profile.id,
             content: newComment.trim()
           }
         ]);
@@ -157,9 +174,16 @@ export default function Comments({ postId }: CommentsProps) {
       {user ? (
         <form onSubmit={handleSubmitComment} className="space-y-3">
           <div className="flex space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
-              {user.user_metadata?.username?.charAt(0).toUpperCase() || 'U'}
-            </div>
+            {user.profile.avatar_url
+              ? <img
+                  src={user.profile.avatar_url || ''}
+                  alt={user.profile.username || 'Autor'}
+                  className="w-10 h-10 rounded-full"
+              />
+              : <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white">
+                  {user.profile?.username?.charAt(0).toUpperCase() || 'U'}
+              </div> 
+            }
             <div className="flex-1">
               <textarea
                 value={newComment}
@@ -202,9 +226,16 @@ export default function Comments({ postId }: CommentsProps) {
         ) : (
           comments.map((comment) => (
             <div key={comment.id} className="flex space-x-3 group">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
-                {/*comment.author.username.charAt(0).toUpperCase()*/}M
-              </div>
+              {comment.author.avatar_url
+                ? <img
+                    src={comment.author.avatar_url || ''}
+                    alt={comment.author.username || 'Autor'}
+                    className="w-10 h-10 rounded-full"
+                />
+                : <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white">
+                    {comment.author?.username?.charAt(0).toUpperCase() || 'U'}
+                </div> 
+              }
               
               <div className="flex-1 min-w-0">
                 {editingCommentId === comment.id ? (
@@ -237,15 +268,15 @@ export default function Comments({ postId }: CommentsProps) {
                   <div className="bg-[hsl(var(--muted))] rounded-lg p-4">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center space-x-2">
-                        <span translate='no' className="font-semibold">{/*comment.author.username*/}Author Name</span>
+                        <span translate='no' className="font-semibold">{comment.author.username}</span>
                         <span className="text-[hsl(var(--muted-foreground)))] text-sm">
-                          {new Date(comment.created_at).toLocaleDateString('pt-BR')}
+                          {new Date(comment.created_at).toLocaleDateString()}
                         </span>
                       </div>
                       
-                      {user && user.id === comment.author_id && (
+                      {false && (
                         <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                          <div className="dropdown dropdown-end">
+                          <div>
                             <button className="p-1 hover:bg-[hsl(var(--accent))] rounded">
                               <MoreVertical className="w-4 h-4" />
                             </button>

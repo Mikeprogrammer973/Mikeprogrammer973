@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from 'mdp/lib/supabase/client'
 import BlogHeader from 'mdp/components/ui/blog/Header';
@@ -9,6 +9,13 @@ import RichTextEditor from 'mdp/components/ui/blog/PostEditor';
 import BlogFooter from 'mdp/components/ui/blog/Footer';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import getUser, { User } from 'mdp/lib/getUser';
+
+interface Category {
+  id: string
+  name: string
+  slug: string
+}
 
 export default function CreatePostPage() {
   const [title, setTitle] = useState('');
@@ -17,21 +24,59 @@ export default function CreatePostPage() {
   const [excerpt, setExcerpt] = useState('');
   const [category, setCategory] = useState('');
   const [tags, setTags] = useState('');
+  const [status, setStatus] = useState('draft');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const router = useRouter();
+  const router = useRouter()
+  const [user, setUser] = useState<User | null>(null)
+  const [categories, setCategories] = useState<Category[]>([])
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const user = await getUser()
+
+        if (!user) {
+          router.push('/blog/login')
+          return
+        }
+
+        setUser(user)
+      } catch (error) {
+        console.error('Error fetching user:', error);
+      }
+    }
+
+    fetchUser()
+  }, [])
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('blog_posts_categories')
+          .select('*');
+
+        if (error) {
+          throw error;
+        }
+
+        setCategories(data || []);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    }
+
+    if (user) {
+      fetchCategories()
+    }
+  }, [user])
+
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        router.push('/blog/login');
-        return;
-      }
-
       const { data, error } = await supabase
         .from('blog_posts')
         .insert([
@@ -40,10 +85,11 @@ export default function CreatePostPage() {
             cover_image: cover,
             content,
             excerpt,
-            category,
+            category_id: category,
             tags: tags.split(',').map(tag => tag.trim()),
-            author_id: user.id,
-            status: 'draft'
+            author_id: user?.profile.id,
+            status,
+            published_at: status === 'published' ? new Date().toISOString() : null
           }
         ])
         .select();
@@ -70,7 +116,7 @@ export default function CreatePostPage() {
             <Link title='Voltar' href={'/blog/manage'} className='py-1 mr-2 rounded-md text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--primary))] hover:text-[hsl(var(--muted))]'>
                 <ArrowLeft className='w-10' />
             </Link>
-            <span>Criar Novo Post</span>
+            <span>Criar Novo Artigo</span>
           </h1>
           
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -86,7 +132,7 @@ export default function CreatePostPage() {
                 className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))]"
                 placeholder='URL da imagem de cobertura'
               />
-              {cover && <img className='my-10 p-2 rounded-md w-full aspect-video border border-[hsl(var(--primary))]' src={cover} alt="cover-image" />} 
+              {cover && <img className='my-10 p-2 rounded-md w-full object-cover aspect-[16/6] border border-[hsl(var(--primary))]' src={cover} alt="cover-image" />} 
             </div>
             <div>
               <label htmlFor="title" className="block text-sm font-medium mb-2">
@@ -139,12 +185,11 @@ export default function CreatePostPage() {
                   required
                 >
                   <option className='bg-[hsl(var(--primary-foreground))]' value="">Selecione uma categoria</option>
-                  <option className='bg-[hsl(var(--primary-foreground))]' value="React">React</option>
-                  <option className='bg-[hsl(var(--primary-foreground))]' value="Next.js">Next.js</option>
-                  <option className='bg-[hsl(var(--primary-foreground))]' value="CSS">CSS</option>
-                  <option className='bg-[hsl(var(--primary-foreground))]' value="JavaScript">JavaScript</option>
-                  <option className='bg-[hsl(var(--primary-foreground))]' value="TypeScript">TypeScript</option>
-                  <option className='bg-[hsl(var(--primary-foreground))]' value="Banco de Dados">Banco de Dados</option>
+                  {categories.map((category) => (
+                    <option className='bg-[hsl(var(--primary-foreground))]' key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
                 </select>
               </div>
 
@@ -173,9 +218,9 @@ export default function CreatePostPage() {
               </button>
               
               <button
-                type="button"
+                type="submit"
                 onClick={() => {
-                  // Lógica para publicar diretamente
+                  setStatus('published')
                 }}
                 disabled={isSubmitting}
                 className="bg-green-600 text-white px-6 py-2 rounded-md hover:opacity-90 disabled:opacity-50"
