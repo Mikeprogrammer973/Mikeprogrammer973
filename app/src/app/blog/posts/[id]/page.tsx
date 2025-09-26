@@ -115,7 +115,7 @@ export default function PostPage() {
                 <header className="mb-8">
                 <h1 translate='no' className="text-4xl font-bold mb-4">{post.title}</h1>
                 <div className="flex items-center gap-4 text-[hsl(var(--muted-foreground))] mb-4">
-                    <span className="text-[hsl(var(--primary))]">{post.category.name}</span>
+                    <span translate='no' className="text-[hsl(var(--primary))]">{post.category.name}</span>
                     <span>•</span>
                     <span>{new Date(post.published_at).toLocaleDateString('pt-BR')}</span>
                     <span>•</span>
