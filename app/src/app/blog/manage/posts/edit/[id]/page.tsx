@@ -4,10 +4,10 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { supabase } from 'mdp/lib/supabase/client'
-import RichTextEditor from 'mdp/components/ui/blog/PostEditor';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import getUser, { User } from 'mdp/lib/getUser';
+import PostEditor from 'mdp/components/ui/blog/__Editor';
 
 interface Category {
   id: string
@@ -139,7 +139,7 @@ export default function CreatePostPage() {
             <Link title='Voltar' href={'/blog/manage'} className='py-1 mr-2 rounded-md text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--primary))] hover:text-[hsl(var(--muted))]'>
                 <ArrowLeft className='w-10' />
             </Link>
-            <span>Criar Novo Artigo</span>
+            <span>Editar Artigo</span>
           </h1>
           
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -189,9 +189,9 @@ export default function CreatePostPage() {
               <label htmlFor="content" className="block text-sm font-medium mb-2">
                 Conteúdo
               </label>
-              <RichTextEditor
-                content={content}
-                onChange={() => setContent(content)}
+              <PostEditor 
+                value={content}
+                onChange={setContent}
               />
             </div>
 

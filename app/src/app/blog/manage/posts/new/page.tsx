@@ -4,10 +4,10 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from 'mdp/lib/supabase/client'
-import RichTextEditor from 'mdp/components/ui/blog/PostEditor';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import getUser, { User } from 'mdp/lib/getUser';
+import PostEditor from 'mdp/components/ui/blog/__Editor';
 
 interface Category {
   id: string
@@ -162,8 +162,8 @@ export default function CreatePostPage() {
               <label htmlFor="content" className="block text-sm font-medium mb-2">
                 Conteúdo
               </label>
-              <RichTextEditor
-                content={content}
+              <PostEditor
+                value={content}
                 onChange={setContent}
               />
             </div>

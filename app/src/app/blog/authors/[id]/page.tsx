@@ -3,11 +3,11 @@ import PostCard from 'mdp/components/ui/blog/PostCard';
 import { supabase } from 'mdp/lib/supabase/client';
 import { notFound } from 'next/navigation';
 
-interface PageProps {
+interface Props {
   params: { id: string };
 }
 
-export default async function AuthorPage({ params }: PageProps) {
+export default async function AuthorPage({ params }: Props) {
 
     const { data: author } = await supabase
         .from('authors')

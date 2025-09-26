@@ -11,7 +11,6 @@ export default function ProfileEditor() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
-  // Buscar perfil do usuário
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -58,7 +57,7 @@ export default function ProfileEditor() {
           username: profile.username,
           bio: profile.bio,
           website: profile.website,
-          updated_at: new Date().toISOString()
+          avatar_url: profile.avatar_url
         })
         .eq('user_id', user.id);
 
@@ -94,6 +93,7 @@ export default function ProfileEditor() {
         <div>
           <label className="block text-sm font-medium mb-2">Nome de Usuário</label>
           <input
+            translate="no"
             type="text"
             value={profile.username}
             onChange={(e) => setProfile({ ...profile, username: e.target.value })}
@@ -105,6 +105,7 @@ export default function ProfileEditor() {
         <div>
           <label className="block text-sm font-medium mb-2">Biografia</label>
           <textarea
+            translate="no"
             value={profile.bio}
             onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
             rows={4}
@@ -116,6 +117,7 @@ export default function ProfileEditor() {
         <div>
           <label className="block text-sm font-medium mb-2">Website</label>
           <input
+            translate="no"
             type="url"
             value={profile.website}
             onChange={(e) => setProfile({ ...profile, website: e.target.value })}
@@ -126,25 +128,29 @@ export default function ProfileEditor() {
 
         <div>
           <label className="block text-sm font-medium mb-2">Foto de Perfil</label>
-            <div>
-              <input
-                type="url"
-                value={profile.avatar_url}
-                onChange={(e) => setProfile({ ...profile, avatar_url: e.target.value })}
-                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))]"
-                placeholder="avatar url"
-              />
+          <div className="flex gap-4 items-center">
+            <div translate="no" className="flex items-center space-x-4 mt-2">
+              {profile.avatar_url
+                ? <div className="w-24 h-24 rounded-full">
+                    <img
+                        src={profile.avatar_url || ''}
+                        alt={profile.username || 'Autor'}
+                        className="w-full h-full rounded-full object-cover"
+                    />
+                  </div>
+                : <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-xl font-bold">
+                  {profile.username.charAt(0).toUpperCase()}
+                </div>
+              }
             </div>
-          <div className="flex items-center space-x-4 mt-2">
-            <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-xl font-bold">
-              {profile.username.charAt(0).toUpperCase()}
-            </div>
-            <button
-              type="button"
-              className="px-4 py-2 border rounded-md hover:bg-[hsl(var(--accent))] transition-colors"
-            >
-              Alterar Foto
-            </button>
+            <input
+              translate="no"
+              type="url"
+              value={profile.avatar_url}
+              onChange={(e) => setProfile({ ...profile, avatar_url: e.target.value })}
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))]"
+              placeholder="avatar url"
+            />
           </div>
         </div>
 
