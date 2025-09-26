@@ -12,6 +12,7 @@ import {
 import { supabase } from 'mdp/lib/supabase/client';
 import Link from 'next/link';
 import getUser, { User } from 'mdp/lib/getUser';
+import { useRouter } from 'next/navigation';
 
 interface Comment {
   id: string;
@@ -20,6 +21,7 @@ interface Comment {
   author: {
     username: string;
     avatar_url: string;
+    id: string
   }
   post_id: string;
 }
@@ -36,6 +38,7 @@ export default function Comments({ postId }: CommentsProps) {
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editContent, setEditContent] = useState('');
   const [user, setUser] = useState<User | null>(null);
+  const router = useRouter()
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -60,7 +63,7 @@ export default function Comments({ postId }: CommentsProps) {
     try {
       const { data, error } = await supabase
         .from('blog_comments')
-        .select(`*, author:authors(username, avatar_url)`)
+        .select(`*, author:authors(username, avatar_url, id)`)
         .eq('post_id', postId)
         .order('created_at', { ascending: true });
 
@@ -226,17 +229,18 @@ export default function Comments({ postId }: CommentsProps) {
         ) : (
           comments.map((comment) => (
             <div key={comment.id} className="flex space-x-3 group">
-              {comment.author.avatar_url
-                ? <img
-                    src={comment.author.avatar_url || ''}
-                    alt={comment.author.username || 'Autor'}
-                    className="w-10 h-10 rounded-full"
-                />
-                : <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white">
-                    {comment.author?.username?.charAt(0).toUpperCase() || 'U'}
-                </div> 
-              }
-              
+              <div onClick={() => router.push(`/blog/authors/${comment.author.id}`)} className='cursor-pointer'>
+                {comment.author.avatar_url
+                  ? <img
+                      src={comment.author.avatar_url || ''}
+                      alt={comment.author.username || 'Autor'}
+                      className="w-10 h-10 rounded-full"
+                  />
+                  : <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white">
+                      {comment.author?.username?.charAt(0).toUpperCase() || 'U'}
+                  </div>
+                }
+              </div>
               <div className="flex-1 min-w-0">
                 {editingCommentId === comment.id ? (
                   <div className="space-y-2">

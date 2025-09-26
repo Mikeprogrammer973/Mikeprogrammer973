@@ -1,10 +1,12 @@
 
 import { ThemeProvider } from 'mdp/components/theme/theme-provider';
 import GoogleTranslateLoader from 'mdp/components/ui/google-translate-loader'
-import 'mdp/styles/globals.css';
+import 'mdp/styles/globals.css'
 import 'mdp/styles/gg-tr-ovrd.css'
 import { Metadata } from 'next';
 import { Suspense } from 'react';
+import BlogHeader from 'mdp/components/ui/blog/Header';
+import BlogFooter from 'mdp/components/ui/blog/Footer';
 
 export const metadata: Metadata = {
   title: 'Mike D. Pascal | Blog',
@@ -31,11 +33,13 @@ export default function BlogLayout({
           enableSystem
           disableTransitionOnChange
         >
-            <main>
-                <Suspense>
-                  {children}
-                </Suspense>
-            </main>
+          <BlogHeader />
+          <main>
+              <Suspense>
+                {children}
+              </Suspense>
+          </main>
+          <BlogFooter />
         </ThemeProvider>
       </body>
       </html>

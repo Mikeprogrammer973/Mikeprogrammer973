@@ -5,9 +5,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from 'mdp/lib/supabase/client';
-import { Eye, EyeOff, LogIn } from 'lucide-react';
-import BlogHeader from 'mdp/components/ui/blog/Header';
-import BlogFooter from 'mdp/components/ui/blog/Footer';
+import { Eye, EyeOff, LogIn } from 'lucide-react'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -68,8 +66,6 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-[hsl(var(--background))] flex flex-col">
-      <BlogHeader />
-      
       <main className="flex-grow flex items-center justify-center py-12 px-4">
         <div className="max-w-md w-full space-y-8">
           <div className="text-center">
@@ -187,8 +183,6 @@ export default function LoginPage() {
           </form>
         </div>
       </main>
-
-      <BlogFooter />
     </div>
   );
 }

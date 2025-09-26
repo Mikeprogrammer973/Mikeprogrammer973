@@ -4,9 +4,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from 'mdp/lib/supabase/client'
-import BlogHeader from 'mdp/components/ui/blog/Header';
 import RichTextEditor from 'mdp/components/ui/blog/PostEditor';
-import BlogFooter from 'mdp/components/ui/blog/Footer';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import getUser, { User } from 'mdp/lib/getUser';
@@ -108,8 +106,6 @@ export default function CreatePostPage() {
 
   return (
     <div className="min-h-screen bg-[hsl(var(--background))]">
-      <BlogHeader />
-      
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl font-bold mb-8 flex gap-4 items-center">
@@ -231,7 +227,6 @@ export default function CreatePostPage() {
           </form>
         </div>
       </main>
-      <BlogFooter />
     </div>
   );
 }

@@ -2,8 +2,8 @@
 
 import { Share2Icon } from 'lucide-react';
 import Comments from 'mdp/components/ui/blog/Comments';
-import BlogFooter from 'mdp/components/ui/blog/Footer';
-import BlogHeader from 'mdp/components/ui/blog/Header';
+import LikeButton from 'mdp/components/ui/blog/LikeBtn';
+import getUser, { User } from 'mdp/lib/getUser';
 import { supabase } from 'mdp/lib/supabase/client';
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react';
@@ -17,14 +17,14 @@ interface Post {
     author: {
         username: string | null;
         avatar_url: string | null;
-        bio: string | null;
+        id: string
+    };
+    category: {
+        id: string;
+        name: string;
     };
     cover_image: string | null;
-    created_at: string;
-    likes: number;
-    comments_count?: number;
-    read_time?: number;
-    category: string;
+    published_at: string;
     tags: string[];
 }
 
@@ -36,17 +36,33 @@ export default function PostPage() {
         excerpt: '',
         content: '',
         cover_image: '',
-        created_at: '',
-        likes: 0,
-        category: '',
+        published_at: '',
         author: {
             username: '',
             avatar_url: '',
-            bio: ''
+            id: ''
+        },
+        category: {
+            id: '',
+            name: ''
         },
         tags: []
     })
+    const [user, setUser] = useState<User | null>(null)
     const router = useRouter()
+    
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+            const user = await getUser()
+            setUser(user)
+            } catch (error) {
+            console.error('Error fetching user:', error)
+            }
+        }
+
+        fetchUser()
+    }, [])
 
     useEffect(()=>{
         fetchPost()
@@ -55,7 +71,7 @@ export default function PostPage() {
     const fetchPost = async () => {
         const { data: post } = await supabase
         .from('blog_posts')
-        .select(`*, author:authors(username, avatar_url)`)
+        .select(`*, author:authors(username, avatar_url, id), category:blog_posts_categories(id, name)`)
         .eq('id', params.id)
         .eq('status', 'published')
         .single();
@@ -94,19 +110,19 @@ export default function PostPage() {
 
     return (
         <div className="min-h-screen bg-[hsl(var(--background))]">
-            <BlogHeader />
-            
             <main className="container mx-auto px-4 py-8">
             <article className="max-w-3xl mx-auto">
                 <header className="mb-8">
                 <h1 translate='no' className="text-4xl font-bold mb-4">{post.title}</h1>
                 <div className="flex items-center gap-4 text-[hsl(var(--muted-foreground))] mb-4">
-                    <span>{new Date(post.created_at).toLocaleDateString('pt-BR')}</span>
+                    <span className="text-[hsl(var(--primary))]">{post.category.name}</span>
+                    <span>•</span>
+                    <span>{new Date(post.published_at).toLocaleDateString('pt-BR')}</span>
                     <span>•</span>
                     <span>{Math.ceil(post.content.split(' ').length / 200)} min de leitura</span>
                 </div>
                 
-                <div translate='no' className="flex items-center gap-3 mb-6">
+                <div onClick={() => router.push(`/blog/authors/${post.author?.id}`)} translate='no' className="flex items-center gap-3 mb-6 cursor-pointer">
                     {post.author && post.author.avatar_url
                         ? <img
                             src={post.author.avatar_url || ''}
@@ -118,8 +134,7 @@ export default function PostPage() {
                         </div> 
                     }
                     <div>
-                    <div className="font-semibold">{post.author?.username || 'Autor'}</div>
-                    <div className="text-sm text-[hsl(var(--muted-foreground))]">{post.author?.bio}</div>
+                        <div className="font-semibold">{post.author?.username || 'Autor'}</div>
                     </div>
                 </div>
 
@@ -152,12 +167,7 @@ export default function PostPage() {
                 </div>
 
                 <div className="flex items-center justify-between">
-                     <button className="flex items-center gap-2 p-2 rounded-md hover:bg-[hsl(var(--muted))]">
-                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                        </svg>
-                        <span>{post.likes || 0}</span>
-                    </button>
+                    <LikeButton postId={post.id} />
 
                     <button translate='yes' onClick={() => share_post()} className="flex items-center gap-2 rounded-md text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--muted))] p-3">
                         <Share2Icon className='w-5 text-[hsl(var(--primary))]' />
@@ -171,8 +181,6 @@ export default function PostPage() {
                 <Comments postId={post.id} />
             </section>
             </main>
-
-            <BlogFooter />
         </div>
     );
 }

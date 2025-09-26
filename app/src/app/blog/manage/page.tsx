@@ -1,7 +1,7 @@
 
 'use client';
 
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from 'mdp/lib/supabase/client';
 import { 
@@ -19,8 +19,6 @@ import {
   CheckCircle,
   AlertCircle
 } from 'lucide-react';
-import BlogHeader from 'mdp/components/ui/blog/Header';
-import BlogFooter from 'mdp/components/ui/blog/Footer';
 import ProfileEditor from 'mdp/components/ui/blog/ProfileEditor';
 import getUser, { User as UserType } from 'mdp/lib/getUser';
 
@@ -29,7 +27,10 @@ interface Post {
   title: string;
   status: 'draft' | 'pending' | 'published';
   created_at: string;
-  likes: number;
+  likes: {
+    author_id: string;
+    id: string;
+  }[]
   views: number;
 }
 
@@ -83,7 +84,7 @@ export default function DashboardPage() {
     try {
       const { data, error } = await supabase
         .from('blog_posts')
-        .select('*')
+        .select(`*, likes:blog_likes(id, author_id)`)
         .eq('author_id', user?.profile.id )
         .order('created_at', { ascending: false });
 
@@ -95,7 +96,7 @@ export default function DashboardPage() {
 
       // Calcular estatísticas
       const publishedPosts = data?.filter(post => post.status === 'published').length || 0;
-      const totalLikes = data?.reduce((sum, post) => sum + post.likes, 0) || 0;
+      const totalLikes = data?.reduce((sum, post) => sum + post.likes.length, 0) || 0;
       const totalViews = data?.reduce((sum, post) => sum + post.views, 0) || 0;
 
       setUserStats({
@@ -159,8 +160,6 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <BlogHeader />
-      
       <div className="flex">
         <aside className={`
           fixed md:static w-64 bg-[hsl(var(--card))] h-screen flex-shrink-0 z-40
@@ -278,28 +277,29 @@ export default function DashboardPage() {
                       
                       <div className="flex items-center space-x-2">
                         {getStatusIcon(post.status)}
+                        <span className="text-[hsl(var(--muted-foreground))]">{getStatusText(post.status)}</span>
                       </div>
                       
                       <div className="flex space-x-4 text-sm text-[hsl(var(--muted-foreground))]">
-                        <span>❤️ {post.likes}</span>
+                        <span>❤️ {post.likes.length}</span>
                         <span>👁️ {post.views}</span>
                       </div>
                       
                       <div className="flex space-x-2">
                         <button
-                          onClick={() => router.push(`/blog/manage/posts/${post.id}`)}
+                          onClick={() => router.push(post.status === 'published' ? `/blog/posts/${post.id}` : `/blog/manage/posts/preview/${post.id}`)}
                           className="p-2 hover:bg-[hsl(var(--accent))] rounded"
                           title="Visualizar"
                         >
                           <Eye className="w-4 h-4" />
                         </button>
-                        <button
+                        {post.status === 'draft' && <button
                           onClick={() => router.push(`/blog/manage/posts/edit/${post.id}`)}
                           className="p-2 hover:bg-[hsl(var(--accent))] rounded"
                           title="Editar"
                         >
                           <Edit3 className="w-4 h-4" />
-                        </button>
+                        </button>}
                         <button
                           onClick={() => handleDeletePost(post.id)}
                           className="p-2 hover:bg-[hsl(var(--accent))] rounded text-red-600"
@@ -364,8 +364,6 @@ export default function DashboardPage() {
           )}
         </main>
       </div>
-
-      <BlogFooter />
     </div>
   );
 }

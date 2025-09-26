@@ -4,9 +4,9 @@ import {
   Calendar, 
   Clock, 
   User, 
-  Heart,
   MessageCircle
 } from 'lucide-react';
+import LikeButton from './LikeBtn';
 
 interface Author {
   username: string | null;
@@ -19,8 +19,11 @@ interface Post {
   excerpt: string | null;
   cover_image: string | null;
   author: Author;
-  created_at: string;
-  likes: number;
+  published_at: string;
+  likes: {
+    id: string;
+    author_id: string;
+  }[]
   comments_count?: number;
   read_time?: number;
   category: {
@@ -31,8 +34,8 @@ interface Post {
 }
 
 interface PostCardProps {
-  post: Post;
-  variant?: 'default' | 'featured';
+  post: Post
+  variant?: 'default' | 'featured'
 }
 
 export default function PostCard({ post, variant = 'default' }: PostCardProps) {
@@ -52,7 +55,7 @@ export default function PostCard({ post, variant = 'default' }: PostCardProps) {
             <span className="mx-2">•</span>
             <div translate='yes' className="flex items-center">
               <Calendar className="w-4 h-4 mr-1" />
-              <span>{new Date(post.created_at).toLocaleDateString('pt-BR')}</span>
+              <span>{new Date(post.published_at).toLocaleDateString('pt-BR')}</span>
             </div>
             <span className="mx-2">•</span>
             <div translate='yes' className="flex items-center">
@@ -81,8 +84,7 @@ export default function PostCard({ post, variant = 'default' }: PostCardProps) {
               </div>
               
               <div className="flex items-center text-sm text-[hsl(var(--muted-foreground))]">
-                <Heart className="w-4 h-4 mr-1" />
-                <span>{post.likes}</span>
+                <LikeButton postId={post.id} />
               </div>
               
               {post.comments_count !== undefined && (
@@ -123,7 +125,7 @@ export default function PostCard({ post, variant = 'default' }: PostCardProps) {
             {post.category.name}
           </span>
           <span className="mx-2">•</span>
-          <span>{new Date(post.created_at).toLocaleDateString('pt-BR')}</span>
+          <span>{new Date(post.published_at).toLocaleDateString('pt-BR')}</span>
         </div>
         
         <h3 className="text-lg font-semibold mb-2 hover:text-[hsl(var(--primary))] transition-colors">
@@ -146,8 +148,7 @@ export default function PostCard({ post, variant = 'default' }: PostCardProps) {
           
           <div className="flex items-center space-x-2">
             <div className="flex items-center">
-              <Heart className="w-4 h-4 mr-1" />
-              <span>{post.likes}</span>
+              <LikeButton postId={post.id} />
             </div>
             
             {post.comments_count !== undefined && (

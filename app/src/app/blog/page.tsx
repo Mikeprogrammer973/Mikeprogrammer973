@@ -6,8 +6,6 @@ import { useSearchParams } from 'next/navigation';
 import { supabase } from 'mdp/lib/supabase/client';
 import { Search, Filter, X } from 'lucide-react';
 import Link from 'next/link';
-import BlogHeader from 'mdp/components/ui/blog/Header';
-import BlogFooter from 'mdp/components/ui/blog/Footer';
 import CategoryMenu from 'mdp/components/ui/blog/CategoryMenu';
 import PostCard from 'mdp/components/ui/blog/PostCard';
 
@@ -28,8 +26,11 @@ interface Post {
   excerpt: string | null;
   cover_image: string | null;
   author: Author;
-  created_at: string;
-  likes: number;
+  published_at: string;
+  likes: {
+    id: string;
+    author_id: string;
+  }[]
   comments_count?: number;
   read_time?: number;
   category: Category
@@ -70,9 +71,9 @@ export default function BlogPage() {
       // Buscar posts publicados
       const { data: postsData } = await supabase
         .from('blog_posts')
-        .select('*')
+        .select(`*, author:authors(username, avatar_url), category:blog_posts_categories(name, slug, id), likes:blog_likes(id, author_id)`)
         .eq('status', 'published')
-        .order('created_at', { ascending: false });
+        .order('published_at', { ascending: false });
 
       // Buscar categorias
       const { data: categoriesData } = await supabase
@@ -90,22 +91,8 @@ export default function BlogPage() {
         categories.push({...category, count: postsData?.filter(post => post.category_id === category.id).length})
       })
 
-      const posts: Post[] = []
-
-      postsData?.map(async (post) => {
-        posts.push(
-          {
-            ...post, 
-            category: categoriesData?.find(category => category.id === post.category_id),
-            author: authorsData?.find(author => author.id === post.author_id)
-          }
-        )
-      })
-
-      setPosts(posts || []);
+      setPosts(postsData || []);
       setCategories(categories || []);
-
-      console.log(postsData, categoriesData)
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -146,8 +133,6 @@ export default function BlogPage() {
 
   return (
     <div className="min-h-screen bg-[hsl(var(--background))]">
-      <BlogHeader />
-      
       <main className="container mx-auto px-4 py-8">
         <section className="text-center py-16">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">Blog de Desenvolvimento</h1>
@@ -287,7 +272,7 @@ export default function BlogPage() {
               <h3 className="font-semibold mb-4">Artigos Populares</h3>
               <div className="space-y-4">
                 {posts
-                  .sort((a, b) => b.likes - a.likes)
+                  .sort((a, b) => b.likes.length - a.likes.length)
                   .slice(0, 3)
                   .map((post) => (
                     <Link
@@ -304,7 +289,7 @@ export default function BlogPage() {
                             {post.title}
                           </h4>
                           <p className="text-sm text-[hsl(var(--muted-foreground))]">
-                            {post.likes} likes
+                            {post.likes.length} likes
                           </p>
                         </div>
                       </div>
@@ -315,8 +300,6 @@ export default function BlogPage() {
           </div>
         </div>
       </main>
-
-      <BlogFooter />
     </div>
   );
 }
