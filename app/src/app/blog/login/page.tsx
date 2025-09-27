@@ -34,6 +34,7 @@ export default function LoginPage() {
       if (data.user) {
         console.log('Usuário logado:', data.user);
         router.push('/blog/manage');
+        router.refresh()
       }
     } catch (error: unknown) {
       setError(error as  string);
