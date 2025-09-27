@@ -1,11 +1,13 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from 'mdp/lib/supabase/client';
 import { Eye, EyeOff, UserPlus, Mail, User, Lock } from 'lucide-react'
+import { useEmailVerification } from 'mdp/hooks/useEmailVerification';
+import EmailVerification from 'mdp/components/EmailVerification';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -19,6 +21,77 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
+  const {
+    isVerifying,
+    verificationEmail,
+    startVerification,
+    handleVerificationComplete,
+    handleSendCode
+  } = useEmailVerification(
+    {
+      onVerificationSuccess: async () => {
+        try {
+          const { data: authData, error: authError } = await supabase.auth.signUp({
+            email: formData.email,
+            password: formData.password,
+            options: {
+              data: {
+                username: formData.username
+              }
+            }
+          });
+
+          if (authError) {
+            setError(authError.message);
+            return;
+          }
+
+          if (authData.user) {
+            const { error: profileError } = await supabase
+              .from('authors')
+              .insert([
+                {
+                  user_id: authData.user.id,
+                  username: formData.username,
+                  email: formData.email,
+                  avatar_url: null,
+                  bio: null,
+                  website: null
+                }
+              ]);
+
+            if (profileError) {
+              setError(profileError.message);
+              return
+            }
+
+            router.push('/blog/manage');
+          }
+        } catch (error: unknown) {
+          setError(error as string)
+        } finally {
+          setLoading(false)
+        }
+      }
+    }
+  )
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data, error } = await supabase.auth.getSession();
+
+      if (error) {
+        setError(error.message);
+        return;
+      }
+
+      if (data.session) {
+        router.push('/blog/manage');
+      }
+    };
+
+    checkSession();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -45,49 +118,21 @@ export default function RegisterPage() {
       return;
     }
 
-    try {
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-        options: {
-          data: {
-            username: formData.username
-          }
-        }
-      });
-
-      if (authError) {
-        setError(authError.message);
-        return;
-      }
-
-      if (authData.user) {
-        const { error: profileError } = await supabase
-          .from('authors')
-          .insert([
-            {
-              user_id: authData.user.id,
-              username: formData.username,
-              email: formData.email,
-              avatar_url: null,
-              bio: null,
-              website: null
-            }
-          ]);
-
-        if (profileError) {
-          setError(profileError.message);
-          return
-        }
-
-        router.push('/blog/manage');
-      }
-    } catch (error: unknown) {
-      setError(error as string)
-    } finally {
-      setLoading(false)
-    }
+    startVerification(formData.email)
   };
+
+  if (isVerifying) {
+    return (
+      <div className='min-h-screen p-10 flex items-center justify-center'>
+        <EmailVerification
+          email={verificationEmail}
+          onVerificationComplete={handleVerificationComplete}
+          onResendCode={handleSendCode}
+          className="max-w-md mx-auto"
+        />
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-[hsl(var(--background))] flex flex-col">

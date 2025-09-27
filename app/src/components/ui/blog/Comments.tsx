@@ -177,7 +177,7 @@ export default function Comments({ postId }: CommentsProps) {
       {user ? (
         <form onSubmit={handleSubmitComment} className="space-y-3">
           <div className="flex space-x-3">
-            {user.profile.avatar_url
+            {user.profile?.avatar_url
               ? <img
                   src={user.profile.avatar_url || ''}
                   alt={user.profile.username || 'Autor'}
@@ -229,8 +229,8 @@ export default function Comments({ postId }: CommentsProps) {
         ) : (
           comments.map((comment) => (
             <div key={comment.id} className="flex space-x-3 group">
-              <div onClick={() => router.push(`/blog/authors/${comment.author.id}`)} className='cursor-pointer'>
-                {comment.author.avatar_url
+              <div onClick={() => router.push(`/blog/authors/${comment?.author?.id}`)} className='cursor-pointer'>
+                {comment?.author?.avatar_url
                   ? <img
                       src={comment.author.avatar_url || ''}
                       alt={comment.author.username || 'Autor'}
@@ -272,7 +272,7 @@ export default function Comments({ postId }: CommentsProps) {
                   <div className="bg-[hsl(var(--muted))] rounded-lg p-4">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center space-x-2">
-                        <span translate='no' className="font-semibold">{comment.author.username}</span>
+                        <span translate='no' className="font-semibold">{comment?.author?.username}</span>
                         <span className="text-[hsl(var(--muted-foreground)))] text-sm">
                           {new Date(comment.created_at).toLocaleDateString()}
                         </span>

@@ -1,11 +1,13 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from 'mdp/lib/supabase/client';
 import { Eye, EyeOff, LogIn } from 'lucide-react'
+import { useEmailVerification } from 'mdp/hooks/useEmailVerification';
+import EmailVerification from 'mdp/components/EmailVerification';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -14,33 +16,62 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
+  const {
+    isVerifying,
+    verificationEmail,
+    startVerification,
+    handleVerificationComplete,
+    handleSendCode
+  } = useEmailVerification(
+    {
+      onVerificationSuccess: async () => {
+        try {
+          const { data, error } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+          });
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
+          if (error) {
+            setError(error.message);
+            return;
+          }
 
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+          if (data.user) {
+            router.push('/blog/manage');
+            router.refresh()
+          }
+        } catch (error: unknown) {
+          setError(error as  string);
+        } finally {
+          setLoading(false);
+        }
+      }
+    }
+  )
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data, error } = await supabase.auth.getSession();
 
       if (error) {
         setError(error.message);
         return;
       }
 
-      if (data.user) {
-        console.log('Usuário logado:', data.user);
+      if (data.session) {
         router.push('/blog/manage');
-        router.refresh()
       }
-    } catch (error: unknown) {
-      setError(error as  string);
-    } finally {
-      setLoading(false);
-    }
+    };
+
+    checkSession();
+  }, []);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    startVerification(email)
   };
 
   const handleGoogleLogin = async () => {
@@ -64,6 +95,19 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+
+  if (isVerifying) {
+    return (
+      <div className='min-h-screen p-10 flex items-center justify-center'>
+        <EmailVerification
+          email={verificationEmail}
+          onVerificationComplete={handleVerificationComplete}
+          onResendCode={handleSendCode}
+          className="max-w-md mx-auto"
+        />
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-[hsl(var(--background))] flex flex-col">

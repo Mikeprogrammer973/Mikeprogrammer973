@@ -115,14 +115,14 @@ export default function PostPage() {
                 <header className="mb-8">
                 <h1 translate='no' className="text-4xl font-bold mb-4">{post.title}</h1>
                 <div className="flex items-center gap-4 text-[hsl(var(--muted-foreground))] mb-4">
-                    <span translate='no' className="text-[hsl(var(--primary))]">{post.category.name}</span>
+                    <span translate='no' className="text-[hsl(var(--primary))]">{post?.category?.name}</span>
                     <span>•</span>
                     <span>{new Date(post.published_at).toLocaleDateString('pt-BR')}</span>
                     <span>•</span>
                     <span>{Math.ceil(post.content.split(' ').length / 200)} min de leitura</span>
                 </div>
                 
-                <div onClick={() => router.push(`/blog/authors/${post.author?.id}`)} translate='no' className="flex items-center gap-3 mb-6 cursor-pointer">
+                <div onClick={() => router.push(`/blog/authors/${post?.author?.id}`)} translate='no' className="flex items-center gap-3 mb-6 cursor-pointer">
                     {post.author && post.author.avatar_url
                         ? <img
                             src={post.author.avatar_url || ''}
@@ -134,7 +134,7 @@ export default function PostPage() {
                         </div> 
                     }
                     <div>
-                        <div className="font-semibold">{post.author?.username || 'Autor'}</div>
+                        <div className="font-semibold">{post?.author?.username || 'Autor'}</div>
                     </div>
                 </div>
 
