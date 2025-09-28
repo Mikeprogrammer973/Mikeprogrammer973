@@ -124,7 +124,7 @@ export default function BlogHeader() {
                     ? <img
                         src={user.profile.avatar_url || ''}
                         alt={user.profile.username || 'Autor'}
-                        className="w-10 h-10 rounded-full"
+                        className="w-10 h-10 p-1 border border-[hsl(var(--primary))] rounded-full"
                     />
                     : <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white">
                         {user.profile?.username?.charAt(0).toUpperCase() || 'U'}
