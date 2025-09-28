@@ -137,7 +137,7 @@ export default async function CategoriesPage() {
               {categories.map((category, index) => (
                 <Link
                   key={category.name}
-                  href={`/blog/category/${category.slug}`}
+                  href={`/blog/categories/${category.slug}`}
                   className="group bg-[hsl(var(--card))] border rounded-xl p-6 hover:shadow-lg transition-all duration-300 hover:border-[hsl(var(--primary))]/50"
                 >
                   <div className="flex items-start justify-between mb-4">
@@ -197,7 +197,7 @@ export default async function CategoriesPage() {
           </div>
 
           <div className="lg:w-1/3">
-            <div className="bg-[hsl(var(--card))] border rounded-lg p-6 mb-6">
+            {recentPosts && recentPosts.length > 0 && <div className="bg-[hsl(var(--card))] border rounded-lg p-6 mb-6">
               <h3 className="font-semibold mb-4">Artigos Recentes</h3>
               <div className="space-y-3">
                 {recentPosts?.map((post) => (
@@ -229,15 +229,15 @@ export default async function CategoriesPage() {
                   </Link>
                 ))}
               </div>
-            </div>
+            </div>}
 
-            <div className="bg-[hsl(var(--card))] border rounded-lg p-6">
+            {categories.length > 0 && <div className="bg-[hsl(var(--card))] border rounded-lg p-6">
               <h3 className="font-semibold mb-4">Categorias Populares</h3>
               <div className="space-y-2">
                 {categories.slice(0, 5).map((category) => (
                   <Link
                     key={category.name}
-                    href={`/blog/category/${category.slug}`}
+                    href={`/blog/categories/${category.slug}`}
                     className="flex items-center justify-between py-2 hover:text-[hsl(var(--primary))] transition-colors"
                   >
                     <span className="flex items-center">
@@ -250,7 +250,7 @@ export default async function CategoriesPage() {
                   </Link>
                 ))}
               </div>
-            </div>
+            </div>}
           </div>
         </div>
       </main>
