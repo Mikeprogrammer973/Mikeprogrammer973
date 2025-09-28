@@ -116,6 +116,7 @@ export default function BlogHeader() {
             {user ? (
               <div className="relative">
                 <button
+                  translate="no"
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                   className="flex items-center space-x-2 p-2 rounded-md hover:bg-[hsl(var(--accent))]"
                 >
