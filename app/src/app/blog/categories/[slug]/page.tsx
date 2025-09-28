@@ -10,12 +10,8 @@ import {
 import { supabase } from 'mdp/lib/supabase/client';
 import PostCard from 'mdp/components/ui/blog/PostCard';
 
-interface PageProps {
-  params: { slug: string };
-}
-
-export default async function CategoryPage({ params }: PageProps) {
-  const category_slug = decodeURIComponent(params.slug);
+export default async function CategoryPage({ params }: { params: { slug: string } }) {
+  const category_slug = params.slug
 
   const { data: category } = await supabase
     .from('blog_posts_categories')
