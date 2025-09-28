@@ -39,13 +39,12 @@ interface Stats {
 
 export default async function CategoriesPage() {
   
-  // Buscar todas as categorias com estatísticas
   const { data: posts } = await supabase
     .from('blog_posts')
     .select(`*, category:blog_posts_categories(id, name, slug), likes:blog_likes(id)`)
     .eq('status', 'published');
 
-  // Calcular estatísticas por categoria
+  // estatísticas por categoria
   const { data: categoriesData } = await supabase
     .from('blog_posts_categories')
     .select('*');
@@ -69,7 +68,6 @@ export default async function CategoriesPage() {
     return acc;
   }, {});
 
-  // Converter para array e ordenar
   const categories = Object.entries(categoryStats).map(([name, stats]) => ({
     name,
     slug: stats.slug,
@@ -79,7 +77,6 @@ export default async function CategoriesPage() {
     latestPost: stats.latestPost,
   })).sort((a, b) => b.count - a.count);
 
-  // Buscar posts recentes para o sidebar
   const { data: recentPosts } = await supabase
     .from('blog_posts')
     .select(`
