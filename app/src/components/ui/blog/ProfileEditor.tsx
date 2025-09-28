@@ -157,7 +157,7 @@ export default function ProfileEditor() {
         <button
           type="submit"
           disabled={isSaving}
-          className="bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] px-6 py-2 rounded-md hover:opacity-90 disabled:opacity-50"
+          className="bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] mt-12 px-6 py-2 rounded-md hover:opacity-90 disabled:opacity-50"
         >
           {isSaving ? 'Salvando...' : 'Salvar Alterações'}
         </button>
