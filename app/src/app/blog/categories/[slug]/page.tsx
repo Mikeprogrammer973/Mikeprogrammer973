@@ -1,6 +1,3 @@
-export default Page() {
-  return <div>...</div>
-}
 
 /*
 import { notFound } from 'next/navigation';
