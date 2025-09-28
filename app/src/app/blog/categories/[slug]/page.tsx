@@ -1,4 +1,4 @@
-
+/*
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { 
@@ -178,3 +178,4 @@ export default async function CategoryPage({ params }: { params: { slug: string 
     </div>
   );
 }
+*/
