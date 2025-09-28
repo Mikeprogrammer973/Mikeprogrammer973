@@ -176,7 +176,7 @@ export default function Comments({ postId }: CommentsProps) {
 
       {user ? (
         <form onSubmit={handleSubmitComment} className="space-y-3">
-          <div className="flex space-x-3">
+          <div translate="no" className="flex space-x-3">
             {user.profile?.avatar_url
               ? <img
                   src={user.profile.avatar_url || ''}
@@ -229,7 +229,7 @@ export default function Comments({ postId }: CommentsProps) {
         ) : (
           comments.map((comment) => (
             <div key={comment.id} className="flex space-x-3 group">
-              <div onClick={() => router.push(`/blog/authors/${comment?.author?.id}`)} className='cursor-pointer'>
+              <div translate="no" onClick={() => router.push(`/blog/authors/${comment?.author?.id}`)} className='cursor-pointer'>
                 {comment?.author?.avatar_url
                   ? <img
                       src={comment.author.avatar_url || ''}
