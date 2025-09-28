@@ -219,7 +219,7 @@ export default async function CategoriesPage() {
                           {post.title}
                         </h4>
                         {post.author && <p className="text-xs text-[hsl(var(--muted-foreground))]">
-                          por <span translate='no'>{post.author.username}</span>
+                          <span translate='no'>{post.author.username}</span>
                         </p>}
                         <p className="text-xs text-[hsl(var(--muted-foreground))]">
                           {new Date(post.created_at).toLocaleDateString('pt-BR')}
@@ -236,6 +236,7 @@ export default async function CategoriesPage() {
               <div className="space-y-2">
                 {categories.slice(0, 5).map((category) => (
                   <Link
+                    translate="no"
                     key={category.name}
                     href={`/blog/categories/${category.slug}`}
                     className="flex items-center justify-between py-2 hover:text-[hsl(var(--primary))] transition-colors"
