@@ -100,7 +100,6 @@ export default async function CategoryPage({ params }: { params: { slug: string 
               </div>
             </div>
 
-            {/* posts */}
             <div className="mb-8">
               <h2 className="text-2xl font-bold mb-6">Artigos sobre <span translate="no">{categoryName}</span></h2>
               
