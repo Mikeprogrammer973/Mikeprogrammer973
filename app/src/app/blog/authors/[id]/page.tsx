@@ -87,7 +87,7 @@ export default function AuthorPage() {
         <div className="min-h-screen bg-[hsl(var(--background))]">
         <main className="container mx-auto px-4 py-8">
             <div className="text-center mb-12">
-                <div translate='no' className="flex items-center justify-center">
+                <div translate='no' className="flex my-5 items-center justify-center">
                     {author?.avatar_url
                         ? <img
                             src={author.avatar_url || ''}
