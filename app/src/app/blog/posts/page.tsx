@@ -256,7 +256,7 @@ export default function PostsPage() {
               
               {searchQuery && (
                 <span className="bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] px-3 py-1 rounded-full text-sm flex items-center">
-                  Busca: "{searchQuery}"
+                  Busca: &quot;{searchQuery}&quot;
                   <button
                     onClick={() => setSearchQuery('')}
                     className="ml-2 hover:text-[hsl(var(--primary))]/70"
