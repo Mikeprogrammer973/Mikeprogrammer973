@@ -150,7 +150,7 @@ export default function NewsletterPage() {
 
           <div className="mt-6 pt-6 border-t border-gray-800">
             <p className="text-sm text-gray-400 text-center">
-              Ao se inscrever, você concorda em receber emails sobre atualizações do portfólio. 
+              Ao se inscrever, você concorda em receber emails sobre atualizações do meu portfólio. 
               Você pode cancelar a qualquer momento.
             </p>
           </div>

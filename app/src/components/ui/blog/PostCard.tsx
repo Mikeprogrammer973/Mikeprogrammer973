@@ -50,7 +50,7 @@ export default function PostCard({ post, variant = 'default' }: PostCardProps) {
         <div className="p-6">
           <div className="flex items-center text-sm text-[hsl(var(--muted-foreground))] mb-3">
             <span className="bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] px-2 py-1 rounded-full text-xs text-center">
-              {post.category.name}
+              {post.category?.name}
             </span>
             <span className="mx-2">•</span>
             <div translate='yes' className="flex items-center">
@@ -122,7 +122,7 @@ export default function PostCard({ post, variant = 'default' }: PostCardProps) {
       <div className="p-4">
         <div className="flex items-center text-xs text-[hsl(var(--muted-foreground))] mb-2">
           <span className="bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] px-2 py-1 rounded-full">
-            {post.category.name}
+            {post.category?.name}
           </span>
           <span className="mx-2">•</span>
           <span>{new Date(post.published_at).toLocaleDateString('pt-BR')}</span>

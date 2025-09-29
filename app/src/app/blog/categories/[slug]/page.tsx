@@ -115,7 +115,7 @@ export default function CategoryPage() {
               <span>›</span>
               <Link href="/blog/categories" className="hover:text-[hsl(var(--foreground))]">Categorias</Link>
               <span>›</span>
-              <span className="text-[hsl(var(--foreground))]"><span translate="no">{category?.name}</span></span>
+              <span className="text-[hsl(var(--foreground))]"><span className='mx-1' translate="no">{category?.name}</span></span>
             </div>
 
             <div className="bg-[hsl(var(--card))] border rounded-xl p-8 mb-8 text-center">
@@ -123,10 +123,10 @@ export default function CategoryPage() {
                 {category?.name.charAt(0).toUpperCase()}
               </div>
               
-              <h1 className="text-4xl font-bold mb-4"><span translate="no">{category?.name}</span></h1>
+              <h1 className="text-4xl font-bold mb-4"><span className='mx-1' translate="no">{category?.name}</span></h1>
               
               <p className="text-xl text-[hsl(var(--muted-foreground))] mb-6 max-w-2xl mx-auto">
-                Explore todos os artigos sobre <span translate="no">{category?.name}</span> no blog
+                Explore todos os artigos sobre <span className='mx-1' translate="no">{category?.name}</span> no blog
               </p>
 
               <div className="grid grid-cols-3 gap-6 max-w-md mx-auto">
@@ -158,12 +158,12 @@ export default function CategoryPage() {
 
             {/* posts */}
             <div className="mb-8">
-              <h2 className="text-2xl font-bold mb-6">Artigos sobre <span translate="no">{category?.name}</span></h2>
+              <h2 className="text-2xl font-bold mb-6">Artigos sobre <span className='mx-1' translate="no">{category?.name}</span></h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {posts && posts.length === 0 &&
                     <div className='ml-10 text-[hsl(var(--muted-foreground))]'>
-                        Não há nenhum artigo sobre <span translate="no">{category?.name}</span> no momento.
+                        Não há nenhum artigo sobre <span className='mx-1' translate="no">{category?.name}</span> no momento.
                     </div>
                 }
                 {posts?.map((post) => (
@@ -185,7 +185,7 @@ export default function CategoryPage() {
 
           <div className="lg:w-1/3">
             {posts && posts.length > 0 && <div className="bg-[hsl(var(--card)] border rounded-lg p-6 mb-6">
-              <h3 className="font-semibold mb-4">Populares em <span translate="no">{category?.name}</span></h3>
+              <h3 className="font-semibold mb-4">Populares em <span className='mx-1' translate="no">{category?.name}</span></h3>
               <div className="space-y-4">
                 {posts
                   ?.sort((a, b) => (b.likes.length) - (a.likes.length))
@@ -205,7 +205,7 @@ export default function CategoryPage() {
                             />
                         </div>}
                         <div>
-                          <h4 className="font-medium group-hover:text-[hsl(var(--primary))] transition-colors line-clamp-2 text-sm">
+                          <h4 translate='no' className="font-medium group-hover:text-[hsl(var(--primary))] transition-colors line-clamp-2 text-sm">
                             {post.title}
                           </h4>
                           <p className="text-xs text-[hsl(var(--muted-foreground))]">
@@ -221,16 +221,14 @@ export default function CategoryPage() {
             <div className="bg-[hsl(var(--card))] border rounded-lg p-6">
               <h3 className="font-semibold mb-4">Fique por dentro</h3>
               <p className="text-sm text-[hsl(var(--muted-foreground))] mb-4">
-                Receba os melhores artigos sobre <span translate="no">{category?.name}</span> diretamente no seu email.
+                Receba os melhores artigos sobre <span className='mx-1' translate="no">{category?.name}</span> diretamente no seu email.
               </p>
-              <form className="space-y-3">
-                <button
-                  type="submit"
+              <button
+                  onClick={() => router.push('/newsletter')}
                   className="w-full bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] py-2 rounded-md hover:opacity-90 text-sm"
                 >
-                  Assinar Newsletter
-                </button>
-              </form>
+                Assinar Newsletter
+              </button>
             </div>
           </div>
         </div>
