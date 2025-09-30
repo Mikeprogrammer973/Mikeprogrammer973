@@ -16,7 +16,6 @@ import {
   HomeIcon,
   MenuSquare,
   Users,
-  FilesIcon
 } from 'lucide-react';
 import Logo from '../logo';
 import getUser, { User } from 'mdp/lib/getUser';
@@ -46,7 +45,6 @@ export default function BlogHeader() {
 
   const navigation = [
     { name: 'Início', href: '/blog', icon: HomeIcon },
-    { name: 'Artigos', href: '/blog/posts', icon: FilesIcon },
     { name: 'Categorias', href: '/blog/categories', icon: MenuSquare },
     { name: 'Autores', href: '/blog/authors', icon: Users },
   ];

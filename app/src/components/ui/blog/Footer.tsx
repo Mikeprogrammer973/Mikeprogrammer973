@@ -20,7 +20,6 @@ export default function BlogFooter() {
   const footerLinks = {
     navigation: [
       { name: 'Início', href: '/blog' },
-      { name: 'Artigos', href: '/blog/posts' },
       { name: 'Categorias', href: '/blog/categories' },
       { name: 'Autores', href: '/blog/authors' },
       { name: 'Info', href: '/blog/about' },
