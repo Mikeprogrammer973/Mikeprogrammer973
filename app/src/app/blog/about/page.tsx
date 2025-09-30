@@ -1,16 +1,9 @@
 
-import BlogHeader from '@/components/blog/Header';
-import BlogFooter from '@/components/blog/Footer';
 import Link from 'next/link';
 import { 
   Code, 
-  Heart, 
   Users, 
   BookOpen,
-  Github,
-  ExternalLink,
-  Mail,
-  FileText,
   Shield,
   ArrowRight
 } from 'lucide-react';
@@ -44,44 +37,41 @@ export default function AboutPage() {
     { name: "Tailwind CSS", description: "Estilização utilitária e design system" },
     { name: "Supabase", description: "Backend como serviço com PostgreSQL" },
     { name: "TypeScript", description: "Tipagem estática para melhor desenvolvimento" },
-    { name: "Tiptap", description: "Editor de texto rico para criação de posts" },
-    { name: "Autenticação", description: "Sistema completo de login e registro" }
+    { name: 'Theme', description: 'Modo escuro e claro para melhorar a experiência do usuário' },
+    { name: "Auth", description: "Sistema completo de login e registro" }
   ];
 
   const stats = [
     { number: "100%", label: "Open Source" },
     { number: "Completo", label: "Sistema Full-Stack" },
     { number: "Moderado", label: "Conteúdo Comunitário" },
-    { number: "Moderno", label: "Tecnologias Atuais" }
+    { number: "Moderno", label: "Tecnologias sensacionais" }
   ];
 
   return (
-    <div className="min-h-screen bg-background">
-      <BlogHeader />
-      
+    <div className="min-h-screen bg-[hsl(var(--background))]">
       <main className="container mx-auto px-4 py-8">
-        {/* Hero Section */}
         <section className="text-center py-16">
-          <div className="inline-flex items-center px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium mb-6">
+          <div className="inline-flex items-center px-4 py-2 bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] rounded-full text-sm font-medium mb-6">
             <Code className="w-4 h-4 mr-2" />
-            Blog Comunitário de Desenvolvimento
+            Blog de Desenvolvimento IT
           </div>
           <h1 className="text-4xl md:text-6xl font-bold mb-6">Sobre o Blog</h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+          <p className="text-xl text-[hsl(var(--muted-foreground))] max-w-3xl mx-auto mb-8">
             Uma plataforma open source para desenvolvedores compartilharem conhecimento, 
             tutoriais e experiências sobre desenvolvimento web e tecnologia.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link 
-              href="/blog/posts" 
-              className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:opacity-90"
+              href="/blog" 
+              className="inline-flex items-center px-6 py-3 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] rounded-lg hover:opacity-90"
             >
               Explorar Artigos
               <ArrowRight className="w-4 h-4 ml-2" />
             </Link>
             <Link 
               href="/blog/register" 
-              className="inline-flex items-center px-6 py-3 border border-border rounded-lg hover:bg-accent"
+              className="inline-flex items-center px-6 py-3 border border-border rounded-lg hover:bg-[hsl(var(--accent))]"
             >
               <Users className="w-4 h-4 mr-2" />
               Juntar-se à Comunidade
@@ -89,16 +79,15 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Sobre o Projeto */}
         <section className="py-16">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-3xl font-bold mb-6">Sobre Este Projeto</h2>
-              <div className="space-y-4 text-muted-foreground">
+              <div className="space-y-4 text-[hsl(var(--muted-foreground))]">
                 <p>
                   Este blog é uma plataforma comunitária desenvolvida para conectar 
                   desenvolvedores e facilitar o compartilhamento de conhecimento. 
-                  Acreditamos que a melhor maneira de aprender é ensinando.
+                  Acredito que a melhor maneira de aprender é ensinando.
                 </p>
                 <p>
                   O sistema foi construído com tecnologias modernas e é totalmente open source. 
@@ -106,18 +95,18 @@ export default function AboutPage() {
                   experiências e participar da comunidade.
                 </p>
                 <p>
-                  Nosso objetivo é criar um espaço inclusivo onde desenvolvedores de todos 
+                  Meu objetivo é criar um espaço inclusivo onde desenvolvedores de todos 
                   os níveis possam aprender, ensinar e crescer juntos.
                 </p>
               </div>
             </div>
-            <div className="bg-card border rounded-2xl p-8">
+            <div className="bg-[hsl(var(--card)] border rounded-2xl p-8">
               <h3 className="text-2xl font-bold mb-6 text-center">Características</h3>
               <div className="grid grid-cols-2 gap-6">
                 {stats.map((stat, index) => (
                   <div key={index} className="text-center">
-                    <div className="text-3xl font-bold text-primary mb-2">{stat.number}</div>
-                    <div className="text-sm text-muted-foreground">{stat.label}</div>
+                    <div className="text-3xl font-bold text-[hsl(var(--primary))] mb-2">{stat.number}</div>
+                    <div className="text-sm text-[hsl(var(--muted-foreground))]">{stat.label}</div>
                   </div>
                 ))}
               </div>
@@ -125,63 +114,60 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Funcionalidades */}
         <section className="py-16">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">Funcionalidades do Sistema</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-[hsl(var(--muted-foreground))] max-w-2xl mx-auto">
               Um sistema completo de blog com todas as funcionalidades que você espera de uma plataforma moderna
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {features.map((feature, index) => (
-              <div key={index} className="bg-card border rounded-xl p-6 hover:shadow-lg transition-shadow">
+              <div key={index} className="bg-[hsl(var(--card))] border rounded-xl p-6 hover:shadow-lg transition-shadow">
                 <div className="text-primary mb-4">
                   {feature.icon}
                 </div>
                 <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
-                <p className="text-muted-foreground">{feature.description}</p>
+                <p className="text-[hsl(var(--muted-foreground))]">{feature.description}</p>
               </div>
             ))}
           </div>
         </section>
 
-        {/* Tech Stack */}
         <section className="py-16">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">Tecnologias Utilizadas</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-[hsl(var(--muted-foreground))] max-w-2xl mx-auto">
               Desenvolvido com as tecnologias mais modernas do ecossistema web
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {techStack.map((tech, index) => (
-              <div key={index} className="bg-card border rounded-xl p-6 text-center">
-                <h3 className="font-semibold mb-2">{tech.name}</h3>
-                <p className="text-sm text-muted-foreground">{tech.description}</p>
+              <div key={index} className="bg-[hsl(var(--card))] border rounded-xl p-6 text-center">
+                <h3 translate='no' className="font-semibold mb-2">{tech.name}</h3>
+                <p className="text-sm text-[hsl(var(--muted-foreground))]">{tech.description}</p>
               </div>
             ))}
           </div>
         </section>
 
-        {/* CTA Final */}
         <section className="text-center py-16">
-          <div className="bg-card border rounded-2xl p-12 max-w-4xl mx-auto">
+          <div className="bg-[hsl(var(--card))] border rounded-2xl p-12 max-w-4xl mx-auto">
             <h2 className="text-3xl font-bold mb-4">Junte-se à Comunidade</h2>
-            <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
+            <p className="text-[hsl(var(--muted-foreground))] mb-8 max-w-2xl mx-auto">
               Registre-se agora e comece a compartilhar seu conhecimento com outros desenvolvedores
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link 
                 href="/blog/register" 
-                className="inline-flex items-center px-8 py-4 bg-primary text-primary-foreground rounded-lg hover:opacity-90 text-lg"
+                className="inline-flex items-center px-8 py-4 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] rounded-lg hover:opacity-90 text-lg"
               >
                 <Users className="w-5 h-5 mr-2" />
                 Criar Conta
               </Link>
               <Link 
-                href="/blog/posts" 
-                className="inline-flex items-center px-8 py-4 border border-border rounded-lg hover:bg-accent text-lg"
+                href="/blog" 
+                className="inline-flex items-center px-8 py-4 border border-[hsl(var(--border)] rounded-lg hover:bg-[hsl(var(--accent))] text-lg"
               >
                 <BookOpen className="w-5 h-5 mr-2" />
                 Ler Artigos
@@ -190,8 +176,6 @@ export default function AboutPage() {
           </div>
         </section>
       </main>
-
-      <BlogFooter />
     </div>
   );
 }
