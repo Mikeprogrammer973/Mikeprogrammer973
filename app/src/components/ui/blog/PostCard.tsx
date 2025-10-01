@@ -35,7 +35,7 @@ interface Post {
 
 interface PostCardProps {
   post: Post
-  variant?: 'default' | 'featured'
+  variant?: 'default' | 'featured' | 'list'
 }
 
 export default function PostCard({ post, variant = 'default' }: PostCardProps) {
@@ -108,58 +108,135 @@ export default function PostCard({ post, variant = 'default' }: PostCardProps) {
     );
   }
 
-  return (
-    <article translate='no' className="bg-[hsl(var(--card))] rounded-lg border overflow-hidden hover:shadow-md transition-shadow">
-      {post.cover_image && (
-        <Link href={`/blog/posts/${post.id}`}>
-          <div 
-            className="h-48 bg-cover bg-center hover:opacity-90 transition-opacity" 
-            style={{ backgroundImage: `url(${post.cover_image})` }}
-          />
-        </Link>
-      )}
-      
-      <div className="p-4">
-        <div className="flex items-center text-xs text-[hsl(var(--muted-foreground))] mb-2">
-          <span className="bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] px-2 py-1 rounded-full">
-            {post.category?.name}
-          </span>
-          <span className="mx-2">•</span>
-          <span>{new Date(post.published_at).toLocaleDateString('pt-BR')}</span>
-        </div>
-        
-        <h3 className="text-lg font-semibold mb-2 hover:text-[hsl(var(--primary))] transition-colors">
-          <Link href={`/blog/posts/${post.id}`}>
-            {post.title}
-          </Link>
-        </h3>
-        
-        {post.excerpt && (
-          <p className="text-sm text-[hsl(var(--muted-foreground))] mb-3 line-clamp-2">
-            {post.excerpt}
-          </p>
-        )}
-        
-        <div className="flex items-center justify-between text-sm text-[hsl(var(--muted-foreground))]">
-          <div className="flex items-center">
-            <User className="w-4 h-4 mr-1" />
-            {<span>{post.author.username}</span>}
-          </div>
+  if (variant === 'list') {
+    return (
+      <article translate='no' className="bg-[hsl(var(--card))] border rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+        <div className="flex flex-col md:flex-row">
+          {post.cover_image && (
+            <div className="md:w-1/3">
+              <Link href={`/blog/posts/${post.id}`}>
+                <div 
+                  className="h-48 md:h-full bg-cover bg-center hover:opacity-90 transition-opacity" 
+                  style={{ backgroundImage: `url(${post.cover_image})` }}
+                />
+              </Link>
+            </div>
+          )}
           
-          <div className="flex items-center space-x-2">
-            <div className="flex items-center">
-              <LikeButton postId={post.id} />
+          <div className={`p-6 ${post.cover_image ? 'md:w-2/3' : 'w-full'}`}>
+            <div className="flex items-center text-sm text-[hsl(var(--muted-foreground)))] mb-3">
+              <span className="bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] px-2 py-1 rounded-full text-xs">
+                {post.category.name}
+              </span>
+              <span className="mx-2">•</span>
+              <div translate='yes' className="flex items-center">
+                <Calendar className="w-4 h-4 mr-1" />
+                <span>{new Date(post.published_at).toLocaleDateString('pt-BR')}</span>
+              </div>
+              <span className="mx-2">•</span>
+              <div translate='yes' className="flex items-center">
+                <Clock className="w-4 h-4 mr-1" />
+                <span>{readTime} min de leitura</span>
+              </div>
             </div>
             
-            {post.comments_count !== undefined && (
-              <div className="flex items-center">
-                <MessageCircle className="w-4 h-4 mr-1" />
-                <span>{post.comments_count}</span>
-              </div>
+            <h3 className="text-xl font-semibold mb-3 hover:text-[hsl(var(--primary))] transition-colors">
+              <Link href={`/blog/posts/${post.id}`}>
+                {post.title}
+              </Link>
+            </h3>
+            
+            {post.excerpt && (
+              <p translate='no' className="text-[hsl(var(--muted-foreground))] mb-4 line-clamp-2">
+                {post.excerpt}
+              </p>
             )}
+            
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center text-sm text-[hsl(var(--muted-foreground))]">
+                  <User className="w-4 h-4 mr-1" />
+                  <span>{post.author.username}</span>
+                </div>
+                
+                <div className="flex items-center text-sm text-[hsl(var(--muted-foreground))]">
+                  <LikeButton postId={post.id} />
+                </div>
+                
+                {post.comments_count !== undefined && (
+                  <div className="flex items-center text-sm text-[hsl(var(--muted-foreground))]">
+                    <MessageCircle className="w-4 h-4 mr-1" />
+                    <span>{post.comments_count}</span>
+                  </div>
+                )}
+              </div>
+              
+              <Link 
+                translate='yes'
+                href={`/blog/posts/${post.id}`}
+                className="text-[hsl(var(--primary))] hover:underline font-medium"
+              >
+                Ler mais
+              </Link>
+            </div>
           </div>
         </div>
-      </div>
-    </article>
+      </article>
+    );
+  }
+
+  return (
+      <article translate='no' className="bg-[hsl(var(--card))] rounded-lg border overflow-hidden hover:shadow-md transition-shadow">
+        {post.cover_image && (
+          <Link href={`/blog/posts/${post.id}`}>
+            <div 
+              className="h-48 bg-cover bg-center hover:opacity-90 transition-opacity" 
+              style={{ backgroundImage: `url(${post.cover_image})` }}
+            />
+          </Link>
+        )}
+        
+        <div className="p-4">
+          <div className="flex items-center text-xs text-[hsl(var(--muted-foreground))] mb-2">
+            <span className="bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] px-2 py-1 rounded-full">
+              {post.category?.name}
+            </span>
+            <span className="mx-2">•</span>
+            <span>{new Date(post.published_at).toLocaleDateString('pt-BR')}</span>
+          </div>
+          
+          <h3 className="text-lg font-semibold mb-2 hover:text-[hsl(var(--primary))] transition-colors">
+            <Link href={`/blog/posts/${post.id}`}>
+              {post.title}
+            </Link>
+          </h3>
+          
+          {post.excerpt && (
+            <p className="text-sm text-[hsl(var(--muted-foreground))] mb-3 line-clamp-2">
+              {post.excerpt}
+            </p>
+          )}
+          
+          <div className="flex items-center justify-between text-sm text-[hsl(var(--muted-foreground))]">
+            <div className="flex items-center">
+              <User className="w-4 h-4 mr-1" />
+              {<span>{post.author.username}</span>}
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <div className="flex items-center">
+                <LikeButton postId={post.id} />
+              </div>
+              
+              {post.comments_count !== undefined && (
+                <div className="flex items-center">
+                  <MessageCircle className="w-4 h-4 mr-1" />
+                  <span>{post.comments_count}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </article>
   );
 }
