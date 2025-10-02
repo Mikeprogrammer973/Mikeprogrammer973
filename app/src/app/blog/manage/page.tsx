@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import ProfileEditor from 'mdp/components/ui/blog/ProfileEditor';
 import getUser, { User as UserType } from 'mdp/lib/getUser';
+import StatsCharts from 'mdp/components/ui/blog/statsChart';
 
 interface Post {
   id: string;
@@ -352,9 +353,9 @@ export default function DashboardPage() {
               {/* Gráficos de estatísticas */}
               <div className="bg-[hsl(var(--card))] border rounded-lg p-6">
                 <h3 className="text-lg font-semibold mb-4">Desempenho dos Artigos</h3>
-                <div className="h-64 bg-[hsl(var(--muted))] rounded-lg flex items-center justify-center">
-                  <p className="text-[hsl(var(--muted-foreground))]">Gráficos de estatísticas aqui</p>
-                </div>
+                  <div className="text-[hsl(var(--muted-foreground))]">
+                    <StatsCharts userId={user?.profile.id || ''} />
+                  </div>
               </div>
             </div>
           )}

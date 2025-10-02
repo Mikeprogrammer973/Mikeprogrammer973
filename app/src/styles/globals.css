@@ -402,3 +402,11 @@
     transform: translateX(100%) rotate(30deg);
   }
 }
+
+
+/* CHARTS */
+.chart-container {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
