@@ -11,7 +11,7 @@ export default async function SearchPage({
 }) {
   const query = (await searchParams).q as string || ''
 
-  let { data: posts, error } = await supabase
+  let { data: posts } = await supabase
     .from('blog_posts')
     .select(`*, author: authors(username), category: blog_posts_categories(name)`)
     .order('published_at', { ascending: false })
