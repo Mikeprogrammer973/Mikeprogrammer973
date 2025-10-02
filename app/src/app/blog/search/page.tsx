@@ -40,7 +40,7 @@ export default function SearchPage() {
       try {
         setLoading(true);
         
-        let { data: postsData, error } = await supabase
+        const { data: postsData, error } = await supabase
           .from('blog_posts')
           .select(`*, author: authors(username), category: blog_posts_categories(name)`)
           .eq('status', 'published')
