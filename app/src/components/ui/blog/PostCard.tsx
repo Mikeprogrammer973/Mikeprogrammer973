@@ -57,11 +57,11 @@ export default function PostCard({ post, variant = 'default' }: PostCardProps) {
               <Calendar className="w-4 h-4 mr-1" />
               <span>{new Date(post.published_at).toLocaleDateString('pt-BR')}</span>
             </div>
-            <span className="mx-2">•</span>
+            {/*<span className="mx-2">•</span>
             <div translate='yes' className="flex items-center">
               <Clock className="w-4 h-4 mr-1" />
               <span>{readTime} min de leitura</span>
-            </div>
+            </div>*/}
           </div>
           
           <h3 className="text-xl font-semibold mb-3 hover:text-[hsl(var(--primary))] transition-colors">
@@ -133,11 +133,11 @@ export default function PostCard({ post, variant = 'default' }: PostCardProps) {
                 <Calendar className="w-4 h-4 mr-1" />
                 <span>{new Date(post.published_at).toLocaleDateString('pt-BR')}</span>
               </div>
-              <span className="mx-2">•</span>
+              {/*<span className="mx-2">•</span>
               <div translate='yes' className="flex items-center">
                 <Clock className="w-4 h-4 mr-1" />
                 <span>{readTime} min de leitura</span>
-              </div>
+              </div>*/}
             </div>
             
             <h3 className="text-xl font-semibold mb-3 hover:text-[hsl(var(--primary))] transition-colors">
