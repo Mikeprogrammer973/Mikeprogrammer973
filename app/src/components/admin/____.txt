@@ -1,0 +1,170 @@
+// src/components/admin/ModerationDetails.tsx
+'use client';
+
+import { useState } from 'react';
+import { createClient } from '@/lib/supabase/client';
+import { 
+  CheckCircle, 
+  XCircle, 
+  Eye,
+  Clock,
+  User,
+  Calendar,
+  AlertCircle
+} from 'lucide-react';
+
+interface ModerationDetailsProps {
+  post: {
+    id: string;
+    title: string;
+    content: string;
+    status: string;
+    created_at: string;
+    published_at?: string;
+    rejection_reason?: string;
+    author: {
+      username: string;
+      email: string;
+    };
+    moderated_by?: string;
+    moderated_at?: string;
+  };
+  onModerationComplete: () => void;
+}
+
+export default function ModerationDetails({ post, onModerationComplete }: ModerationDetailsProps) {
+  const [isModerating, setIsModerating] = useState(false);
+  const supabase = createClient();
+
+  const handleApprove = async () => {
+    setIsModerating(true);
+    
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      const { error } = await supabase
+        .from('blog_posts')
+        .update({ 
+          status: 'published',
+          published_at: new Date().toISOString(),
+          moderated_by: user?.id,
+          moderated_at: new Date().toISOString()
+        })
+        .eq('id', post.id);
+
+      if (error) throw error;
+
+      onModerationComplete();
+    } catch (error) {
+      console.error('Error approving post:', error);
+    } finally {
+      setIsModerating(false);
+    }
+  };
+
+  const handleReject = async () => {
+    const reason = prompt('Digite o motivo da rejeição:');
+    if (!reason) return;
+
+    setIsModerating(true);
+    
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      const { error } = await supabase
+        .from('blog_posts')
+        .update({ 
+          status: 'rejected',
+          rejection_reason: reason,
+          moderated_by: user?.id,
+          moderated_at: new Date().toISOString()
+        })
+        .eq('id', post.id);
+
+      if (error) throw error;
+
+      onModerationComplete();
+    } catch (error) {
+      console.error('Error rejecting post:', error);
+    } finally {
+      setIsModerating(false);
+    }
+  };
+
+  return (
+    <div className="bg-card border rounded-lg p-6 space-y-6">
+      {/* Header */}
+      <div>
+        <h3 className="text-lg font-semibold mb-2">{post.title}</h3>
+        <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+          <div className="flex items-center">
+            <User className="w-4 h-4 mr-1" />
+            <span>{post.author.username}</span>
+          </div>
+          <div className="flex items-center">
+            <Calendar className="w-4 h-4 mr-1" />
+            <span>{new Date(post.created_at).toLocaleDateString('pt-BR')}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Conteúdo */}
+      <div className="prose prose-sm max-w-none border rounded-lg p-4">
+        <div dangerouslySetInnerHTML={{ __html: post.content }} />
+      </div>
+
+      {/* Histórico de Moderação */}
+      {post.status !== 'pending' && (
+        <div className="border-t pt-4">
+          <h4 className="font-semibold mb-2">Histórico de Moderação</h4>
+          <div className="text-sm text-muted-foreground">
+            {post.status === 'published' ? (
+              <div className="flex items-center text-green-600">
+                <CheckCircle className="w-4 h-4 mr-1" />
+                <span>Aprovado em {new Date(post.published_at!).toLocaleDateString('pt-BR')}</span>
+              </div>
+            ) : post.status === 'rejected' ? (
+              <div>
+                <div className="flex items-center text-red-600 mb-1">
+                  <XCircle className="w-4 h-4 mr-1" />
+                  <span>Rejeitado em {new Date(post.moderated_at!).toLocaleDateString('pt-BR')}</span>
+                </div>
+                {post.rejection_reason && (
+                  <p className="text-red-600">Motivo: {post.rejection_reason}</p>
+                )}
+              </div>
+            ) : null}
+          </div>
+        </div>
+      )}
+
+      {/* Ações de Moderação */}
+      {post.status === 'pending' && (
+        <div className="flex space-x-4 pt-4 border-t">
+          <button
+            onClick={handleApprove}
+            disabled={isModerating}
+            className="flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50"
+          >
+            <CheckCircle className="w-4 h-4 mr-2" />
+            Aprovar
+          </button>
+          
+          <button
+            onClick={handleReject}
+            disabled={isModerating}
+            className="flex items-center px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50"
+          >
+            <XCircle className="w-4 h-4 mr-2" />
+            Rejeitar
+          </button>
+          
+          <button className="flex items-center px-4 py-2 border rounded-md hover:bg-accent">
+            <Eye className="w-4 h-4 mr-2" />
+            Visualizar
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
