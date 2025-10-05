@@ -232,24 +232,39 @@ export default function CreatePostPage() {
             </div>
 
             <div className="flex gap-4">
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] px-6 py-2 rounded-md hover:opacity-90 disabled:opacity-50"
-              >
-                {isSubmitting ? 'Salvando...' : 'Salvar como Rascunho'}
-              </button>
-              
-              <button
-                type="submit"
-                onClick={() => {
-                  setStatus('published')
-                }}
-                disabled={isSubmitting}
-                className="bg-green-600 text-white px-6 py-2 rounded-md hover:opacity-90 disabled:opacity-50"
-              >
-                {isSubmitting ? 'Publicando...' : 'Publicar'}
-              </button>
+              {status === 'draft' ? 
+                <>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] px-6 py-2 rounded-md hover:opacity-90 disabled:opacity-50"
+                  >
+                    {isSubmitting ? 'Salvando...' : 'Salvar como Rascunho'}
+                  </button>
+                  
+                  <button
+                    type="submit"
+                    onClick={() => {
+                      setStatus('published')
+                    }}
+                    disabled={isSubmitting}
+                    className="bg-green-600 text-white px-6 py-2 rounded-md hover:opacity-90 disabled:opacity-50"
+                  >
+                    {isSubmitting ? 'Publicando...' : 'Publicar'}
+                  </button>
+                </>
+                :
+                <button
+                  type="submit"
+                  onClick={() => {
+                    setStatus('pending')
+                  }}
+                  disabled={isSubmitting}
+                  className="bg-blue-600 text-white px-6 py-2 rounded-md hover:opacity-90 disabled:opacity-50"
+                >
+                  {isSubmitting ? 'Enviando para revisão...' : 'Enviar para revisão'}
+                </button>
+              }
             </div>
           </form>
         </div>

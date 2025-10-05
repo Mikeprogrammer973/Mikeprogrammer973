@@ -1,40 +1,54 @@
-// src/components/admin/ModerationDetails.tsx
+
 'use client';
 
 import { useState } from 'react';
-import { createClient } from '@/lib/supabase/client';
 import { 
   CheckCircle, 
   XCircle, 
-  Eye,
-  Clock,
   User,
   Calendar,
-  AlertCircle
+  Heart,
+  Share2Icon
 } from 'lucide-react';
+import { supabase } from 'mdp/lib/supabase/client';
 
 interface ModerationDetailsProps {
   post: {
     id: string;
     title: string;
+    cover_image?: string;
+    tags: string[];
+    excerpt: string;
     content: string;
-    status: string;
-    created_at: string;
-    published_at?: string;
-    rejection_reason?: string;
-    author: {
-      username: string;
-      email: string;
-    };
-    moderated_by?: string;
-    moderated_at?: string;
-  };
+    status: 'draft' | 'pending' | 'published' | 'rejected';
+        created_at: string;
+        published_at?: string;
+        author: {
+            username: string;
+            email: string;
+            avatar_url?: string;
+            id: string;
+        };
+        views: number;
+        category: {
+            name: string;
+        }
+        likes: {
+            author_id: string;
+        }[]
+        moderated_by?: string;
+        moderated_at?: string;
+        rejection_reason?: string;
+  } | null;
   onModerationComplete: () => void;
 }
 
 export default function ModerationDetails({ post, onModerationComplete }: ModerationDetailsProps) {
   const [isModerating, setIsModerating] = useState(false);
-  const supabase = createClient();
+
+  if (!post) {
+    return null;
+  }
 
   const handleApprove = async () => {
     setIsModerating(true);
@@ -92,11 +106,10 @@ export default function ModerationDetails({ post, onModerationComplete }: Modera
   };
 
   return (
-    <div className="bg-card border rounded-lg p-6 space-y-6">
-      {/* Header */}
+    <div className="bg-[hsl(var(--card))] border rounded-lg p-6 space-y-6">
       <div>
         <h3 className="text-lg font-semibold mb-2">{post.title}</h3>
-        <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+        <div className="flex items-center space-x-4 text-sm text-[hsl(var(--muted-foreground))]">
           <div className="flex items-center">
             <User className="w-4 h-4 mr-1" />
             <span>{post.author.username}</span>
@@ -108,16 +121,78 @@ export default function ModerationDetails({ post, onModerationComplete }: Modera
         </div>
       </div>
 
-      {/* Conteúdo */}
-      <div className="prose prose-sm max-w-none border rounded-lg p-4">
-        <div dangerouslySetInnerHTML={{ __html: post.content }} />
-      </div>
+      <article className="max-w-3xl mx-auto my-5">
+        <header className="mb-8">
+            <h1 translate='no' className="text-4xl font-bold mb-4">{post.title}</h1>
+            <div className="flex items-center gap-4 text-[hsl(var(--muted-foreground))] mb-4">
+                <span translate='no' className="text-[hsl(var(--primary))]">{post.category.name}</span>
+                <span>•</span>
+                <span>{new Date().toLocaleDateString('pt-BR')}</span>
+                <span>•</span>
+                <span>{Math.ceil(post.content.split(' ').length / 200)} min de leitura</span>
+            </div>
+            
+            <div translate='no' className="flex items-center gap-3 mb-6 cursor-pointer">
+                {post.author && post.author.avatar_url
+                    ? <img
+                        src={post.author.avatar_url || ''}
+                        alt={post.author.username || 'Autor'}
+                        className="w-10 h-10 rounded-full"
+                    />
+                    : <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white">
+                        {post.author?.username?.charAt(0).toUpperCase() || 'U'}
+                    </div> 
+                }
+                <div>
+                    <div className="font-semibold">{post.author?.username || 'Autor'}</div>
+                </div>
+            </div>
 
-      {/* Histórico de Moderação */}
+            {post.cover_image && (
+                <img
+                src={post.cover_image}
+                alt={post.title}
+                className="w-full h-64 object-cover rounded-lg mb-6"
+                />
+            )}
+            </header>
+
+            <div
+            translate='no'
+            className="prose prose-lg max-w-none"
+            dangerouslySetInnerHTML={{ __html: post.content }}
+            />
+
+            {/* Rodapé */}
+            <footer translate='no' className="mt-12 pt-8 border-t">
+                <div className="flex flex-wrap gap-2 mb-6">
+                    {post.tags?.map((tag: string) => (
+                    <span
+                        key={tag}
+                        className="px-3 py-1 bg-[hsl(var(--muted))] rounded-full text-sm"
+                    >
+                        #{tag}
+                    </span>
+                    ))}
+                </div>
+
+                <div className="flex items-center justify-between">
+                    <div>
+                    <Heart className='w-5 text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--primary))]' />
+                    </div>
+
+                    <button translate='yes' className="flex items-center gap-2 rounded-md text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--muted))] p-3">
+                        <Share2Icon className='w-5 text-[hsl(var(--primary))]' />
+                        <span>Compartilhar</span>
+                    </button>
+                </div>
+            </footer>
+      </article>
+
       {post.status !== 'pending' && (
         <div className="border-t pt-4">
           <h4 className="font-semibold mb-2">Histórico de Moderação</h4>
-          <div className="text-sm text-muted-foreground">
+          <div className="text-sm text-[hsl(var(--muted-foreground))]">
             {post.status === 'published' ? (
               <div className="flex items-center text-green-600">
                 <CheckCircle className="w-4 h-4 mr-1" />
@@ -138,7 +213,6 @@ export default function ModerationDetails({ post, onModerationComplete }: Modera
         </div>
       )}
 
-      {/* Ações de Moderação */}
       {post.status === 'pending' && (
         <div className="flex space-x-4 pt-4 border-t">
           <button
@@ -157,11 +231,6 @@ export default function ModerationDetails({ post, onModerationComplete }: Modera
           >
             <XCircle className="w-4 h-4 mr-2" />
             Rejeitar
-          </button>
-          
-          <button className="flex items-center px-4 py-2 border rounded-md hover:bg-accent">
-            <Eye className="w-4 h-4 mr-2" />
-            Visualizar
           </button>
         </div>
       )}

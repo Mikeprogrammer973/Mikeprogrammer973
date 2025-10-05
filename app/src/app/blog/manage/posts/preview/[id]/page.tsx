@@ -11,7 +11,8 @@ import {
   FileText,
   Send,
   Share2Icon,
-  Heart
+  Heart,
+  XCircleIcon
 } from 'lucide-react';
 import { supabase } from 'mdp/lib/supabase/client';
 import getUser, { User } from 'mdp/lib/getUser';
@@ -35,6 +36,7 @@ interface Post {
     id: string;
     name: string;
   };
+  rejection_reason: string;
 }
 
 export default function UserPreviewPage() {
@@ -202,9 +204,10 @@ export default function UserPreviewPage() {
             <span className={`px-3 py-1 rounded-full text-sm font-medium ${
               post.status === 'draft' ? 'bg-gray-100 text-gray-800' :
               post.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-              'bg-green-100 text-green-800'
+              post.status === 'published' ? 'bg-green-100 text-green-800' :
+              'bg-red-100 text-red-800'
             }`}>
-              {post.status === 'draft' ? 'Rascunho' : post.status === 'pending' ? 'Pendente' : 'Publicado'}
+              {post.status === 'draft' ? 'Rascunho' : post.status === 'pending' ? 'Pendente' : post.status === 'published' ? 'Publicado' : 'Rejeitado'}
             </span>
           </div>
         </div>
@@ -290,7 +293,7 @@ export default function UserPreviewPage() {
               Revise o conteúdo antes de publicar.
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {post.status !== 'pending' && <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <button
                 onClick={() => router.push(`/blog/manage/posts/edit/${post.id}`)}
                 className="flex items-center justify-center px-6 py-3 border-2 border-[hsl(var(--primary))] text-[hsl(var(--primary))] rounded-lg hover:bg-[hsl(var(--primary))]/10 transition-colors"
@@ -299,7 +302,7 @@ export default function UserPreviewPage() {
                 Editar Artigo
               </button>
 
-              <button
+             {post.status !== 'rejected' && <><button
                 onClick={handleSaveDraft}
                 className="flex items-center justify-center px-6 py-3 border-2 border-[hsl(var(--foreground))] text-[hsl(var(--foreground))] rounded-lg hover:bg-[hsl(var(--foreground))]/20 transition-colors"
               >
@@ -323,20 +326,31 @@ export default function UserPreviewPage() {
                     Publicar Artigo
                   </>
                 )}
-              </button>
-            </div>
+              </button></>}
+            </div>}
 
             <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <div className="flex items-start">
-                <CheckCircle className="w-5 h-5 text-blue-600 mr-3 mt-0.5 flex-shrink-0" />
-                <div>
-                  <h4 className="font-medium text-blue-900 mb-1">Processo de Publicação</h4>
-                  <p className="text-blue-800 text-sm">
-                    Seu artigo será revisado pelo administrador do blog antes de ser publicado. 
-                    Você receberá uma notificação quando ele for aprovado.
-                  </p>
+              {post.status !== 'rejected' 
+                ? <div className="flex items-start">
+                    <CheckCircle className="w-5 h-5 text-blue-600 mr-3 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-medium text-blue-900 mb-1">Processo de Publicação</h4>
+                      <p className="text-blue-800 text-sm">
+                        Seu artigo será revisado pelo administrador do blog antes de ser publicado. 
+                        Você receberá uma notificação quando ele for aprovado.
+                      </p>
+                    </div>
                 </div>
-              </div>
+                : <div className="flex items-start">
+                    <XCircleIcon className="w-5 h-5 text-red-600 mr-3 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-medium text-red-900 mb-1">O seu artigo foi rejeitado!</h4>
+                      <p className="text-red-700 text-lg my-4">
+                        Motivo: <span translate='no'>{post.rejection_reason}</span>
+                      </p>
+                    </div>
+                </div>
+              }
             </div>
           </div>
 

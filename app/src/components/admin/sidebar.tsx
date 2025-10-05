@@ -75,12 +75,7 @@ export default function AdminSidebar() {
     {
       name: 'Blog',
       href: '/admin/blog',
-      icon: FileText,
-      submenu: [
-        { name: 'Todos os Posts', href: '/admin/blog' },
-        { name: 'Novo Post', href: '/admin/blog/new' },
-        { name: 'Categorias', href: '/admin/blog/categories' }
-      ]
+      icon: FileText
     },
   ]
 
