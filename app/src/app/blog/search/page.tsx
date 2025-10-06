@@ -80,7 +80,6 @@ export default function SearchPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[hsl(var(--background))]">
-        <BlogHeader />
         <main className="container mx-auto px-4 py-8">
           <div className="flex items-center justify-center py-12">
             <div className="text-center">
@@ -95,6 +94,7 @@ export default function SearchPage() {
 
   return (
     <div className="min-h-screen bg-[hsl(var(--background))]">
+      <BlogHeader />
       <main className="container mx-auto px-4 py-8">
         <div className="flex items-center space-x-2 text-sm text-[hsl(var(--muted-foreground))] mb-6">
           <Link href="/blog" className="hover:text-[hsl(var(--foreground))]">Blog</Link>
