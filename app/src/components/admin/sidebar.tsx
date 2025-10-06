@@ -9,7 +9,6 @@ import {
   Code2,
   MessageSquare,
   FileText,
-  Settings,
   User,
   LogOut,
   Menu,
@@ -186,15 +185,6 @@ export default function AdminSidebar() {
         </nav>
 
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-800 bg-gray-900">
-          <div className="flex items-center space-x-3 mb-4">
-            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-              <User className="w-5 h-5 text-white" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-white font-medium text-sm truncate">Administrador</p>
-              <p className="text-gray-400 text-xs truncate">admin@exemplo.com</p>
-            </div>
-          </div>
           <button
             onClick={handleLogout}
             className="w-full flex items-center space-x-2 p-3 text-gray-300 hover:bg-gray-800 hover:text-white rounded-lg transition-all duration-200"

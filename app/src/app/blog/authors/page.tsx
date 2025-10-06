@@ -6,6 +6,7 @@ import {
   Star
 } from 'lucide-react';
 import { supabase } from 'mdp/lib/supabase/client';
+import BlogHeader from 'mdp/components/ui/blog/Header';
 
 export default async function AuthorsPage() {
   
@@ -35,6 +36,7 @@ export default async function AuthorsPage() {
 
   return (
     <div className="min-h-screen bg-[hsl(var(--background))]">
+      <BlogHeader />
       <main className="container mx-auto px-4 py-8">
         <div className="text-center mb-12">
           <div className="inline-flex items-center justify-center p-3 bg-[hsl(var(--primary))]/10 rounded-full mb-4">

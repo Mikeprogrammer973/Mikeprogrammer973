@@ -6,6 +6,7 @@ import { Search, ArrowLeft } from 'lucide-react';
 import { supabase } from 'mdp/lib/supabase/client';
 import PostCard from 'mdp/components/ui/blog/PostCard';
 import { useSearchParams } from 'next/navigation';
+import BlogHeader from 'mdp/components/ui/blog/Header';
 
 interface Post {
   id: string;
@@ -79,6 +80,7 @@ export default function SearchPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[hsl(var(--background))]">
+        <BlogHeader />
         <main className="container mx-auto px-4 py-8">
           <div className="flex items-center justify-center py-12">
             <div className="text-center">

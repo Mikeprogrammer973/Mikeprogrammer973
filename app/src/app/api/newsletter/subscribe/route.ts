@@ -3,8 +3,13 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from 'mdp/lib/supabase/client'
 import { EmailFactory } from 'mdp/lib/email/Factory'
 import { sendEmail } from 'mdp/lib/email/send'
+import { ALLOWED_ORIGINS } from 'mdp/lib/utils';
 
 export async function POST(request: NextRequest) {
+  if (!ALLOWED_ORIGINS.includes(request.headers.get('origin') || '')) {
+    return NextResponse.json({ error: 'Origem não permitida' }, { status: 403 });
+  }
+
   try {
     const { email, name } = await request.json();
 

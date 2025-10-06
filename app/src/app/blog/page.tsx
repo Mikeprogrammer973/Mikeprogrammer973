@@ -8,6 +8,7 @@ import { Search, Filter, X } from 'lucide-react';
 import Link from 'next/link';
 import CategoryMenu from 'mdp/components/ui/blog/CategoryMenu';
 import PostCard from 'mdp/components/ui/blog/PostCard';
+import BlogHeader from 'mdp/components/ui/blog/Header';
 
 interface Author {
   username: string | null
@@ -133,6 +134,7 @@ export default function BlogPage() {
 
   return (
     <div className="min-h-screen bg-[hsl(var(--background))]">
+      <BlogHeader />
       <main className="container mx-auto px-4 py-8">
         <section className="text-center py-16">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">Blog de Desenvolvimento</h1>

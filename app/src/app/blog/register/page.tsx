@@ -8,6 +8,7 @@ import { supabase } from 'mdp/lib/supabase/client';
 import { Eye, EyeOff, UserPlus, Mail, User, Lock } from 'lucide-react'
 import { useEmailVerification } from 'mdp/hooks/useEmailVerification';
 import EmailVerification from 'mdp/components/EmailVerification';
+import BlogHeader from 'mdp/components/ui/blog/Header';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -123,19 +124,23 @@ export default function RegisterPage() {
 
   if (isVerifying) {
     return (
-      <div className='min-h-screen p-10 flex items-center justify-center'>
-        <EmailVerification
-          email={verificationEmail}
-          onVerificationComplete={handleVerificationComplete}
-          onResendCode={handleSendCode}
-          className="max-w-md mx-auto"
-        />
+      <div>
+        <BlogHeader />
+        <div className='min-h-screen p-10 flex items-center justify-center'>
+          <EmailVerification
+            email={verificationEmail}
+            onVerificationComplete={handleVerificationComplete}
+            onResendCode={handleSendCode}
+            className="max-w-md mx-auto"
+          />
+        </div>
       </div>
     )
   }
 
   return (
     <div className="min-h-screen bg-[hsl(var(--background))] flex flex-col">
+      <BlogHeader />
       <main className="flex-grow flex items-center justify-center py-12 px-4">
         <div className="max-w-md w-full space-y-8">
           <div className="text-center">

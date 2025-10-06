@@ -22,6 +22,7 @@ import {
 import ProfileEditor from 'mdp/components/ui/blog/ProfileEditor';
 import getUser, { User as UserType } from 'mdp/lib/getUser';
 import StatsCharts from 'mdp/components/ui/blog/statsChart';
+import BlogHeader from 'mdp/components/ui/blog/Header';
 
 interface Post {
   id: string;
@@ -160,7 +161,8 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[hsl(var(--background))]">
+      <BlogHeader />
       <div className="flex">
         <aside className={`
           fixed md:static w-64 bg-[hsl(var(--card))] h-screen flex-shrink-0 z-40

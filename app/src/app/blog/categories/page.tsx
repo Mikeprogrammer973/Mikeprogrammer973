@@ -9,6 +9,7 @@ import {
   Users
 } from 'lucide-react';
 import { supabase } from 'mdp/lib/supabase/client';
+import BlogHeader from 'mdp/components/ui/blog/Header';
 
 interface Post {
   id: string;
@@ -90,6 +91,7 @@ export default async function CategoriesPage() {
 
   return (
     <div className="min-h-screen bg-[hsl(var(--background))]">
+      <BlogHeader />
       <main className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="lg:w-2/3">

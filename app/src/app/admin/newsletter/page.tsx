@@ -2,9 +2,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import { supabase } from 'mdp/lib/supabase/client';
-import { ArrowLeft, Search, Mail, User, Trash2, Download } from 'lucide-react';
+import { Search, Mail, User, Trash2, Download } from 'lucide-react';
 import { useAuth } from 'mdp/hooks/useAuth';
 import { Spinner } from 'mdp/components/ui/spinner';
 import { EmailService } from 'mdp/lib/email/service';
@@ -128,13 +127,7 @@ export default function AdminNewsletterPage() {
     <div className="min-h-screen bg-black text-white">
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center flex-wrap gap-4 justify-between mb-8">
-          <div className="flex items-center flex-wrap gap-4 space-x-4">
-            <Link
-              href="/admin"
-              className="bg-gray-800 text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-            </Link>
+          <div>
             <h1 className="text-3xl font-bold">Gerenciar Newsletter</h1>
           </div>
           

@@ -17,6 +17,7 @@ import {
 import { supabase } from 'mdp/lib/supabase/client';
 import getUser, { User } from 'mdp/lib/getUser';
 import { Spinner } from 'mdp/components/ui/spinner';
+import BlogHeader from 'mdp/components/ui/blog/Header';
 
 interface Post {
   id: string;
@@ -187,6 +188,7 @@ export default function UserPreviewPage() {
 
   return (
     <div className="min-h-screen bg-[hsl(var(--background))]">
+      <BlogHeader />
       <main className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
           <button

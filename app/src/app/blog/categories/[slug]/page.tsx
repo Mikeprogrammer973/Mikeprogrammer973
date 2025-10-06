@@ -11,6 +11,7 @@ import {
 import { supabase } from 'mdp/lib/supabase/client';
 import PostCard from 'mdp/components/ui/blog/PostCard';
 import { useEffect, useState } from 'react';
+import BlogHeader from 'mdp/components/ui/blog/Header';
 
 interface Category {
   name: string;
@@ -81,7 +82,8 @@ export default function CategoryPage() {
         .select(`
             *,
             author:authors(username, avatar_url),
-            category:blog_posts_categories(name)
+            category:blog_posts_categories(name),
+            likes:blog_likes(*)
         `)
         .eq('category_id', category.id)
         .eq('status', 'published')
@@ -94,8 +96,8 @@ export default function CategoryPage() {
 
       setStats({
         totalPosts: posts.length,
-        totalLikes: posts.reduce((acc, post) => acc + (post.likes || 0), 0),
-        totalViews: posts.reduce((acc, post) => acc + (post.views || 0), 0)
+        totalLikes: posts.reduce((acc, post) => acc + (post.likes.length), 0),
+        totalViews: posts.reduce((acc, post) => acc + (post.views), 0)
       })
 
       setPosts(posts);
@@ -107,6 +109,7 @@ export default function CategoryPage() {
 
   return (
     <div className="min-h-screen bg-[hsl(var(--background))]">
+      <BlogHeader />
       <main className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="lg:w-2/3">
@@ -209,7 +212,7 @@ export default function CategoryPage() {
                             {post.title}
                           </h4>
                           <p className="text-xs text-[hsl(var(--muted-foreground))]">
-                            {post.likes.length || 0} likes • {post.views || 0} views
+                            {post.likes.length} likes • {post.views} views
                           </p>
                         </div>
                       </div>

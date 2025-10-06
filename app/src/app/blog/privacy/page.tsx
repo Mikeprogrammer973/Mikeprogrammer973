@@ -1,6 +1,7 @@
 
 import Link from 'next/link';
 import { Shield, Mail } from 'lucide-react';
+import BlogHeader from 'mdp/components/ui/blog/Header';
 
 export default function PrivacyPage() {
   const sections = [
@@ -32,6 +33,7 @@ export default function PrivacyPage() {
 
   return (
     <div className="min-h-screen bg-[hsl(var(--background))]">
+      <BlogHeader />
       <main className="container mx-auto px-4 py-8">
         <div className="text-center py-12">
           <div className="inline-flex items-center px-4 py-2 bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] rounded-full text-sm font-medium mb-6">

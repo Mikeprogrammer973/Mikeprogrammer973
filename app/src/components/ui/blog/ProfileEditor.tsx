@@ -1,4 +1,7 @@
+'use client'
+
 import { supabase } from "mdp/lib/supabase/client";
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
 export default function ProfileEditor() {
@@ -10,6 +13,7 @@ export default function ProfileEditor() {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const router = useRouter()
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -71,6 +75,40 @@ export default function ProfileEditor() {
       setIsSaving(false);
     }
   };
+
+  const handleDeleteAccount = async () => {
+    setIsLoading(true)
+
+    const confirmDelete = window.confirm('Tem certeza que deseja deletar sua conta?');
+    if (!confirmDelete) return;
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const res = await fetch('/api/delete/user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify({ userId: user.id }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Erro ao deletar conta!');
+      }
+
+      alert('Conta deletada com sucesso!');
+
+      await supabase.auth.signOut();
+      router.push('/blog');
+    } catch (error) {
+      console.error('Error deleting account:', error);
+      alert('Erro ao deletar conta');
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   if (isLoading) {
     return (
@@ -154,13 +192,23 @@ export default function ProfileEditor() {
           </div>
         </div>
 
-        <button
-          type="submit"
-          disabled={isSaving}
-          className="bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] mt-12 px-6 py-2 rounded-md hover:opacity-90 disabled:opacity-50"
-        >
-          {isSaving ? 'Salvando...' : 'Salvar Alterações'}
-        </button>
+        <div className="flex justify-end gap-4">
+          <button
+            onClick={handleDeleteAccount}
+            type="button"
+            disabled={isSaving}
+            className="bg-[hsl(var(--destructive))] text-[hsl(var(--destructive-foreground))] mt-12 px-6 py-2 rounded-md hover:opacity-90 disabled:opacity-50"
+          >
+            Deletar minha Conta
+          </button>
+          <button
+            type="submit"
+            disabled={isSaving}
+            className="bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] mt-12 px-6 py-2 rounded-md hover:opacity-90 disabled:opacity-50"
+          >
+            {isSaving ? 'Salvando...' : 'Salvar Alterações'}
+          </button>
+        </div>
       </form>
     </div>
   );

@@ -6,8 +6,7 @@ import Link from 'next/link'
 import { supabase } from 'mdp/lib/supabase/client'
 import { Button } from 'mdp/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from 'mdp/components/ui/card'
-import { 
-  ArrowLeft,
+import {
   User,
   GraduationCap,
   Briefcase,
@@ -83,14 +82,8 @@ export default function AdminProfile() {
     <div className="min-h-screen bg-black text-white">
         <div className="container mx-auto px-4 py-8">
         <div className="flex items-center flex-wrap gap-4 justify-between mb-8">
-            <div className="flex items-center flex-wrap gap-4 space-x-4">
-            <Button variant="outline" asChild className="border-gray-700 text-gray-300 hover:bg-gray-800 hover:text-white">
-                <Link href="/admin">
-                <ArrowLeft className="w-4 h-4 mr-2 inline-block" />
-                Voltar
-                </Link>
-            </Button>
-            <h1 className="text-3xl font-bold text-white">Informações Pessoais</h1>
+            <div>
+                <h1 className="text-3xl font-bold text-white">Informações Pessoais</h1>
             </div>
             <Button 
             onClick={handleSave}

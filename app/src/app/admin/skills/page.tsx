@@ -10,7 +10,6 @@ import {
   Plus, 
   Edit, 
   Trash2, 
-  ArrowLeft,
   Search,
   Filter,
   Star,
@@ -135,13 +134,7 @@ export default function AdminSkills() {
     <div className="min-h-screen bg-black text-white">
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center flex-wrap gap-4 justify-between mb-8">
-          <div className="flex items-center flex-wrap gap-4 space-x-4">
-            <Button variant="outline" asChild className="border-gray-700 hover:bg-gray-800">
-              <Link href="/admin">
-                <ArrowLeft className="w-4 h-4 mr-2 inline-block" />
-                Voltar
-              </Link>
-            </Button>
+          <div>
             <h1 className="text-3xl font-bold">Gerenciar Habilidades</h1>
           </div>
           <Button asChild className="bg-blue-600 hover:bg-blue-700 text-white">

@@ -26,7 +26,7 @@ export function useAuth(redirectIfNotAuth = true) {
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('*')
-        .eq('email', user?.user?.email ?? '')
+        .eq('admin', user.user?.id)
         .single()
 
       if (profileError) {

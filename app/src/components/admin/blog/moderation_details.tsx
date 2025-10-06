@@ -8,7 +8,8 @@ import {
   User,
   Calendar,
   Heart,
-  Share2Icon
+  Share2Icon,
+  Clock
 } from 'lucide-react';
 import { supabase } from 'mdp/lib/supabase/client';
 
@@ -76,6 +77,32 @@ export default function ModerationDetails({ post, onModerationComplete }: Modera
     }
   };
 
+  const handleSetpendig = async () => {
+    setIsModerating(true);
+    
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      const { error } = await supabase
+        .from('blog_posts')
+        .update({ 
+          status: 'pending',
+          published_at: null,
+          moderated_by: user?.id,
+          moderated_at: new Date().toISOString()
+        })
+        .eq('id', post.id);
+
+      if (error) throw error;
+
+      onModerationComplete()
+    } catch (error) {
+      console.error('Error approving post:', error);
+    } finally {
+      setIsModerating(false);
+    }
+  }
+
   const handleReject = async () => {
     const reason = prompt('Digite o motivo da rejeição:');
     if (!reason) return;
@@ -112,7 +139,7 @@ export default function ModerationDetails({ post, onModerationComplete }: Modera
         <div className="flex items-center space-x-4 text-sm text-[hsl(var(--muted-foreground))]">
           <div className="flex items-center">
             <User className="w-4 h-4 mr-1" />
-            <span>{post.author.username}</span>
+            <span>{post?.author?.username}</span>
           </div>
           <div className="flex items-center">
             <Calendar className="w-4 h-4 mr-1" />
@@ -132,7 +159,7 @@ export default function ModerationDetails({ post, onModerationComplete }: Modera
                 <span>{Math.ceil(post.content.split(' ').length / 200)} min de leitura</span>
             </div>
             
-            <div translate='no' className="flex items-center gap-3 mb-6 cursor-pointer">
+            {post.author && <div translate='no' className="flex items-center gap-3 mb-6 cursor-pointer">
                 {post.author && post.author.avatar_url
                     ? <img
                         src={post.author.avatar_url || ''}
@@ -144,9 +171,9 @@ export default function ModerationDetails({ post, onModerationComplete }: Modera
                     </div> 
                 }
                 <div>
-                    <div className="font-semibold">{post.author?.username || 'Autor'}</div>
+                    <div className="font-semibold">{post.author?.username || 'User'}</div>
                 </div>
-            </div>
+            </div>}
 
             {post.cover_image && (
                 <img
@@ -231,6 +258,18 @@ export default function ModerationDetails({ post, onModerationComplete }: Modera
           >
             <XCircle className="w-4 h-4 mr-2" />
             Rejeitar
+          </button>
+        </div>
+      )}
+      {(post.status === 'published' || post.status === 'rejected') && (
+        <div className="flex space-x-4 pt-4 border-t">
+          <button
+            onClick={handleSetpendig}
+            disabled={isModerating}
+            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+          >
+            <Clock className="w-4 h-4 mr-2" />
+            Colocar em pendente
           </button>
         </div>
       )}

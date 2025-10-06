@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation'
 import { Eye, EyeOff } from 'lucide-react'
 import { supabase } from 'mdp/lib/supabase/client'
 import { Spinner } from 'mdp/components/ui/spinner'
+import { useEmailVerification } from 'mdp/hooks/useEmailVerification'
+import EmailVerification from 'mdp/components/EmailVerification'
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('')
@@ -14,31 +16,60 @@ export default function AdminLogin() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const router = useRouter()
+  const {
+    isVerifying,
+    startVerification,
+    handleVerificationComplete,
+    verificationEmail,
+    handleSendCode
+  } = useEmailVerification(
+    {
+      onVerificationSuccess: async () => {
+        setLoading(true)
+        try {
+          const { error } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+          })
+
+          if (error) throw error
+          
+          router.push('/admin')
+          router.refresh()
+        } catch (error) {
+          if (error instanceof Error) {
+            setError(error.message)
+          } else {
+            setError(String(error))
+          }
+        } finally {
+          setLoading(false)
+        }
+      },
+      onVerificationFailure: () => {
+        setError('Email não verificado!')
+      }
+    }
+  )
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
     setError('')
+    
+    startVerification(email)
+  }
 
-    try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      })
-
-      if (error) throw error
-      
-      router.push('/admin')
-      router.refresh()
-    } catch (error) {
-      if (error instanceof Error) {
-        setError(error.message)
-      } else {
-        setError(String(error))
-      }
-    } finally {
-      setLoading(false)
-    }
+  if (isVerifying) {
+    return (
+      <div className='min-h-screen p-10 flex items-center justify-center'>
+        <EmailVerification
+          email={verificationEmail}
+          onVerificationComplete={handleVerificationComplete}
+          onResendCode={handleSendCode}
+          className="max-w-md mx-auto"
+        />
+      </div>
+    )
   }
 
   if (loading) {

@@ -80,7 +80,7 @@ export default function PostCard({ post, variant = 'default' }: PostCardProps) {
             <div className="flex items-center space-x-3">
               <div className="flex items-center text-sm text-[hsl(var(--muted-foreground))]">
                 <User className="w-4 h-4 mr-1" />
-                {<span>{post.author.username}</span>}
+                {<span>{post?.author?.username}</span>}
               </div>
               
               <div className="flex items-center text-sm text-[hsl(var(--muted-foreground))]">
@@ -156,7 +156,7 @@ export default function PostCard({ post, variant = 'default' }: PostCardProps) {
               <div className="flex items-center space-x-4">
                 <div className="flex items-center text-sm text-[hsl(var(--muted-foreground))]">
                   <User className="w-4 h-4 mr-1" />
-                  <span>{post.author.username}</span>
+                  <span>{post?.author?.username}</span>
                 </div>
                 
                 <div className="flex items-center text-sm text-[hsl(var(--muted-foreground))]">
@@ -220,7 +220,7 @@ export default function PostCard({ post, variant = 'default' }: PostCardProps) {
           <div className="flex items-center justify-between text-sm text-[hsl(var(--muted-foreground))]">
             <div className="flex items-center">
               <User className="w-4 h-4 mr-1" />
-              {<span>{post.author.username}</span>}
+              {<span>{post?.author?.username}</span>}
             </div>
             
             <div className="flex items-center space-x-2">

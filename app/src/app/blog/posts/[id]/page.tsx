@@ -2,6 +2,7 @@
 
 import { Share2Icon } from 'lucide-react';
 import Comments from 'mdp/components/ui/blog/Comments';
+import BlogHeader from 'mdp/components/ui/blog/Header';
 import LikeButton from 'mdp/components/ui/blog/LikeBtn';
 import getUser, { User } from 'mdp/lib/getUser';
 import { supabase } from 'mdp/lib/supabase/client';
@@ -22,6 +23,7 @@ interface Post {
     category: {
         id: string;
         name: string;
+        slug: string;
     };
     cover_image: string | null;
     published_at: string;
@@ -44,7 +46,8 @@ export default function PostPage() {
         },
         category: {
             id: '',
-            name: ''
+            name: '',
+            slug: ''
         },
         tags: []
     })
@@ -71,14 +74,14 @@ export default function PostPage() {
     const fetchPost = async () => {
         const { data: post } = await supabase
         .from('blog_posts')
-        .select(`*, author:authors(username, avatar_url, id), category:blog_posts_categories(id, name)`)
+        .select(`*, author:authors(username, avatar_url, id), category:blog_posts_categories(id, name, slug)`)
         .eq('id', params.id)
         .eq('status', 'published')
         .single();
 
         if (!post) {
             alert('Artigo não encontrado!')
-            router.push('/blog/404');
+            router.back()
             return;
         }
 
@@ -110,19 +113,20 @@ export default function PostPage() {
 
     return (
         <div className="min-h-screen bg-[hsl(var(--background))]">
+            <BlogHeader />
             <main className="container mx-auto px-4 py-8">
             <article className="max-w-3xl mx-auto">
                 <header className="mb-8">
                 <h1 translate='no' className="text-4xl font-bold mb-4">{post.title}</h1>
                 <div className="flex items-center gap-4 text-[hsl(var(--muted-foreground))] mb-4">
-                    <span translate='no' className="text-[hsl(var(--primary))]">{post?.category?.name}</span>
+                    <span onClick={() => router.push(`/blog/categories/${post?.category?.slug}`)} translate='no' className="text-[hsl(var(--primary))] p-2 bg-[hsl(var(--primary))]/10 rounded-xl cursor-pointer hover:bg-[hsl(var(--primary))]/20">{post?.category?.name}</span>
                     <span>•</span>
                     <span>{new Date(post.published_at).toLocaleDateString('pt-BR')}</span>
                     <span>•</span>
                     <span>{Math.ceil(post.content.split(' ').length / 200)} min de leitura</span>
                 </div>
                 
-                <div onClick={() => router.push(`/blog/authors/${post?.author?.id}`)} translate='no' className="flex items-center gap-3 mb-6 cursor-pointer">
+                {post.author && <div onClick={() => router.push(`/blog/authors/${post?.author?.id}`)} translate='no' className="flex items-center gap-3 mb-6 cursor-pointer">
                     {post.author && post.author.avatar_url
                         ? <img
                             src={post.author.avatar_url || ''}
@@ -134,9 +138,9 @@ export default function PostPage() {
                         </div> 
                     }
                     <div>
-                        <div className="font-semibold">{post?.author?.username || 'Autor'}</div>
+                        <div className="font-semibold">{post?.author?.username || 'User'}</div>
                     </div>
-                </div>
+                </div>}
 
                 {post.cover_image && (
                     <img

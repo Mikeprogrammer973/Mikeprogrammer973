@@ -5,7 +5,6 @@ import 'mdp/styles/globals.css'
 import 'mdp/styles/gg-tr-ovrd.css'
 import { Metadata } from 'next';
 import { Suspense } from 'react';
-import BlogHeader from 'mdp/components/ui/blog/Header';
 import BlogFooter from 'mdp/components/ui/blog/Footer';
 
 export const metadata: Metadata = {
@@ -33,7 +32,6 @@ export default function BlogLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <BlogHeader />
           <main>
               <Suspense>
                 {children}

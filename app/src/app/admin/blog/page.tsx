@@ -2,7 +2,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { 
   FileText, 
   CheckCircle,
@@ -17,6 +16,7 @@ import {
 import { supabase } from 'mdp/lib/supabase/client';
 import { Spinner } from 'mdp/components/ui/spinner';
 import ModerationDetails from 'mdp/components/admin/blog/moderation_details';
+import { useAuth } from 'mdp/hooks/useAuth';
 
 interface Post {
   id: string;
@@ -58,7 +58,7 @@ export default function AdminDashboard() {
     rejected: 0,
     total: 0
   });
-  const router = useRouter()
+  const {loading, session} = useAuth(true)
 
   const tabs = [
     { id: 'pending', label: 'Pendentes', count: stats.pending },
@@ -68,34 +68,8 @@ export default function AdminDashboard() {
   ];
 
   useEffect(() => {
-    checkAdminAccess();
     fetchPosts();
   }, [activeTab]);
-
-  const checkAdminAccess = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        router.push('/blog/login');
-        return;
-      }
-
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('admin', user.id)
-        .single();
-
-      if (!profile) {
-        router.push('/blog/dashboard');
-        return;
-      }
-    } catch (error) {
-      console.error('Error checking admin access:', error);
-      router.push('/blog/dashboard');
-    }
-  };
 
   const fetchPosts = async () => {
     try {
@@ -239,7 +213,7 @@ export default function AdminDashboard() {
     }
   };
 
-  if (isLoading) {
+  if (isLoading || loading) {
     return <Spinner />
   }
 
@@ -283,7 +257,7 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-8">
           <div className="bg-[hsl(var(--card))] border rounded-lg p-6 text-center">
             <div className="text-3xl font-bold text-blue-600 mb-2">{stats.total}</div>
             <div className="text-[hsl(var(--muted-foreground))]">Total Posts</div>
@@ -306,7 +280,7 @@ export default function AdminDashboard() {
         </div>
 
         <div className="border-b mb-6">
-          <nav className="flex space-x-8">
+          <nav className="flex flex-wrap gap-4">
             {tabs.map(tab => (
               <button
                 key={tab.id}
@@ -385,8 +359,8 @@ export default function AdminDashboard() {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-[hsl(var(--foreground))]">{post.author.username}</div>
-                        <div className="text-sm text-[hsl(var(--muted-foreground))]">{post.author.email}</div>
+                        <div className="text-sm text-[hsl(var(--foreground))]">{post?.author?.username}</div>
+                        <div className="text-sm text-[hsl(var(--muted-foreground))]">{post?.author?.email}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className="px-2 py-1 bg-primary/10 text-primary text-xs rounded-full">

@@ -1,5 +1,6 @@
 'use client'
 
+import BlogHeader from 'mdp/components/ui/blog/Header';
 import PostCard from 'mdp/components/ui/blog/PostCard';
 import { Spinner } from 'mdp/components/ui/spinner';
 import { supabase } from 'mdp/lib/supabase/client'
@@ -61,7 +62,7 @@ export default function AuthorPage() {
 
         if (!author) {
             alert('Autor não encontrado!')
-            router.push('/blog/404')
+            router.back()
             return
         }
         setAuthor(author)
@@ -85,69 +86,70 @@ export default function AuthorPage() {
 
     return (
         <div className="min-h-screen bg-[hsl(var(--background))]">
-        <main className="container mx-auto px-4 py-8">
-            <div className="text-center mb-12">
-                <div translate='no' className="flex my-5 items-center justify-center">
-                    {author?.avatar_url
-                        ? <img
-                            src={author.avatar_url || ''}
-                            alt={author.username || 'Autor'}
-                            className="rounded-full w-30 h-30 md:w-40 md:h-40 object-cover border-2 border-[hsl(var(--primary))] p-1"
-                        />
-                        : <div className="w-30 h-30 md:w-40 md:h-40 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-2xl font-bold md:text-4xl text-white">
-                            {author?.username?.charAt(0).toUpperCase() || 'U'}
-                        </div>
-                    }
-                </div>
-            
-                <h1 translate='no' className="text-4xl font-bold mb-2">{author.username}</h1>
-                
-                {author?.bio && (
-                    <p className="text-[hsl(var(--muted-foreground))] max-w-2xl mx-auto mb-6">
-                    {author.bio}
-                    </p>
-                )}
-                
-                <div className="flex justify-center space-x-6 text-sm text-[hsl(var(--muted-foreground))]">
-                    <div>
-                    <span className="font-semibold text-[hsl(var(--foreground))]">{posts?.length || 0}</span>
-                    <span> Artigos</span>
+            <BlogHeader />
+            <main className="container mx-auto px-4 py-8">
+                <div className="text-center mb-12">
+                    <div translate='no' className="flex my-5 items-center justify-center">
+                        {author?.avatar_url
+                            ? <img
+                                src={author.avatar_url || ''}
+                                alt={author.username || 'Autor'}
+                                className="rounded-full w-30 h-30 md:w-40 md:h-40 object-cover border-2 border-[hsl(var(--primary))] p-1"
+                            />
+                            : <div className="w-30 h-30 md:w-40 md:h-40 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-2xl font-bold md:text-4xl text-white">
+                                {author?.username?.charAt(0).toUpperCase() || 'U'}
+                            </div>
+                        }
                     </div>
-                    <div>
-                    <span className="font-semibold text-[hsl(var(--foreground))]">{posts?.reduce((sum, post) => sum + post.likes.length, 0) || 0}</span>
-                    <span> Likes</span>
-                    </div>
-                    {author?.website && (
-                    <a
-                        href={author.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-[hsl(var(--primary))] hover:underline"
-                    >
-                        Website
-                    </a>
+                
+                    <h1 translate='no' className="text-4xl font-bold mb-2">{author.username}</h1>
+                    
+                    {author?.bio && (
+                        <p className="text-[hsl(var(--muted-foreground))] max-w-2xl mx-auto mb-6">
+                        {author.bio}
+                        </p>
                     )}
+                    
+                    <div className="flex justify-center space-x-6 text-sm text-[hsl(var(--muted-foreground))]">
+                        <div>
+                        <span className="font-semibold text-[hsl(var(--foreground))]">{posts?.length || 0}</span>
+                        <span> Artigos</span>
+                        </div>
+                        <div>
+                        <span className="font-semibold text-[hsl(var(--foreground))]">{posts?.reduce((sum, post) => sum + post.likes.length, 0) || 0}</span>
+                        <span> Likes</span>
+                        </div>
+                        {author?.website && (
+                        <a
+                            href={author.website}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[hsl(var(--primary))] hover:underline"
+                        >
+                            Website
+                        </a>
+                        )}
+                    </div>
                 </div>
-            </div>
 
-            <section>
-            <h2 className="text-2xl font-bold mb-8">Artigos Publicados</h2>
-            
-            {posts && posts.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {posts.map((post) => (
-                    <PostCard key={post.id} post={{ ...post, author }} />
-                ))}
-                </div>
-            ) : (
-                <div className="text-center py-12">
-                <p className="text-[hsl(var(--muted-foreground))]">
-                    Este autor ainda não publicou nenhum artigo.
-                </p>
-                </div>
-            )}
-            </section>
-        </main>
+                <section>
+                <h2 className="text-2xl font-bold mb-8">Artigos Publicados</h2>
+                
+                {posts && posts.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {posts.map((post) => (
+                        <PostCard key={post.id} post={{ ...post, author }} />
+                    ))}
+                    </div>
+                ) : (
+                    <div className="text-center py-12">
+                    <p className="text-[hsl(var(--muted-foreground))]">
+                        Este autor ainda não publicou nenhum artigo.
+                    </p>
+                    </div>
+                )}
+                </section>
+            </main>
         </div>
     );
 }

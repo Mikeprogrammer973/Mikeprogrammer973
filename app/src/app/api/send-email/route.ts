@@ -1,11 +1,16 @@
 
 import { EmailFactory } from 'mdp/lib/email/Factory';
 import { sendEmail } from 'mdp/lib/email/send';
+import { ALLOWED_ORIGINS } from 'mdp/lib/utils';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
+  if (!ALLOWED_ORIGINS.includes(request.headers.get('origin') || '')) {
+    return NextResponse.json({ error: 'Origem não permitida' }, { status: 403 });
+  }
+  
   try {
-    const body = await request.json();
+    const body = await request.json()
     const { type, recipient, data } = body;
 
     // validar os dados
