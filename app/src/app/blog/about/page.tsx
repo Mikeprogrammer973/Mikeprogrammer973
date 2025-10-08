@@ -8,6 +8,11 @@ import {
   ArrowRight
 } from 'lucide-react';
 import BlogHeader from 'mdp/components/ui/blog/Header';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Info'
+}
 
 export default function AboutPage() {
   const features = [

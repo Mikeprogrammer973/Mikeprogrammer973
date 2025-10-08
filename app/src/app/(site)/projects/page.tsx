@@ -44,6 +44,10 @@ export default function ProjectsPage() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
+    document.title = 'Mike D. Pascal | Projetos'
+  })
+
+  useEffect(() => {
     const category = searchParams.get("category") || "all";
     setCategoryFilter(category);
   }, [searchParams]);

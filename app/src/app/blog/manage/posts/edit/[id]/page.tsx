@@ -99,6 +99,11 @@ export default function CreatePostPage() {
     fetchPost()
 
   }, [params.id])
+
+  useEffect(() => {
+    document.getElementsByTagName('title')[0].setAttribute('translate', 'no')
+    document.title = `MDP Blog | Edit | ${title}`
+  })
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

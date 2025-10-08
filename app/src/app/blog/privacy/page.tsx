@@ -2,6 +2,11 @@
 import Link from 'next/link';
 import { Shield, Mail } from 'lucide-react';
 import BlogHeader from 'mdp/components/ui/blog/Header';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Privacidade'
+}
 
 export default function PrivacyPage() {
   const sections = [

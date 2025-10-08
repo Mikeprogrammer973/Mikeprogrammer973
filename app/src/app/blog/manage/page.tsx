@@ -57,6 +57,10 @@ export default function DashboardPage() {
   ];
 
   useEffect(() => {
+    document.title = 'MDP Blog | Dashboard'
+  })
+
+  useEffect(() => {
     fetchUser()
   }, [])
 

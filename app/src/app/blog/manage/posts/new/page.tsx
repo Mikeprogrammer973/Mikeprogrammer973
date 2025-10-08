@@ -30,6 +30,10 @@ export default function CreatePostPage() {
   const [categories, setCategories] = useState<Category[]>([])
 
   useEffect(() => {
+    document.title = 'MDP Blog | Criar Novo Artigo'
+  })
+
+  useEffect(() => {
     const fetchUser = async () => {
       try {
         const user = await getUser()
@@ -47,7 +51,7 @@ export default function CreatePostPage() {
 
     fetchUser()
   }, [])
-
+  
   useEffect(() => {
     const fetchCategories = async () => {
       try {

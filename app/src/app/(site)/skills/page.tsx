@@ -8,13 +8,8 @@ import {
   Database, 
   Server, 
   Smartphone, 
-  Zap,
   BarChart3,
   Cloud,
-  GitBranch,
-  Cpu,
-  ArrowRight,
-  Filter,
   Search,
   Star,
   TrendingUp,
@@ -58,6 +53,10 @@ export default function SkillsPage() {
     { id: 'design', label: 'Design', icon: Palette, color: 'bg-pink-500' },
     { id: 'devops', label: 'DevOps', icon: Cloud, color: 'bg-cyan-500' }
   ]
+
+  useEffect(() => {
+    document.title = 'Mike D. Pascal | Habilidades'
+  })
 
   useEffect(() => {
     fetchSkills()

@@ -1,7 +1,7 @@
 
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { 
   Shield, 
   Lock, 
@@ -27,6 +27,10 @@ export default function PrivacyPage() {
     security: false,
     rights: false,
     changes: false
+  })
+
+  useEffect(() => {
+    document.title = 'Mike D. Pascal | Privacidade'
   })
 
   const toggleSection = (section: string) => {

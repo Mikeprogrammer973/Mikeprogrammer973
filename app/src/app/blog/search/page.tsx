@@ -37,6 +37,11 @@ export default function SearchPage() {
   const query = useSearchParams().get('q') || ''
 
   useEffect(() => {
+    document.getElementsByTagName('title')[0].setAttribute('translate', 'no')
+    document.title = `MDP Blog | Search - ${query}`
+  })
+
+  useEffect(() => {
     async function fetchPosts() {
       try {
         setLoading(true);

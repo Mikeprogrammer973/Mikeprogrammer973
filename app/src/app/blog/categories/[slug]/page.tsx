@@ -73,6 +73,10 @@ export default function CategoryPage() {
     fetchCategory();
   }, [params.slug]);
 
+  useEffect(() => {
+    document.getElementsByTagName('title')[0].setAttribute('translate', 'no')
+    document.title = `MDP Blog | ${category?.name}`
+  })
 
   useEffect(() => {
     if (!category) return; 

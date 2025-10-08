@@ -70,6 +70,11 @@ export default function PostPage() {
     useEffect(()=>{
         fetchPost()
     }, [])
+
+    useEffect(() => {
+        document.getElementsByTagName('title')[0].setAttribute('translate', 'no')
+        document.title = `MDP Blog | ${post.title}`
+    })
     
     const fetchPost = async () => {
         const { data: post } = await supabase

@@ -110,7 +110,7 @@ export default function PostEditor({ value, onChange }: WysiwygEditorProps) {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div translate='no' className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div
           ref={editorRef}
           contentEditable
@@ -120,7 +120,7 @@ export default function PostEditor({ value, onChange }: WysiwygEditorProps) {
         />
 
         <div className="border p-4 min-h-[200px] bg-[hsl(var(--foreground))]/10 rounded prose max-w-none">
-          <h3 className="text-sm text-[hsl(var(--foreground))]/50 mb-2">Pré-visualização:</h3>
+          <h3 translate='yes' className="text-sm text-[hsl(var(--foreground))]/50 mb-2">Pré-visualização:</h3>
           {parse(value)}
         </div>
       </div>

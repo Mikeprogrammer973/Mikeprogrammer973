@@ -10,24 +10,10 @@ import {
 } from 'lucide-react';
 import { supabase } from 'mdp/lib/supabase/client';
 import BlogHeader from 'mdp/components/ui/blog/Header';
+import { Metadata } from 'next';
 
-interface Post {
-  id: string;
-  title: string;
-  cover_image: string;
-  published_at: string;
-  category: {
-    id: string;
-    name: string;
-    slug: string;
-  }
-  author: {
-    username: string;
-  };
-  views: number;
-  likes: {
-    id: string;
-  }[];
+export const metadata: Metadata = {
+  title: 'Categorias'
 }
 
 interface Stats {

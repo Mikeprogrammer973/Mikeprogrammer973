@@ -51,6 +51,11 @@ export default function LoginPage() {
   )
 
   useEffect(() => {
+    document.getElementsByTagName('title')[0].setAttribute('translate', 'no')
+    document.title = 'MDP Blog | Login'
+  }, [])
+
+  useEffect(() => {
     const checkSession = async () => {
       const { data, error } = await supabase.auth.getSession();
 

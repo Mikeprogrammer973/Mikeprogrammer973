@@ -8,8 +8,12 @@ import { Suspense } from 'react';
 import BlogFooter from 'mdp/components/ui/blog/Footer';
 
 export const metadata: Metadata = {
-  title: 'Mike D. Pascal | Blog',
-  description: '',
+  title:{
+    template: "MDP Blog | %s",
+    default: "MDP Blog"
+  },
+  description: 'Blog de informática sobre desenvolvimento web, design e tecnologia. Creado por Mike Dervensky Pascal, aliás Mikeprogrammer973',
+  keywords: ['blog', 'it', 'desenvolvimento web', 'design', 'tecnologia', 'mike pascal', 'mike dervensky', 'mikeprogrammer973', 'mike dp', 'mike dervensky pascal', 'mike d pascal'],
   icons: {
     icon: "/mdp-icon.png"
   }

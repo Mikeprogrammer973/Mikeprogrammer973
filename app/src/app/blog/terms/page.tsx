@@ -2,6 +2,11 @@
 import Link from 'next/link';
 import { FileText, AlertTriangle, Users, BookOpen, BrainCircuit, ShieldBan, BanIcon, Edit3Icon } from 'lucide-react';
 import BlogHeader from 'mdp/components/ui/blog/Header';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Termos de Uso'
+}
 
 export default function TermsPage() {
   const sections = [

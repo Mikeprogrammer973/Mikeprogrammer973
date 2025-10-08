@@ -53,6 +53,11 @@ export default function AuthorPage() {
         fetchPosts()
     }, [])
 
+    useEffect(() => {
+        document.getElementsByTagName('title')[0].setAttribute('translate', 'no')
+        document.title = `MDP Blog | ${author.username}`
+    }, [author])
+
     const fetchAuthor = async () => {
         const { data: author } = await supabase
         .from('authors')
@@ -105,7 +110,7 @@ export default function AuthorPage() {
                     <h1 translate='no' className="text-4xl font-bold mb-2">{author.username}</h1>
                     
                     {author?.bio && (
-                        <p className="text-[hsl(var(--muted-foreground))] max-w-2xl mx-auto mb-6">
+                        <p translate='no' className="text-[hsl(var(--muted-foreground))] max-w-2xl mx-auto mb-6">
                         {author.bio}
                         </p>
                     )}

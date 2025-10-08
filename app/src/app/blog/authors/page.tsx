@@ -7,6 +7,11 @@ import {
 } from 'lucide-react';
 import { supabase } from 'mdp/lib/supabase/client';
 import BlogHeader from 'mdp/components/ui/blog/Header';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Autores'
+}
 
 export default async function AuthorsPage() {
   

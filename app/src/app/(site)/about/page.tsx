@@ -29,6 +29,10 @@ export default function AboutPage() {
   const [experiences, setExperiences] = useState<Experience[]>()
 
   useEffect(() => {
+    document.title = 'Mike D. Pascal | Perfil'
+  })
+
+  useEffect(() => {
     fetchProfile()
     fetchEducations()
     fetchExperiences()

@@ -56,7 +56,8 @@ export default function Footer() {
         { name: 'Perfil', href: '/about' },
         { name: 'Habilidades', href: '/skills' },
         { name: 'Projetos', href: '/projects' },
-        { name: 'Contato', href: '/contact' }
+        { name: 'Contato', href: '/contact' },
+        { name: 'Blog', href: '/blog' }
       ]
     },
     {

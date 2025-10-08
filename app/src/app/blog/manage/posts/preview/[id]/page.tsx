@@ -70,6 +70,11 @@ export default function UserPreviewPage() {
     if(user) fetchPost();
   }, [params.id, user]);
 
+  useEffect(() => {
+    document.getElementsByTagName('title')[0].setAttribute('translate', 'no')
+    document.title = `MDP Blog | Preview | ${post?.title}`
+  }, [post])
+
   const fetchPost = async () => {
     try {
       const { data, error } = await supabase
@@ -154,12 +159,6 @@ export default function UserPreviewPage() {
     }
   };
 
-  const calculateReadTime = (content: string) => {
-    const wordsPerMinute = 200;
-    const words = content.split(/\s+/).length;
-    return Math.ceil(words / wordsPerMinute);
-  };
-
   if (isLoading) {
     return <Spinner />
   }
@@ -183,8 +182,6 @@ export default function UserPreviewPage() {
       </div>
     );
   }
-
-  const readTime = calculateReadTime(post.content);
 
   return (
     <div className="min-h-screen bg-[hsl(var(--background))]">
@@ -325,7 +322,7 @@ export default function UserPreviewPage() {
                 ) : (
                   <>
                     <Send className="w-5 h-5 mr-2" />
-                    Publicar Artigo
+                    Publicar o Artigo
                   </>
                 )}
               </button></>}

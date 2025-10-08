@@ -23,7 +23,8 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: 'Mike D. Pascal',
-  description: '',
+  description: 'Porfolio de Mike Dervensky Pascal, aliás Mikeprogrammer973',
+  keywords: ['portfolio', 'mike pascal', 'mike dervensky', 'mikeprogrammer973', 'mike dp', 'mike dervensky pascal', 'mike d pascal'],
   icons: {
     icon: "/mdp-icon.png"
   }

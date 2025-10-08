@@ -91,6 +91,10 @@ export default function ContactPage() {
   })
 
   useEffect(() => {
+    document.title = 'Mike D. Pascal | Contato'
+  })
+
+  useEffect(() => {
     fetchProfile()
   })
 

@@ -55,6 +55,10 @@ export default function ProjectPage() {
     fetchProject()
   }, [slug])
 
+  useEffect(() => {
+    document.title = 'Mike D. Pascal | Projetos | ' + `span translate='no'>${project?.title}</span>` 
+  }, [project])
+
   const fetchProject = async () => {
     try {
       const { data: projectData, error: projectError } = await supabase
@@ -162,7 +166,7 @@ export default function ProjectPage() {
           <div className="container mx-auto">
             <Link
               href="/projects"
-              className="inline-flex items-center text-sm text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] mb-4 transition-colors"
+              className="inline-flex items-center text-sm text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] mb-10 transition-colors"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Voltar para projetos

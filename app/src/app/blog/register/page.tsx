@@ -78,6 +78,10 @@ export default function RegisterPage() {
   )
 
   useEffect(() => {
+    document.title = 'MDP Blog | Criar Conta'
+  }, [])
+
+  useEffect(() => {
     const checkSession = async () => {
       const { data, error } = await supabase.auth.getSession();
 
