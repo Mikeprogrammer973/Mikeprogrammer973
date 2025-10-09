@@ -56,7 +56,7 @@ export default function ProjectPage() {
   }, [slug])
 
   useEffect(() => {
-    document.title = 'Mike D. Pascal | Projetos | ' + `span translate='no'>${project?.title}</span>` 
+    document.title = 'Mike D. Pascal | Projetos | ' + project?.title
   }, [project])
 
   const fetchProject = async () => {
