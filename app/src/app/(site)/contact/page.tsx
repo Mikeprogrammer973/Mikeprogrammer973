@@ -91,9 +91,8 @@ export default function ContactPage() {
   })
 
   useEffect(() => {
-    document.getElementsByTagName('title')[0].setAttribute('translate', 'yes')
     document.title = 'Mike D. Pascal | Contato'
-  })
+  }, [])
 
   useEffect(() => {
     fetchProfile()
