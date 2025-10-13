@@ -18,6 +18,8 @@ import { supabase } from 'mdp/lib/supabase/client';
 import getUser, { User } from 'mdp/lib/getUser';
 import { Spinner } from 'mdp/components/ui/spinner';
 import BlogHeader from 'mdp/components/ui/blog/Header';
+import { getNewsletterSubs } from 'mdp/lib/utils';
+import { EmailService } from 'mdp/lib/email/service';
 
 interface Post {
   id: string;
@@ -91,14 +93,12 @@ export default function UserPreviewPage() {
       if (error) throw error;
 
       if (!data) {
-        // router.push('/blog/manage');
         return;
       }
 
       setPost(data);
     } catch (error) {
-      console.error('Error fetching post:', error);
-      // router.push('/blog/manage');
+      console.error('Error fetching post:', error)
     } finally {
       setIsLoading(false);
     }
@@ -115,7 +115,7 @@ export default function UserPreviewPage() {
       const requiresModeration = false
       const newStatus = requiresModeration ? 'pending' : 'published';
 
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('blog_posts')
         .update({ 
           status: newStatus,
@@ -125,6 +125,27 @@ export default function UserPreviewPage() {
         .eq('author_id', user.profile.id);
 
       if (error) throw error;
+
+      const { data: subs } = await getNewsletterSubs()
+      
+      if(newStatus === 'published' && subs)
+      {
+        subs.forEach(async (sub) => {
+          await EmailService.sendNewArticleNotification(
+            {
+              email: sub.email,
+              name: sub.name
+            },
+            {
+              name: post.title,
+              excerpt: post.excerpt,
+              url: `mikedp.vercel.app/blog/posts/${post.id}`,
+              image: post.cover_image,
+              author: user?.profile.username || 'Unknown'
+            }
+          )
+        })
+      }
 
       router.push('/blog/manage')
     } catch (error) {

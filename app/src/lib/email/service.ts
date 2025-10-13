@@ -35,6 +35,16 @@ export class EmailService {
     return this.sendEmail('new-project', recipient, project);
   }
 
+  static async sendNewArticleNotification(recipient: EmailRecipient, article: {
+    name: string;
+    excerpt: string;
+    url: string;
+    image?: string;
+    author: string;
+  }) {
+    return this.sendEmail('new-article', recipient, article);
+  }
+
   static async sendUnsubscribeConfirmation(recipient: EmailRecipient) {
     return this.sendEmail('unsubscribe-confirmation', recipient);
   }

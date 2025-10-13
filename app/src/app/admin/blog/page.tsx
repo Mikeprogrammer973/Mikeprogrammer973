@@ -8,10 +8,10 @@ import {
   XCircle,
   Eye,
   Search,
-  MoreVertical,
   AlertCircle,
   Clock,
-  XIcon
+  XIcon,
+  Trash2Icon
 } from 'lucide-react';
 import { supabase } from 'mdp/lib/supabase/client';
 import { Spinner } from 'mdp/components/ui/spinner';
@@ -121,45 +121,6 @@ export default function AdminDashboard() {
       setStats(stats);
     } catch (error) {
       console.error('Error fetching stats:', error);
-    }
-  };
-
-  const handleApprove = async (postId: string) => {
-    try {
-      const { error } = await supabase
-        .from('blog_posts')
-        .update({ 
-          status: 'published',
-          published_at: new Date().toISOString()
-        })
-        .eq('id', postId);
-
-      if (error) throw error;
-
-      fetchPosts();
-    } catch (error) {
-      console.error('Error approving post:', error);
-    }
-  };
-
-  const handleReject = async (postId: string) => {
-    const reason = prompt('Digite o motivo da rejeição:');
-    if (!reason) return;
-
-    try {
-      const { error } = await supabase
-        .from('blog_posts')
-        .update({ 
-          status: 'rejected',
-          rejection_reason: reason
-        })
-        .eq('id', postId);
-
-      if (error) throw error;
-
-      fetchPosts();
-    } catch (error) {
-      console.error('Error rejecting post:', error);
     }
   };
 
@@ -385,32 +346,12 @@ export default function AdminDashboard() {
                           >
                             <Eye className="w-4 h-4" />
                           </button>
-                          
-                          {post.status === 'pending' && (
-                            <>
-                              <button
-                                onClick={() => handleApprove(post.id)}
-                                className="text-green-600 hover:text-green-900 p-1"
-                                title="Aprovar"
-                              >
-                                <CheckCircle className="w-4 h-4" />
-                              </button>
-                              <button
-                                onClick={() => handleReject(post.id)}
-                                className="text-red-600 hover:text-red-900 p-1"
-                                title="Rejeitar"
-                              >
-                                <XCircle className="w-4 h-4" />
-                              </button>
-                            </>
-                          )}
-                          
                           <button
                             onClick={() => handleDelete(post.id)}
                             className="text-red-600 hover:text-red-900 p-1"
                             title="Excluir"
                           >
-                            <MoreVertical className="w-4 h-4" />
+                            <Trash2Icon className="w-4 h-4" />
                           </button>
                         </div>
                       </td>

@@ -85,6 +85,7 @@ export default function LoginPage() {
     setError('');
 
     try {
+      if(!window.location.origin) return
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {

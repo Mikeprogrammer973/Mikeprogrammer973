@@ -12,6 +12,9 @@ import {
   Clock
 } from 'lucide-react';
 import { supabase } from 'mdp/lib/supabase/client';
+import { EmailService } from 'mdp/lib/email/service';
+import { getNewsletterSubs } from 'mdp/lib/utils';
+import { Spinner } from 'mdp/components/ui/spinner';
 
 interface ModerationDetailsProps {
   post: {
@@ -69,6 +72,44 @@ export default function ModerationDetails({ post, onModerationComplete }: Modera
 
       if (error) throw error;
 
+      await EmailService.sendGeneralEmail(
+        {
+          name: post.author.username,
+          email: post.author.email
+        },
+        {
+          subject: `Status de publicação do seu artigo - ${post.title}`,
+          title: `Status de publicação do seu artigo - ${post.title}`,
+          message: 'O seu artigo foi aprovado e está agora disponível para o público.',
+          cta: {
+            text: 'Visualizar',
+            url: `mikedp.vercel.app/blog/posts/${post.id}`
+          }
+        }
+      )
+
+      const { data: subs } = await getNewsletterSubs()
+      
+      if(subs)
+      {
+        subs.forEach(async (sub) => {
+          await EmailService.sendNewArticleNotification(
+            {
+              email: sub.email,
+              name: sub.name
+            },
+            {
+              name: post.title,
+              excerpt: post.excerpt,
+              url: `mikedp.vercel.app/blog/posts/${post.id}`,
+              image: post.cover_image,
+              author: post.author.username || 'Unknown'
+            }
+          )
+        })
+      }
+      
+
       onModerationComplete();
     } catch (error) {
       console.error('Error approving post:', error);
@@ -94,6 +135,18 @@ export default function ModerationDetails({ post, onModerationComplete }: Modera
         .eq('id', post.id);
 
       if (error) throw error;
+
+      await EmailService.sendGeneralEmail(
+        {
+          name: post.author.username,
+          email: post.author.email
+        },
+        {
+          subject: `Status de publicação do seu artigo - ${post.title}`,
+          title: `Status de publicação do seu artigo - ${post.title}`,
+          message: 'O conteúdo do seu artigo requer a aprovação do administrador. Então, para tal, até o processo de aprovação ser concluído, o seu artigo não será mais visível para o público.'
+        }
+      )
 
       onModerationComplete()
     } catch (error) {
@@ -124,6 +177,19 @@ export default function ModerationDetails({ post, onModerationComplete }: Modera
 
       if (error) throw error;
 
+      await EmailService.sendGeneralEmail(
+        {
+          name: post.author.username,
+          email: post.author.email
+        },
+        {
+          subject: `Status de publicação do seu artigo - ${post.title}`,
+          title: `Status de publicação do seu artigo - ${post.title}`,
+          message: 'O seu artigo foi rejeitado pelo administrador. Porém, tudo não está perdido: veja aqui embaixo o motivo da sua rejeição, faça as correções necessárias e tente novamente.',
+          additionalContent: `Motivo: ${reason}`
+        }
+      )
+
       onModerationComplete();
     } catch (error) {
       console.error('Error rejecting post:', error);
@@ -131,6 +197,11 @@ export default function ModerationDetails({ post, onModerationComplete }: Modera
       setIsModerating(false);
     }
   };
+
+  if(isModerating)
+  {
+    return <Spinner />
+  }
 
   return (
     <div className="bg-[hsl(var(--card))] border rounded-lg p-6 space-y-6">

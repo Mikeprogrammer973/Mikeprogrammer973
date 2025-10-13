@@ -9,6 +9,8 @@ import Link from 'next/link';
 import getUser, { User } from 'mdp/lib/getUser';
 import PostEditor from 'mdp/components/ui/blog/__Editor';
 import BlogHeader from 'mdp/components/ui/blog/Header';
+import { getNewsletterSubs } from 'mdp/lib/utils';
+import { EmailService } from 'mdp/lib/email/service';
 
 interface Category {
   id: string
@@ -99,6 +101,27 @@ export default function CreatePostPage() {
 
       if (error) {
         throw error;
+      }
+
+      const { data: subs } = await getNewsletterSubs()
+
+      if(status === 'published' && subs)
+      {
+        subs.forEach(async (sub) => {
+          await EmailService.sendNewArticleNotification(
+            {
+              email: sub.email,
+              name: sub.name
+            },
+            {
+              name: title,
+              excerpt,
+              url: `mikedp.vercel.app/blog/posts/${data[0].id}`,
+              image: cover,
+              author: user?.profile.username || 'Unknown'
+            }
+          )
+        })
       }
 
       router.push('/blog/manage');

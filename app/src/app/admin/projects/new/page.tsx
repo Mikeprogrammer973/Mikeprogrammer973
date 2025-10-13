@@ -15,7 +15,8 @@ import { supabase } from 'mdp/lib/supabase/client'
 import { DevStage, Project, Status } from 'mdp/lib/supabase/types/database'
 import { useAuth } from 'mdp/hooks/useAuth'
 import { Spinner } from 'mdp/components/ui/spinner'
-import { strict } from 'assert'
+import { getNewsletterSubs } from 'mdp/lib/utils'
+import { EmailService } from 'mdp/lib/email/service'
 
 export default function NewProject() {
   const [_loading, setLoading] = useState(false)
@@ -62,6 +63,22 @@ export default function NewProject() {
         }])
 
       if (error) throw error
+
+      const { data: subs } = await getNewsletterSubs()
+
+      if(formData.status as string === 'published' && subs) {
+        subs.forEach(async sub => {
+          await EmailService.sendNewProjectNotification({
+            email: sub.email,
+            name: sub.name || 'amigo(a)'
+          }, {
+            name: formData.title,
+            description: formData.description || '',
+            url: formData.project_url || '',
+            image: formData.image_url || ''
+          })
+        })
+      }
 
       router.push('/admin/projects')
       router.refresh()

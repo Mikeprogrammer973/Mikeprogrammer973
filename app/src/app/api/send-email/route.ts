@@ -27,27 +27,41 @@ export async function POST(request: NextRequest) {
     switch (type) {
       case 'welcome':
         email = EmailFactory.createWelcomeEmail(
-          recipient.name || 'Cliente',
+          recipient.name || 'amigo(a)',
           recipient.email
         );
         break;
 
       case 'contact-confirmation':
         email = EmailFactory.createContactConfirmationEmail(
-          recipient.name || 'Cliente',
+          recipient.name || 'amigo(a)',
           recipient.email
         );
         break;
 
       case 'new-project':
-        if (!data || !data.name || !data.description || !data.url) {
+        if (!data || !data.name || !data.description) {
           return NextResponse.json(
             { error: 'Dados do projeto incompletos' },
             { status: 400 }
           );
         }
         email = EmailFactory.createNewProjectEmail(
-          recipient.name || 'Cliente',
+          recipient.name || 'amigo(a)',
+          recipient.email,
+          data
+        );
+        break;
+
+      case 'new-article':
+        if (!data || !data.name || !data.excerpt || !data.url) {
+          return NextResponse.json(
+            { error: 'Dados do artigo incompletos' },
+            { status: 400 }
+          );
+        }
+        email = EmailFactory.createNewArticleEmail(
+          recipient.name || 'amigo(a)',
           recipient.email,
           data
         );
@@ -55,14 +69,14 @@ export async function POST(request: NextRequest) {
 
       case 'unsubscribe-confirmation':
         email = EmailFactory.createUnsubscribeEmail(
-          recipient.name || 'Cliente',
+          recipient.name || 'amigo(a)',
           recipient.email
         );
         break;
 
       case 'general':
         email = EmailFactory.createGeneralEmail(
-          recipient.name || 'Cliente',
+          recipient.name || 'amigo(a)',
           recipient.email,
           data
         );
@@ -70,7 +84,7 @@ export async function POST(request: NextRequest) {
       
       case 'verification':
         email = EmailFactory.createVerificationEmail(
-          recipient.name || 'Cliente',
+          recipient.name || 'amigo(a)',
           recipient.email,
           data
         );

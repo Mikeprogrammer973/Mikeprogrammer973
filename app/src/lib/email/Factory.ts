@@ -1,6 +1,7 @@
 
 import { ContactConfirmationEmail } from "./__templates/ContactConfirmation";
 import { GeneralEmail } from "./__templates/General";
+import { NewArticleEmail } from "./__templates/newArticle";
 import { NewProjectEmail } from "./__templates/NewProject";
 import { UnsubscribeEmail } from "./__templates/Unsubscribe";
 import { VerificationEmail } from "./__templates/VerificationEmail";
@@ -31,6 +32,20 @@ export class EmailFactory {
     }
   ) {
     return new NewProjectEmail(name, email, projectData);
+  }
+
+  static createNewArticleEmail(
+    name: string, 
+    email: string, 
+    data: {
+      name: string;
+      excerpt: string;
+      url: string;
+      image?: string;
+      author: string;
+    }
+  ) {
+    return new NewArticleEmail(name, email, data);
   }
 
   static createVerificationEmail(name: string, email: string, code: string) {
