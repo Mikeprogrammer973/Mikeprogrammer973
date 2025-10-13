@@ -10,9 +10,7 @@ import {
   FileText,
   Eye,
   TrendingUp,
-  Calendar,
   Plus,
-  Search,
   Bell
 } from 'lucide-react'
 import { supabase } from 'mdp/lib/supabase/client'
@@ -79,44 +77,57 @@ export default function AdminDashboard() {
         unreadMessages: unreadMessages || 0
       })
 
-      // teste recent activities
+      //
+      const [
+        { data: __projects },
+        { data: __skills },
+        { data: __messages },
+        { data: __blogPosts },
+        { data: __unreadMessages }
+      ] = await Promise.all([
+        supabase.from('projects').select('*').limit(5),
+        supabase.from('skills').select('*').limit(5),
+        supabase.from('messages').select('*').limit(5),
+        supabase.from('blog_posts').select('*').limit(5),
+        supabase.from('messages').select('*').limit(5)
+      ])
       setRecentActivities([
-        {
-          id: '1',
+        ...(__projects || []).map((project) => ({
+          id: project.id,
           type: 'project',
-          title: 'Novo projeto criado',
-          description: 'E-commerce Platform foi adicionado',
-          time: '2 horas atrás',
+          title: project.title,
+          description: project.description,
+          time: `${((new Date().getTime() - new Date(project.created_at).getTime()) / 1000 / 60 / 60).toFixed(0)} horas atrás`,
           icon: Briefcase,
           color: 'text-blue-400'
-        },
-        {
-          id: '2',
-          type: 'message',
-          title: 'Nova mensagem',
-          description: 'De: joao@email.com - Solicitação de orçamento',
-          time: '5 horas atrás',
-          icon: MessageSquare,
-          color: 'text-green-400'
-        },
-        {
-          id: '3',
+        })),
+        ...(__skills || []).map((skill) => ({
+          id: skill.id,
           type: 'skill',
-          title: 'Habilidade atualizada',
-          description: 'React - 95% de proficiency',
-          time: '1 dia atrás',
+          title: skill.name,
+          description: `${skill.category} - ${skill.proficiency}% de proficiency`,
+          time: `${((new Date().getTime() - new Date(skill.created_at).getTime()) / 1000 / 60 / 60).toFixed(0)} horas atrás`,
           icon: Code2,
-          color: 'text-purple-400'
-        },
-        {
-          id: '4',
-          type: 'blog',
-          title: 'Novo post publicado',
-          description: 'Como otimizar performance no Next.js',
-          time: '2 dias atrás',
-          icon: FileText,
+          color: 'text-green-400'
+        })),
+        ...(__messages || []).map((message) => ({
+          id: message.id,
+          type: 'message',
+          title: message.name,
+          description: `${message.type} - ${message.subject}`,
+          time: `${((new Date().getTime() - new Date(message.created_at).getTime()) / 1000 / 60 / 60).toFixed(0)} horas atrás`,
+          icon: MessageSquare,
           color: 'text-orange-400'
-        }
+        })),
+        ...(__blogPosts || []).map((blogPost) => ({
+          id: blogPost.id,
+          type: 'blog',
+          title: blogPost.title,
+          description: blogPost.excerpt,
+          time: `${((new Date().getTime() - new Date(blogPost.created_at).getTime()) / 1000 / 60 / 60).toFixed(0)} horas atrás`,
+          icon: FileText,
+          color: 'text-purple-400'
+        }))
       ])
     } catch (error) {
       console.error('Error fetching data:', error)
@@ -191,32 +202,7 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Recent atividades */}
-          <div className="bg-gray-900 rounded-2xl p-6 border border-gray-800">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold">Atividade Recente</h2>
-              <button className="text-blue-400 hover:text-blue-300 text-sm">
-                Ver tudo
-              </button>
-            </div>
-            
-            <div className="space-y-4">
-              {recentActivities.map((activity) => (
-                <div key={activity.id} className="flex items-start space-x-4 p-4 rounded-lg bg-gray-800/50 hover:bg-gray-800 transition-colors">
-                  <div className={`p-2 rounded-lg ${activity.color} bg-opacity-10`}>
-                    <activity.icon className="w-5 h-5" />
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="font-medium text-white">{activity.title}</h4>
-                    <p className="text-gray-400 text-sm">{activity.description}</p>
-                    <p className="text-gray-500 text-xs mt-1">{activity.time}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
+        <div className="grid grid-cols-1 gap-6">
           {/* Quick Actions */}
           <div className="bg-gray-900 rounded-2xl p-6 border border-gray-800">
             <h2 className="text-xl font-bold mb-6">Ações Rápidas</h2>
@@ -275,30 +261,26 @@ export default function AdminDashboard() {
               </button>
             </div>
           </div>
-        </div>
 
-        {/* Analytics */}
-        <div className="bg-gray-900 rounded-2xl p-6 border border-gray-800">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold">Estatísticas do Site</h2>
-            <div className="flex items-center space-x-2 text-sm text-gray-400">
-              <Calendar className="w-4 h-4" />
-              <span>Últimos 30 dias</span>
+          {/* Recent atividades */}
+          <div className="bg-gray-900 rounded-2xl p-6 border border-gray-800">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold">Atividade Recente</h2>
             </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="text-center p-6 bg-gray-800/50 rounded-lg">
-              <div className="text-3xl font-bold text-blue-400 mb-2">1.2K</div>
-              <p className="text-gray-400">Visitantes</p>
-            </div>
-            <div className="text-center p-6 bg-gray-800/50 rounded-lg">
-              <div className="text-3xl font-bold text-green-400 mb-2">84%</div>
-              <p className="text-gray-400">Taxa de Retenção</p>
-            </div>
-            <div className="text-center p-6 bg-gray-800/50 rounded-lg">
-              <div className="text-3xl font-bold text-purple-400 mb-2">2.4m</div>
-              <p className="text-gray-400">Tempo de Sessão</p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {recentActivities.map((activity) => (
+                <div key={activity.id} className="flex items-start space-x-4 p-4 rounded-lg bg-gray-800/50 hover:bg-gray-800 transition-colors">
+                  <div className={`p-2 rounded-lg ${activity.color} bg-opacity-10`}>
+                    <activity.icon className="w-5 h-5" />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="font-medium text-white">{activity.title}</h4>
+                    <p className="text-gray-400 text-sm">{activity.description}</p>
+                    <p className="text-gray-500 text-xs mt-1">{activity.time}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>

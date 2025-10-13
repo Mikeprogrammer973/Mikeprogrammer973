@@ -17,6 +17,7 @@ import { supabase } from 'mdp/lib/supabase/client';
 import { Spinner } from 'mdp/components/ui/spinner';
 import ModerationDetails from 'mdp/components/admin/blog/moderation_details';
 import { useAuth } from 'mdp/hooks/useAuth';
+import { EmailService } from 'mdp/lib/email/service';
 
 interface Post {
   id: string;
@@ -125,7 +126,13 @@ export default function AdminDashboard() {
   };
 
   const handleDelete = async (postId: string) => {
-    if (!confirm('Tem certeza que deseja excluir este post permanentemente?')) return;
+    if (!confirm('Tem certeza que deseja excluir este post permanentemente?')) return
+
+    const reason = prompt('Digite o motivo da exclusão:');
+    if (!reason) return
+
+    const post = posts.find(post => post.id === postId);
+    if (!post) return
 
     try {
       const { error } = await supabase
@@ -134,6 +141,19 @@ export default function AdminDashboard() {
         .eq('id', postId);
 
       if (error) throw error;
+
+      await EmailService.sendGeneralEmail(
+        {
+          name: post.author.username,
+          email: post.author.email
+        },
+        {
+          subject: `Status de publicação do seu artigo - ${post.title}`,
+          title: `Status de publicação do seu artigo - ${post.title}`,
+          message: 'O seu artigo foi excluído permanentemente do sistema pelo administrador.',
+          additionalContent: `Motivo: ${reason}`
+        }
+      )
 
       fetchPosts();
     } catch (error) {
