@@ -127,8 +127,8 @@ export default function PostPage() {
                     <span onClick={() => router.push(`/blog/categories/${post?.category?.slug}`)} translate='no' className="text-[hsl(var(--primary))] p-2 bg-[hsl(var(--primary))]/10 rounded-xl cursor-pointer hover:bg-[hsl(var(--primary))]/20">{post?.category?.name}</span>
                     <span>•</span>
                     <span>{new Date(post.published_at).toLocaleDateString('pt-BR')}</span>
-                    <span>•</span>
-                    <span>{(Math.ceil(post.content.split(' ').length / 1000)) > 100 ? '10+' : Math.ceil(post.content.split(' ').length / 1000) < 1 ? '1' : Math.ceil(post.content.split(' ').length / 1000)} min de leitura</span>
+                    {/*<span>•</span>
+                    <span>{(Math.ceil(post.content.split(' ').length / 1000)) > 100 ? '10+' : Math.ceil(post.content.split(' ').length / 1000) < 1 ? '1' : Math.ceil(post.content.split(' ').length / 1000)} min de leitura</span>*/}
                 </div>
                 
                 {post.author && <div onClick={() => router.push(`/blog/authors/${post?.author?.id}`)} translate='no' className="flex items-center gap-3 mb-6 cursor-pointer">
