@@ -1,4 +1,6 @@
+'use client'
 
+import { useEffect, useState } from 'react'
 import Link from 'next/link';
 import { 
   Folder, 
@@ -9,12 +11,8 @@ import {
   Users
 } from 'lucide-react';
 import { supabase } from 'mdp/lib/supabase/client';
-import BlogHeader from 'mdp/components/ui/blog/Header';
-import { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'Categorias'
-}
+import BlogHeader from 'mdp/components/ui/blog/Header'
+import { Spinner } from 'mdp/components/ui/spinner';
 
 interface Stats {
   count: number;
@@ -24,56 +22,108 @@ interface Stats {
   slug: string;
 }
 
-export default async function CategoriesPage() {
+interface Category {
+  name: string;
+  slug: string;
+  count: number;
+  totalLikes: number;
+  totalViews: number;
+  latestPost: Date;
+}
+
+interface Post {
+  id: number;
+  title: string;
+  cover_image: string;
+  excerpt: string;
+  content: string;
+  author: {
+    username: string;
+  };
+  category: {
+    id: number;
+    name: string;
+    slug: string;
+  };
+  likes: {
+    id: number;
+  }[];
+  views: number;
+  published_at: string;
+}
+
+
+export default function CategoriesPage() {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [recentPosts, setRecentPosts] = useState<Post[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    document.title = 'MDP Blog | Categorias'
+  }, [])
+
+  useEffect(() => {
+    fetch_data()
+  }, [])
   
-  const { data: posts } = await supabase
+  const fetch_data = async () => {
+    const { data: posts } = await supabase
     .from('blog_posts')
     .select(`*, category:blog_posts_categories(id, name, slug), likes:blog_likes(id)`)
     .eq('status', 'published');
 
-  // estatísticas por categoria
-  const { data: categoriesData } = await supabase
-    .from('blog_posts_categories')
-    .select('*');
+    // estatísticas por categoria
+    const { data: categoriesData } = await supabase
+      .from('blog_posts_categories')
+      .select('*');
 
-  const categoryStats: Record<string, Stats> = categoriesData?.reduce((acc, category) => {
-    acc[category.name] = {
-      count: 0,
-      totalLikes: 0,
-      totalViews: 0,
-      latestPost: null,
-      slug: category.slug,
-    };
-    posts?.forEach((post) => {
-      if (post.category.id === category.id) {
-        acc[category.name].count++;
-        acc[category.name].totalLikes += post.likes.length;
-        acc[category.name].totalViews += post.views;
-        acc[category.name].latestPost = new Date(post.published_at);
-      }
-    });
-    return acc;
-  }, {});
+    const categoryStats: Record<string, Stats> = categoriesData?.reduce((acc, category) => {
+      acc[category.name] = {
+        count: 0,
+        totalLikes: 0,
+        totalViews: 0,
+        latestPost: null,
+        slug: category.slug,
+      };
+      posts?.forEach((post) => {
+        if (post.category.id === category.id) {
+          acc[category.name].count++;
+          acc[category.name].totalLikes += post.likes.length;
+          acc[category.name].totalViews += post.views;
+          acc[category.name].latestPost = new Date(post.published_at);
+        }
+      });
+      return acc;
+    }, {});
 
-  const categories = Object.entries(categoryStats).map(([name, stats]) => ({
-    name,
-    slug: stats.slug,
-    count: stats.count,
-    totalLikes: stats.totalLikes,
-    totalViews: stats.totalViews,
-    latestPost: stats.latestPost,
-  })).sort((a, b) => b.count - a.count);
+    const categories = Object.entries(categoryStats).map(([name, stats]) => ({
+      name,
+      slug: stats.slug,
+      count: stats.count,
+      totalLikes: stats.totalLikes,
+      totalViews: stats.totalViews,
+      latestPost: stats.latestPost,
+    })).sort((a, b) => b.count - a.count);
 
-  const { data: recentPosts } = await supabase
-    .from('blog_posts')
-    .select(`
-      *,
-      category:blog_posts_categories(id, name, slug),
-      author:authors(username)
-    `)
-    .eq('status', 'published')
-    .order('created_at', { ascending: false })
-    .limit(5);
+    const { data: recentPosts } = await supabase
+      .from('blog_posts')
+      .select(`
+        *,
+        category:blog_posts_categories(id, name, slug),
+        author:authors(username)
+      `)
+      .eq('status', 'published')
+      .order('created_at', { ascending: false })
+      .limit(5);
+
+    setCategories(categories);
+    setPosts(posts || []);
+    setRecentPosts(recentPosts || []);
+    setIsLoading(false);
+  }
+
+  if (isLoading) return <Spinner />
 
   return (
     <div className="min-h-screen bg-[hsl(var(--background))]">
@@ -210,7 +260,7 @@ export default async function CategoriesPage() {
                           <span translate='no'>{post.author.username}</span>
                         </p>}
                         <p className="text-xs text-[hsl(var(--muted-foreground))]">
-                          {new Date(post.created_at).toLocaleDateString('pt-BR')}
+                          {new Date(post.published_at).toLocaleDateString('pt-BR')}
                         </p>
                       </div>
                     </div>

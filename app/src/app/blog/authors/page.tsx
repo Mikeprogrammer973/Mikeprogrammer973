@@ -1,4 +1,6 @@
+'use client'
 
+import { useEffect, useState } from 'react'
 import Link from 'next/link';
 import { 
   Users, 
@@ -7,37 +9,88 @@ import {
 } from 'lucide-react';
 import { supabase } from 'mdp/lib/supabase/client';
 import BlogHeader from 'mdp/components/ui/blog/Header';
-import { Metadata } from 'next';
+import { Spinner } from 'mdp/components/ui/spinner';
 
-export const metadata: Metadata = {
-  title: 'Autores'
+interface Author {
+  id: string;
+  username: string;
+  avatar_url: string;
+  bio: string;
+  website: string;
 }
 
-export default async function AuthorsPage() {
-  
-  const { data: authors } = await supabase
+interface Post {
+  id: string;
+  title: string;
+  excerpt: string | null;
+  cover_image: string | null;
+  author: Author;
+  published_at: string;
+  likes: {
+    id: string;
+    author_id: string;
+  }[];
+  category: {
+    name: string;
+    slug: string;
+  };
+  content: string;
+  tags: string[];
+  views: number;
+}
+
+
+export default function AuthorsPage() {
+  const [authors, setAuthors] = useState<Author[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [authhorsWithStats, setAuthhorsWithStats] = useState<(Author & {
+    postCount: number;
+    totalLikes: number;
+    totalViews: number;
+  })[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    document.title = 'MDP Blog | Autores'
+  }, [])
+
+
+  useEffect(() => {
+    fetch_data()
+  }, [])
+
+  const fetch_data = async () => {
+    const { data: authors } = await supabase
     .from('authors')
     .select(`*`)
     .order('id', { ascending: true });
 
-  const { data: posts } = await supabase
-    .from('blog_posts')
-    .select(`*, likes: blog_likes(*)`)
-    .eq('status', 'published')
-    .order('id', { ascending: true });
+    const { data: posts } = await supabase
+      .from('blog_posts')
+      .select(`*, likes: blog_likes(*)`)
+      .eq('status', 'published')
+      .order('id', { ascending: true });
 
-  // estatísticas
-  const authhorsWithStats = authors?.map(author => {
-    const authorPosts = posts?.filter(post => post.author_id === author.id);
-    const totalLikes = authorPosts?.reduce((sum, post) => sum + post.likes.length, 0);
-    const totalViews = authorPosts?.reduce((sum, post) => sum + post.views, 0);
-    return {
-      ...author,
-      postCount: authorPosts?.length,
-      totalLikes,
-      totalViews
-    };
-  });
+    // estatísticas
+    const authhorsWithStats = authors?.map(author => {
+      const authorPosts = posts?.filter(post => post.author_id === author.id);
+      const totalLikes = authorPosts?.reduce((sum, post) => sum + post.likes.length, 0);
+      const totalViews = authorPosts?.reduce((sum, post) => sum + post.views, 0);
+      return {
+        ...author,
+        postCount: authorPosts?.length,
+        totalLikes,
+        totalViews
+      };
+    });
+
+    setAuthors(authors || []);
+    setPosts(posts || []);
+    setAuthhorsWithStats(authhorsWithStats || []);
+    setLoading(false);
+  }
+
+  if (loading) return <Spinner />
 
   return (
     <div className="min-h-screen bg-[hsl(var(--background))]">
