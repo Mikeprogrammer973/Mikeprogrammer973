@@ -18,11 +18,11 @@ interface CategoryMenuProps {
 export default function CategoryMenu({ categories }: CategoryMenuProps) {
   return (
     <div className="bg-card p-6 rounded-lg border">
-      <h3 className="text-xl font-semibold mb-4">Categorias</h3>
+      <h3 className="text-xl font-semibold mb-4">Categorias Populares</h3>
       
       <div className="space-y-2">
-        {categories.map((category) => (
-          <Link
+        {((categories.filter((ct) => ct.count > 0) || categories.split(0, 9)).map((category) => (
+         <Link
             translate='no'
             key={category.name}
             href={`/blog/categories/${encodeURIComponent(category.slug)}`}
