@@ -18,7 +18,7 @@ interface CategoryMenuProps {
 export default function CategoryMenu({ categories }: CategoryMenuProps) {
 
   let __cts = categories.filter((ct) => ct.count > 0)
-  if (!__cts) __cts = categories.slice(1, 10)
+  if (__cts.length === 0) __cts = categories.slice(0, 10)
   
   return (
     <div className="bg-card p-6 rounded-lg border">
