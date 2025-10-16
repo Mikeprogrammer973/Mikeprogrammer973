@@ -17,7 +17,7 @@ interface CategoryMenuProps {
 
 export default function CategoryMenu({ categories }: CategoryMenuProps) {
 
-  const __cts = categories.filter((ct) => ct.count > 0)
+  let __cts = categories.filter((ct) => ct.count > 0)
   if (!__cts) __cts = categories.slice(0, 10)
   
   return (
