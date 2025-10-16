@@ -21,7 +21,7 @@ export default function CategoryMenu({ categories }: CategoryMenuProps) {
       <h3 className="text-xl font-semibold mb-4">Categorias Populares</h3>
       
       <div className="space-y-2">
-        {((categories.filter((ct) => ct.count > 0) || categories.split(0, 9)).map((category) => (
+        {categories.map((category) => (
          <Link
             translate='no'
             key={category.name}
