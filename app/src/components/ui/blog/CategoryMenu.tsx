@@ -16,12 +16,15 @@ interface CategoryMenuProps {
 }
 
 export default function CategoryMenu({ categories }: CategoryMenuProps) {
+
+  const __cts = ((categories.filter((ct) => ct.count > 0) || categories.split(0, 9))
+  
   return (
     <div className="bg-card p-6 rounded-lg border">
       <h3 className="text-xl font-semibold mb-4">Categorias Populares</h3>
       
       <div className="space-y-2">
-        {categories.map((category) => (
+        {__cts.map((category) => (
          <Link
             translate='no'
             key={category.name}
