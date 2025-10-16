@@ -17,7 +17,7 @@ interface CategoryMenuProps {
 
 export default function CategoryMenu({ categories }: CategoryMenuProps) {
 
-  const __cts = (categories.filter((ct) => ct.count > 0) || categories.split(0, 9))
+  const __cts = (categories.filter((ct) => ct.count > 0) || categories.splice(0, 9))
   
   return (
     <div className="bg-card p-6 rounded-lg border">
