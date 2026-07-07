@@ -99,7 +99,7 @@ export default function BlogHeader() {
           </form>
 
           <div className="flex items-center space-x-4">
-            <button
+            {/*<button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
               className="p-2 rounded-md hover:bg-[hsl(var(--accent))]"
               aria-label="Toggle theme"
@@ -109,7 +109,7 @@ export default function BlogHeader() {
               ) : (
                 <Moon className="w-5 h-5" />
               )}
-            </button>
+            </button>*/}
 
             {user ? (
               <div className="relative">
