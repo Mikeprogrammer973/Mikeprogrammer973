@@ -30,19 +30,19 @@ export default function BlogLayout({
         <GoogleTranslateLoader/>
       </head>
       <body>
-        <ThemeProvider
+        {/*<ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
-        >
+        >*/}
           <main>
               <Suspense>
                 {children}
               </Suspense>
           </main>
           <BlogFooter />
-        </ThemeProvider>
+        {/*</ThemeProvider>*/}
       </body>
       </html>
   );
