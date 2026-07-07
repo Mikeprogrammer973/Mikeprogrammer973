@@ -29,7 +29,7 @@ export default function BlogLayout({
       <head>
         <GoogleTranslateLoader/>
       </head>
-      <body>
+      <body className="dark">
         {/*<ThemeProvider
           attribute="class"
           defaultTheme="system"
