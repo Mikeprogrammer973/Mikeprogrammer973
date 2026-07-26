@@ -10,6 +10,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export const ALLOWED_ORIGINS = [
   'https://mikedp.zyther.dev',
+  'https://mikedp.vercel.app',
   'http://localhost:3000'
 ]
 
